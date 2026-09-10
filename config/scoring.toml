@@ -1,0 +1,43 @@
+# Karne scoring ruleset.
+#
+# IMPORTANT (PLAN.md K-02 / K-03): scoring rules live in DATA, not in code.
+# Collectors never read this file. Scoring is a separate layer
+# (karne/analyze/scoring.py) that turns raw `scan_results` into `scores` and
+# `findings`, and can be re-run at any time against previously stored raw data.
+# Every score record stores the `version` below so a scan can be traced to the
+# exact ruleset that produced it.
+#
+# Sprint 0 status: SKELETON ONLY. No scoring logic exists yet. The structure
+# below is a placeholder to be filled starting in Sprint 3 (the December
+# milestone). Values are intentionally left unset.
+
+version = "0.0.0-skeleton"
+
+[dimensions]
+# The four scoring dimensions (see PLAN.md section 3). Listed here for
+# reference; weights and rules are defined per dimension in Sprint 3+.
+# email     = "A — email & domain identity"      (collector exists in Sprint 0)
+# transport = "B — transport & server security"
+# privacy   = "C — privacy & tracking"
+# tech      = "D — technology & visible surface"
+
+[grades]
+# Letter-grade cut-offs, to be defined in Sprint 3.
+# Example shape (not active):
+#   A = 90
+#   B = 80
+#   C = 70
+#   D = 60
+
+[weights]
+# Per-indicator weights, to be defined in Sprint 3.
+# Example shape (not active):
+#   [weights.email]
+#   dmarc_policy = 0
+#   spf_terminator = 0
+
+[findings]
+# Finding codes come from a fixed list (e.g. EMAIL_NO_DMARC,
+# PRIVACY_PRECONSENT_TRACKER, TLS_LEGACY_VERSION). This table will map each code
+# to a severity. Human-readable explanations and fix hints live in translation
+# files, not here (PLAN.md section 5). To be defined in Sprint 3.

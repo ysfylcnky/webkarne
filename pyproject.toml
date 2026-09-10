@@ -1,0 +1,43 @@
+[project]
+name = "karne"
+version = "0.1.0"
+description = "Passive digital-hygiene measurement for domains (DNS/email, transport, privacy, tech surface)."
+readme = "README.md"
+requires-python = ">=3.12"
+license = { text = "MIT" }
+authors = [{ name = "Yusuf Yalçınkaya" }]
+dependencies = [
+    "typer>=0.12",
+    "dnspython>=2.6",
+]
+
+[project.scripts]
+karne = "karne.cli:app"
+
+[dependency-groups]
+dev = [
+    "pytest>=8.0",
+    "ruff>=0.6",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["karne"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+# pycodestyle, pyflakes, isort, warnings, pyupgrade, bugbear, comprehensions, simplify
+select = ["E", "F", "I", "W", "UP", "B", "C4", "SIM"]
+
+[tool.pytest.ini_options]
+markers = [
+    "network: integration test requiring live network/DNS access (run with -m network)",
+]
+# Unit tests are offline by default; run the network suite explicitly.
+addopts = "-m 'not network'"

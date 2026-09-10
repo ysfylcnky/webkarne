@@ -1,0 +1,21 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+.pytest_cache/
+.ruff_cache/
+
+# Virtual environment (uv)
+.venv/
+
+# Raw scan data — never committed. The dataset is released only at thesis
+# submission (PLAN.md K-10); the SQLite file is created at runtime.
+data/
+
+# OS / editor noise
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
