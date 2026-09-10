@@ -35,6 +35,10 @@ target-version = "py312"
 # pycodestyle, pyflakes, isort, warnings, pyupgrade, bugbear, comprehensions, simplify
 select = ["E", "F", "I", "W", "UP", "B", "C4", "SIM"]
 
+[tool.ruff.lint.flake8-bugbear]
+# Typer relies on function calls as parameter defaults (typer.Option/Argument).
+extend-immutable-calls = ["typer.Option", "typer.Argument"]
+
 [tool.pytest.ini_options]
 markers = [
     "network: integration test requiring live network/DNS access (run with -m network)",

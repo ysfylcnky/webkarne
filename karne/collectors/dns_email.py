@@ -742,3 +742,131 @@ def collect(
     }
     payload["queries"] = [q.as_dict() for q in client.queries]
     return payload
+
+
+def dns_records_from_payload(payload: dict[str, Any]) -> list[dict[str, Any]]:
+    """Flatten a collect() payload into dns_records rows (rtype/selector/value/valid/notes).
+
+    A convenience projection over the authoritative raw payload. Every indicator
+    yields at least one row so the query state (incl. "could not measure") is
+    queryable; ``valid`` carries only syntactic-validity observations, never a score.
+    Each row is a dict ready to splat into ``models.DnsRecord`` with a scan_id.
+    """
+    rows: list[dict[str, Any]] = []
+
+    def add(rtype, value=None, selector=None, valid=None, notes=None):
+        rows.append(
+            {"rtype": rtype, "value": value, "selector": selector, "valid": valid, "notes": notes}
+        )
+
+    def status_of(section: dict[str, Any]) -> str | None:
+        return section.get("query", {}).get("status")
+
+    spf = payload.get("spf", {})
+    if "error" in spf:
+        add("SPF", notes=f"error={spf['error']}")
+    elif spf.get("records"):
+        parsed = spf.get("parsed")
+        if isinstance(parsed, list):
+            for rec, p in zip(spf["records"], parsed, strict=False):
+                add("SPF", value=rec, valid=p.get("version_ok"), notes="multiple_records")
+        else:
+            lk = spf.get("lookups") or {}
+            note = (
+                f"lookups={lk['total_lookups']};exceeds_limit={lk['exceeds_limit']}" if lk else None
+            )
+            add("SPF", value=spf["records"][0], valid=(parsed or {}).get("version_ok"), notes=note)
+    else:
+        add("SPF", notes=f"status={status_of(spf)}")
+
+    dmarc = payload.get("dmarc", {})
+    if "error" in dmarc:
+        add("DMARC", notes=f"error={dmarc['error']}")
+    elif dmarc.get("records"):
+        parsed = dmarc.get("parsed")
+        if isinstance(parsed, list):
+            for rec, p in zip(dmarc["records"], parsed, strict=False):
+                add("DMARC", value=rec, valid=p.get("valid"), notes="multiple_records")
+        else:
+            p = parsed or {}
+            add("DMARC", value=dmarc["records"][0], valid=p.get("valid"), notes=f"p={p.get('p')}")
+    else:
+        add("DMARC", notes=f"status={status_of(dmarc)}")
+
+    dkim = payload.get("dkim", {})
+    if "error" in dkim:
+        add("DKIM", notes=f"error={dkim['error']}")
+    else:
+        for attempt in dkim.get("attempts", []):
+            if not attempt.get("present"):
+                continue
+            p = attempt.get("parsed", {})
+            answers = attempt.get("query", {}).get("answers", [])
+            add(
+                "DKIM",
+                selector=attempt["selector"],
+                value=answers[0] if answers else None,
+                notes=f"key_type={p.get('key_type')};key_bits={p.get('key_bits')};"
+                f"p_empty={p.get('p_empty')}",
+            )
+        if not dkim.get("found_selectors"):
+            add("DKIM", notes="status=none_found;method=selector_guessing")
+
+    mx = payload.get("mx", {})
+    if "error" in mx:
+        add("MX", notes=f"error={mx['error']}")
+    elif mx.get("records"):
+        for rec in mx["records"]:
+            add(
+                "MX",
+                value=f"{rec['preference']} {rec['exchange']}",
+                notes=f"provider={rec['provider']}",
+            )
+    else:
+        add("MX", notes=f"status={status_of(mx)}")
+
+    mta = payload.get("mta_sts", {})
+    if "error" in mta:
+        add("MTA-STS", notes=f"error={mta['error']}")
+    else:
+        dns_part = mta.get("dns", {})
+        policy = mta.get("policy", {})
+        if dns_part.get("records"):
+            mode = (policy.get("parsed") or {}).get("mode")
+            add(
+                "MTA-STS",
+                value=dns_part["records"][0],
+                notes=f"policy_status={policy.get('status')};mode={mode}",
+            )
+        else:
+            add("MTA-STS", notes=f"status={status_of(dns_part)}")
+
+    tls = payload.get("tls_rpt", {})
+    if "error" in tls:
+        add("TLS-RPT", notes=f"error={tls['error']}")
+    elif tls.get("records"):
+        add("TLS-RPT", value=tls["records"][0])
+    else:
+        add("TLS-RPT", notes=f"status={status_of(tls)}")
+
+    dnssec = payload.get("dnssec", {})
+    if "error" in dnssec:
+        add("DS", notes=f"error={dnssec['error']}")
+    else:
+        add(
+            "DS",
+            value="present" if dnssec.get("ds_present") else "absent",
+            valid=dnssec.get("resolver_authenticated"),
+            notes=f"status={status_of(dnssec)}",
+        )
+
+    caa = payload.get("caa", {})
+    if "error" in caa:
+        add("CAA", notes=f"error={caa['error']}")
+    elif caa.get("records"):
+        for rec in caa["records"]:
+            add("CAA", value=rec)
+    else:
+        add("CAA", notes=f"status={status_of(caa)}")
+
+    return rows
