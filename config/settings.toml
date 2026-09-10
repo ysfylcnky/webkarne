@@ -1,0 +1,52 @@
+# Karne scan settings — operational parameters for collectors.
+#
+# Declarative config only; no scoring logic here (that lives in scoring.toml).
+# Collectors read this file; the hash of the effective settings is stored on each
+# scan (scans.config_hash) for reproducibility.
+
+[dns]
+# Conservative defaults. Passive measurement only (PLAN.md K-07).
+timeout_seconds = 5.0        # per-try timeout for a single DNS query
+lifetime_seconds = 10.0      # total time budget per name (dnspython "lifetime")
+retries = 2                  # extra attempts on timeout (on top of the first try)
+retry_backoff_seconds = 0.5  # base backoff between retries
+rate_per_second = 10.0       # polite throughput cap across the whole scan
+concurrency = 4              # max parallel DNS queries (e.g. the DKIM selector sweep)
+resolvers = []               # explicit resolver IPs; empty = system default resolver
+
+[http]
+# Single short GET for the MTA-STS well-known policy; failures are tolerated.
+# Redirects are NOT followed (RFC 8461 §3.3); TLS certificates are verified.
+timeout_seconds = 5.0
+max_bytes = 65536            # cap the policy download size
+# Announces the project and an info page (PLAN.md section 4). TODO: replace the
+# URL with the real project page once published.
+user_agent = "karne/0.1 (+https://github.com/ysfylcnky/karne; passive email-hygiene measurement)"
+
+[dkim]
+# DKIM selectors CANNOT be discovered from DNS; they are guessed. This is a
+# documented method limitation — the collector marks DKIM output with
+# method = "selector_guessing" and it is reported as such in the thesis.
+selectors = [
+    "selector1", "selector2", "google", "default", "dkim", "mail",
+    "k1", "k2", "s1", "s2", "zoho", "mandrill", "smtp", "email",
+    "mailjet", "sendgrid",
+]
+
+[mx_providers]
+# MX host-suffix -> provider label. Longest matching suffix wins. A host inside
+# the scanned domain is labelled "local"; anything unmatched is labelled "other".
+# This is a factual categorisation (who hosts the mail), not a quality judgement.
+"google.com" = "google"
+"googlemail.com" = "google"
+"outlook.com" = "microsoft"
+"office365.com" = "microsoft"
+"yandex.net" = "yandex"
+"yandex.ru" = "yandex"
+"yandex.com.tr" = "yandex"
+"zoho.com" = "zoho"
+"zoho.eu" = "zoho"
+"pphosted.com" = "proofpoint"
+"mimecast.com" = "mimecast"
+"antispamcloud.com" = "spamexperts"
+"yaani.com" = "yaani"
