@@ -120,3 +120,16 @@ tools agreed, which independently validates Karne's parsers.
   K-07 preserved. Mail-transport security is covered DNS-side via MTA-STS +
   TLS-RPT + DANE. Revisitable in Sprint 3 (transport layer) if needed. PLAN.md
   section 4 records the decision.
+
+### Live validation notes (scanning internet.nl)
+
+Two documented limitations were confirmed live and are worth remembering:
+
+- **DKIM selector guessing:** internet.nl uses DKIM but our common-selector list
+  missed it (0/16). Karne correctly reports "none found (guessing)", not "no
+  DKIM". Concrete thesis example of the method limitation.
+- **DNSSEC AD flag depends on the resolver:** internet.nl is signed (DS present)
+  yet `resolver_authenticated` was false, because the default resolver (a home
+  router) does not validate DNSSEC. For accurate DNSSEC measurement the scan must
+  use a validating resolver (e.g. 1.1.1.1 / 8.8.8.8). Fold this into the Sprint 2
+  resolver decision alongside the SERVFAIL re-query policy.
