@@ -191,6 +191,39 @@ durumun sonucu ayrı kaydedilir.
 | **JS kütüphaneleri** | jQuery, React vb. sürümleri, bilinen zafiyetli sürüm listeleriyle karşılaştırma | Dışarıdan gözlemlenebilir risk sinyali — F boyutunun en güçlü girdilerinden |
 | **Altyapı** | CDN/WAF, barındırma sağlayıcısı, IP'nin ülkesi | Yoğunlaşma analizinin ikinci ekseni |
 
+### internet.nl ile kapsam denkliği (parity)
+
+internet.nl olgun, kamuya açık bir denetim aracıdır ve bu proje için doğal bir dış
+referanstır. **Hedef:** internet.nl'in hem "website" hem "email" testinde baktığı
+her göstergeyi Karne de ölçsün; örtüşen her yerde sonuçlar **uyumlu** olsun. Bu
+örtüşme tezde bağımsız bir doğrulama ekseni sağlar — bir aracın bulgusunu diğeri
+teyit eder. Fark: Karne ham veriyi saklar ve puanı ayrı katmanda üretir (K-02),
+bu yüzden yüzde/not değil **göstergeler** kıyaslanır.
+
+| internet.nl göstergesi | Karne karşılığı | Durum |
+|---|---|---|
+| SPF · DKIM · DMARC | A boyutu | ✅ Sprint 0 |
+| DNSSEC | A boyutu | ✅ Sprint 0 (alan adının DS'i; MX host imzası eklenecek) |
+| DANE / TLSA | A boyutu | ✅ Sprint 0 (Adım 3'te atlanmış, sonradan eklendi) |
+| MTA-STS · TLS-RPT | A boyutu | ✅ Sprint 0 |
+| STARTTLS (posta sunucu TLS) | A boyutu — yeni | ⏳ Etik kararı bekliyor (bkz. bölüm 4) |
+| IPv6 / erişilebilirlik | A boyutu — yeni (AAAA kaydı varlığı) | ⏳ Sprint 2 |
+| HTTPS zorunluluğu · TLS · sertifika · HSTS | B boyutu | ⏳ Sprint 3 |
+| Güvenlik başlıkları (CSP, X-Frame-Options…) | B boyutu | ⏳ Sprint 3 |
+| RPKI (route origin doğrulama) | D boyutu — yeni (altyapı) | ⏳ Sprint 5 |
+
+**Yeni eklenen göstergeler ve yerleri:**
+
+- **IPv6 / AAAA (Sprint 2).** internet.nl gerçek IPv6 *erişilebilirliğini* test
+  eder; Karne pasif modelde web/MX/NS için **AAAA kaydı varlığını** ölçer (saf DNS,
+  erişilebilirliğe iyi bir vekil). Canlı bağlantı testi yapılmaz.
+- **STARTTLS (karar bekliyor).** Posta sunucusunda TLS pazarlığını görmek port
+  25'e canlı SMTP bağlantısı gerektirir; K-07'nin "pasif / tarayıcı-eşdeğeri"
+  sınırıyla gerilim taşır. Karar verilene kadar Karne posta-aktarım güvenliğini
+  yalnız DNS-tarafı sinyallerle (MTA-STS, TLS-RPT, DANE) ölçer.
+- **RPKI (Sprint 5).** Alan adının sunucu IP'leri için ROA doğrulaması; pasif
+  (RPKI deposu / RIPE verisi sorgusu). D boyutuna (altyapı) girer.
+
 ### Sonraki fazların boyutları
 
 **E — Beyan ile gerçek (Nisan).** C boyutunda toplanan politika metinleri bir
@@ -225,6 +258,16 @@ Sınırların bir kısmı yorum değil, doğrudan yazılım kısıtıdır.
 - DNS bölge transferi (AXFR) denemesi — teknik olarak mümkün ama gri alan, kapsam dışı
 - Kişisel veri toplama; ölçüm kurumsal alan adı düzeyinde kalır
 - Bot korumasını aşmaya çalışma; engellenirsek "ölçülemedi" diye kaydedip geçeriz
+
+### Karar bekleyen sınır: STARTTLS
+
+internet.nl, posta sunucularında STARTTLS'i **canlı SMTP bağlantısıyla** test eder.
+Bu, saf DNS'in ötesinde port 25'e bağlantı demektir ve yukarıdaki "port taraması
+yok / tarayıcının gördüğünden fazlası yok" sınırıyla gerilim taşır. **Karar
+verilene kadar Karne bunu YAPMAZ**; posta-aktarım güvenliğini yalnız DNS-tarafı
+sinyallerle (MTA-STS, TLS-RPT, DANE) ölçer. Olası çözüm: veri göndermeyen, kimliği
+açıkça bildiren tek bir `EHLO`+`STARTTLS` *yetenek* kontrolü — ayrıca kapılı bir
+seçenek olarak. Bu paragraf güncellenmeden STARTTLS kodu yazılmaz.
 
 ---
 

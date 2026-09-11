@@ -8,8 +8,9 @@ a quality judgement. Every DNS query is logged with its result state, keeping
 
 What is measured (PLAN.md section 3, dimension A): SPF (incl. the RFC 7208
 10-lookup count over the include/redirect chain), DMARC, DKIM (common-selector
-guessing), MX (with provider classification), MTA-STS (TXT + well-known policy),
-TLS-RPT, DNSSEC (DS presence + resolver AD flag), and CAA.
+guessing), MX (with provider classification), DANE/TLSA (TLSA records over the MX
+hosts), MTA-STS (TXT + well-known policy), TLS-RPT, DNSSEC (DS presence + resolver
+AD flag), and CAA.
 
 Parsers in this module are pure functions of strings so they can be unit-tested
 against fixtures with no network (see tests/). Network access is confined to the
@@ -40,7 +41,7 @@ import dns.flags
 import dns.resolver
 
 COLLECTOR_NAME = "dns_email"
-COLLECTOR_VERSION = "0.1.0"
+COLLECTOR_VERSION = "0.2.0"  # 0.2.0: added DANE/TLSA over MX hosts
 
 DEFAULT_SETTINGS_PATH = Path(__file__).resolve().parents[2] / "config" / "settings.toml"
 
@@ -515,6 +516,36 @@ def parse_mta_sts_policy(text: str) -> dict[str, Any]:
     return {"version": version, "mode": mode, "mx": mx, "max_age": max_age}
 
 
+def parse_tlsa_record(record: str) -> dict[str, Any]:
+    """Parse a TLSA record 'usage selector matching-type cert-association' (RFC 6698).
+
+    ``valid`` is a syntactic-range observation of the three numeric fields, not a
+    score. The certificate association data is recorded verbatim, uninterpreted.
+    """
+    parts = record.split()
+    if len(parts) < 4:
+        return {"raw": record, "valid": False}
+    try:
+        usage, selector, matching_type = int(parts[0]), int(parts[1]), int(parts[2])
+    except ValueError:
+        return {
+            "raw": record,
+            "valid": False,
+            "usage": None,
+            "selector": None,
+            "matching_type": None,
+        }
+    valid = usage in (0, 1, 2, 3) and selector in (0, 1) and matching_type in (0, 1, 2)
+    return {
+        "usage": usage,
+        "selector": selector,
+        "matching_type": matching_type,
+        "cert_association": "".join(parts[3:]),
+        "valid": valid,
+        "raw": record,
+    }
+
+
 # ===========================================================================
 # Per-indicator collectors (network via the injected client)
 # ===========================================================================
@@ -691,6 +722,36 @@ def collect_caa(domain: str, client: DnsClient) -> dict[str, Any]:
     return {"query": query.as_dict(), "present": bool(query.answers), "records": query.answers}
 
 
+def collect_dane(domain: str, client: DnsClient, mx_hosts: list[str]) -> dict[str, Any]:
+    """DANE TLSA records for the domain's MX hosts at ``_25._tcp.<host>`` (RFC 7672).
+
+    Pure DNS (passive). Note: DANE is only trustworthy when the TLSA records are
+    DNSSEC-signed, which the ``dnssec`` indicator observes separately. Verifying a
+    TLSA record against the server's live certificate would require an SMTP
+    connection and is out of scope for the passive collector.
+    """
+    hosts: list[dict[str, Any]] = []
+    for host in mx_hosts:
+        h = host.rstrip(".")
+        if not h or h == ".":  # null MX (RFC 7505) or empty: nothing to check
+            continue
+        query = client.resolve(f"_25._tcp.{h}", "TLSA")
+        hosts.append(
+            {
+                "mx_host": h,
+                "query": query.as_dict(),
+                "present": bool(query.answers),
+                "records": [parse_tlsa_record(r) for r in query.answers],
+            }
+        )
+    return {
+        "mx_hosts_checked": [h["mx_host"] for h in hosts],
+        "hosts": hosts,
+        "present": any(h["present"] for h in hosts),
+        "note": "DANE requires DNSSEC-signed TLSA records to be trustworthy",
+    }
+
+
 # ===========================================================================
 # Orchestration
 # ===========================================================================
@@ -723,6 +784,10 @@ def collect(
     mx_map = settings.get("mx_providers", {})
     http_settings = settings.get("http", {})
 
+    # MX first: DANE needs the resolved MX host list.
+    mx_result = _safe(lambda: collect_mx(normalized, client, mx_map))
+    mx_hosts = [rec["exchange"] for rec in mx_result.get("records", [])]
+
     payload: dict[str, Any] = {
         "collector": COLLECTOR_NAME,
         "collector_version": COLLECTOR_VERSION,
@@ -734,7 +799,8 @@ def collect(
         "spf": _safe(lambda: collect_spf(normalized, client)),
         "dmarc": _safe(lambda: collect_dmarc(normalized, client)),
         "dkim": _safe(lambda: collect_dkim(normalized, client, dkim_selectors)),
-        "mx": _safe(lambda: collect_mx(normalized, client, mx_map)),
+        "mx": mx_result,
+        "dane": _safe(lambda: collect_dane(normalized, client, mx_hosts)),
         "mta_sts": _safe(lambda: collect_mta_sts(normalized, client, http_settings)),
         "tls_rpt": _safe(lambda: collect_tls_rpt(normalized, client)),
         "dnssec": _safe(lambda: collect_dnssec(normalized, client)),
@@ -824,6 +890,22 @@ def dns_records_from_payload(payload: dict[str, Any]) -> list[dict[str, Any]]:
             )
     else:
         add("MX", notes=f"status={status_of(mx)}")
+
+    dane = payload.get("dane", {})
+    if "error" in dane:
+        add("TLSA", notes=f"error={dane['error']}")
+    elif dane.get("hosts"):
+        for host in dane["hosts"]:
+            if host.get("present"):
+                for rec in host["records"]:
+                    add("TLSA", value=rec.get("raw"), notes=f"mx_host={host['mx_host']}")
+            else:
+                add(
+                    "TLSA",
+                    notes=f"mx_host={host['mx_host']};status={host.get('query', {}).get('status')}",
+                )
+    else:
+        add("TLSA", notes="no_mx_hosts")
 
     mta = payload.get("mta_sts", {})
     if "error" in mta:

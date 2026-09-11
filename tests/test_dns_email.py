@@ -19,6 +19,7 @@ from karne.collectors.dns_email import (
     DnsClient,
     DnsQuery,
     classify_mx_provider,
+    collect_dane,
     collect_dkim,
     collect_dmarc,
     collect_dnssec,
@@ -28,6 +29,7 @@ from karne.collectors.dns_email import (
     parse_dkim_record,
     parse_dmarc_record,
     parse_spf_record,
+    parse_tlsa_record,
 )
 
 # ---------------------------------------------------------------------------
@@ -304,6 +306,48 @@ def test_dnssec_absent():
     client = FakeDnsClient({(domain, "DS"): {"status": "noanswer", "answers": []}})
     result = collect_dnssec(domain, client)
     assert result["ds_present"] is False
+
+
+# ===========================================================================
+# DANE / TLSA
+# ===========================================================================
+
+
+def test_tlsa_parse():
+    parsed = parse_tlsa_record("3 1 1 abcdef0123456789")
+    assert parsed["usage"] == 3
+    assert parsed["selector"] == 1
+    assert parsed["matching_type"] == 1
+    assert parsed["cert_association"] == "abcdef0123456789"
+    assert parsed["valid"] is True
+
+
+def test_tlsa_parse_malformed():
+    assert parse_tlsa_record("garbage")["valid"] is False
+    assert parse_tlsa_record("9 5 9 aa")["valid"] is False  # out-of-range fields
+
+
+def test_dane_present_and_absent_hosts():
+    domain = "mail.example"
+    client = FakeDnsClient(
+        {("_25._tcp.mail.example.com", "TLSA"): {"answers": ["3 1 1 abcd"]}}
+        # alt host missing -> defaults to nxdomain
+    )
+    result = collect_dane(domain, client, ["mail.example.com.", "alt.example.com."])
+    assert result["present"] is True
+    assert len(result["hosts"]) == 2
+    by_host = {h["mx_host"]: h for h in result["hosts"]}
+    assert by_host["mail.example.com"]["present"] is True
+    assert by_host["mail.example.com"]["records"][0]["usage"] == 3
+    assert by_host["alt.example.com"]["present"] is False
+    assert by_host["alt.example.com"]["query"]["status"] == "nxdomain"
+
+
+def test_dane_skips_null_mx():
+    # A null MX (".") means the domain does not do mail; nothing to check.
+    result = collect_dane("x.example", FakeDnsClient(), [".", ""])
+    assert result["hosts"] == []
+    assert result["present"] is False
 
 
 # ===========================================================================

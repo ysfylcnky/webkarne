@@ -75,6 +75,20 @@ def sample_payload() -> dict:
             "records": [{"preference": 10, "exchange": "mail.example.com.", "provider": "local"}],
             "providers": ["local"],
         },
+        "dane": {
+            "mx_hosts_checked": ["mail.example.com"],
+            "hosts": [
+                {
+                    "mx_host": "mail.example.com",
+                    "query": {"status": "ok"},
+                    "present": True,
+                    "records": [
+                        {"usage": 3, "selector": 1, "matching_type": 1, "raw": "3 1 1 abcd"}
+                    ],
+                }
+            ],
+            "present": True,
+        },
         "mta_sts": {
             "dns": {"query": {"status": "nxdomain"}, "records": [], "present": False},
             "policy": {"status": "error"},
@@ -103,6 +117,8 @@ def test_dns_records_projection():
     dkim = by_type["DKIM"][0]
     assert dkim["selector"] == "mail" and "key_bits=2048" in dkim["notes"]
     assert by_type["MX"][0]["notes"] == "provider=local"
+    assert by_type["TLSA"][0]["value"] == "3 1 1 abcd"
+    assert "mx_host=mail.example.com" in by_type["TLSA"][0]["notes"]
     assert "status=nxdomain" in by_type["MTA-STS"][0]["notes"]
     assert by_type["DS"][0]["value"] == "present"
 
@@ -123,7 +139,7 @@ def test_scan_status_partial_on_indicator_error():
 
 def test_format_summary_smoke():
     text = cli.format_summary(sample_payload(), stored=True, scan_id=7, status="ok")
-    assert "Domain" in text and "SPF" in text and "DMARC" in text
+    assert "Domain" in text and "SPF" in text and "DMARC" in text and "DANE" in text
     assert "scan #7" in text
 
 

@@ -22,7 +22,18 @@ _VALID_STATUSES = {"ok", "nxdomain", "noanswer", "timeout", "servfail", "error"}
 
 def test_collect_returns_full_structure():
     payload = de.collect("google.com")
-    for key in ("spf", "dmarc", "dkim", "mx", "mta_sts", "tls_rpt", "dnssec", "caa", "queries"):
+    for key in (
+        "spf",
+        "dmarc",
+        "dkim",
+        "mx",
+        "dane",
+        "mta_sts",
+        "tls_rpt",
+        "dnssec",
+        "caa",
+        "queries",
+    ):
         assert key in payload
     assert payload["domain"] == "google.com"
     assert payload["queries"], "expected at least one logged query"

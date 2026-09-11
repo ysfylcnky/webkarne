@@ -148,6 +148,18 @@ def _mx_line(mx: dict[str, Any]) -> str:
     return f"not found (query status={mx.get('query', {}).get('status')})"
 
 
+def _dane_line(dane: dict[str, Any]) -> str:
+    if "error" in dane:
+        return f"error: {dane['error']}"
+    hosts = dane.get("hosts", [])
+    if not hosts:
+        return "not checked (no MX hosts)"
+    present = [h["mx_host"] for h in hosts if h.get("present")]
+    if present:
+        return f"{len(present)}/{len(hosts)} MX host(s) with TLSA: {', '.join(present)}"
+    return f"0/{len(hosts)} MX host(s) with TLSA records"
+
+
 def _mta_sts_line(mta: dict[str, Any]) -> str:
     if "error" in mta:
         return f"error: {mta['error']}"
@@ -199,6 +211,7 @@ def format_summary(
         f"  DMARC    : {_dmarc_line(payload.get('dmarc', {}))}",
         f"  DKIM     : {_dkim_line(payload.get('dkim', {}))}",
         f"  MX       : {_mx_line(payload.get('mx', {}))}",
+        f"  DANE     : {_dane_line(payload.get('dane', {}))}",
         f"  MTA-STS  : {_mta_sts_line(payload.get('mta_sts', {}))}",
         f"  TLS-RPT  : {_tls_rpt_line(payload.get('tls_rpt', {}))}",
         f"  DNSSEC   : {_dnssec_line(payload.get('dnssec', {}))}",

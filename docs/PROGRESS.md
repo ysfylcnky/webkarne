@@ -85,3 +85,44 @@ Sprint 0 is done. Next is **Sprint 1 (October): the Türkiye sample frame** —
 `karne/frontier.py`, Tranco + `.tr` extraction, sector labelling. Batch scanning
 infrastructure is Sprint 2. Before batch scans, decide the multi-resolver /
 re-query policy for SERVFAIL.
+
+---
+
+## Sprint 0 · Session 2 — internet.nl parity: DANE + plan update
+
+Triggered by comparing Karne against internet.nl (website + email tests) on
+itu.edu.tr. internet.nl caught two things Karne was silent on: DANE and IPv6
+(plus STARTTLS). On the overlapping indicators (SPF/DMARC/DKIM, DNSSEC) the two
+tools agreed, which independently validates Karne's parsers.
+
+### Done
+
+- **Implemented DANE/TLSA** in `dns_email.py` (`parse_tlsa_record`,
+  `collect_dane`), wired into `collect()` (MX resolved first to get the host
+  list), the `dns_records` projection (rtype `TLSA`), and the CLI summary.
+  Bumped `COLLECTOR_VERSION` to `0.2.0`. This was already promised in PLAN.md's
+  dimension A table but got omitted from the Step 3 list.
+- Tests: `parse_tlsa_record` (valid/out-of-range), `collect_dane`
+  (present/absent hosts, null-MX skip), plus projection/summary assertions.
+  62 offline tests pass, 3 network pass, ruff clean.
+- Verified live: itu.edu.tr **0/2** MX hosts with TLSA (matches internet.nl's ❌
+  for DANE); internet.nl **3/3** MX hosts with TLSA (parser confirmed correct).
+- **Updated PLAN.md** with an "internet.nl ile kapsam denkliği (parity)"
+  subsection: every internet.nl indicator mapped to a Karne dimension + sprint,
+  and a STARTTLS scope-decision note added to section 4 (ethics).
+
+### Parity backlog (added to PLAN.md, assigned to sprints)
+
+- **IPv6 / AAAA** → Sprint 2 (passive: AAAA-record presence for web/MX/NS).
+- **HTTPS / TLS / certificate / HSTS**, **security headers** → Sprint 3 (dim. B).
+- **RPKI** → Sprint 5 (dim. D, infra).
+- **STARTTLS** → decision pending: needs a live SMTP connection (port 25), which
+  is in tension with K-07 (passive/browser-equivalent). Karne does NOT do it
+  until PLAN.md section 4 is updated; mail-transport security is meanwhile
+  covered DNS-side via MTA-STS + TLS-RPT + DANE.
+
+### Open question for the user
+
+Whether to allow a minimal, clearly-identified `EHLO`+`STARTTLS` capability
+probe (no data sent) as a gated active check, or stay strictly DNS-passive.
+This changes the K-07 boundary and is the user's ethics call.
