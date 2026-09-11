@@ -122,6 +122,30 @@ hangi boyut hazırsa onunla, ama Kasım'dan itibaren her ayın ilk haftası tara
 Kod ilk günden herkese açık (MIT veya Apache-2.0). Ölçüm verisi tez teslimine
 kadar kapalı, teslimle birlikte yayımlanır.
 
+### K-11 · DNS ölçümü sabit, doğrulayan resolver'larla yapılır
+
+*(Karar: 2026-09-11, Sprint 2. Sprint 0/1'den taşınan iki açık soruyu kapatır.)*
+
+Toplayıcılar sistem resolver'ı yerine `config/settings.toml`'da tanımlı **sabit,
+DNSSEC doğrulayan** public resolver'ları kullanır: varsayılan **1.1.1.1 birincil,
+8.8.8.8 yedek**. Gerekçe: Sprint 0'da ev yönlendiricisinin resolver'ı DNSSEC AD
+bayrağını doğrulamadığı için imzalı alan adları (ör. internet.nl) yanlışlıkla
+"doğrulanmadı" göründü; ayrıca tek resolver bazı SERVFAIL'leri maskeleyebiliyor
+(turkiye.gov.tr). Sabit resolver seti ölçümü **tekrar üretilebilir** kılar ve
+DNSSEC gözlemini doğru yapar. AD bayrağı yine "resolver'ın görüşü" olarak
+işaretlenir (K-02: yorum değil gözlem).
+
+**SERVFAIL yeniden-sorgu politikası.** SERVFAIL alınan bir sorgu, kısa bir
+beklemeden sonra **bir kez** yeniden sorulur (resolver listesi birincil+yedeği
+birlikte içerdiği için yeniden sorgu her ikisini de yeniden dener). Sonuç yine
+SERVFAIL ise durum `requeried=true` notuyla kaydedilir. Bu, kesintili / tek-
+resolver kaynaklı SERVFAIL'i temizler ama kalıcı "ölçülemedi" durumunu (kural 6)
+olduğu gibi korur — SERVFAIL ile NXDOMAIN ayrı kalır. Timeout için ayrı ve mevcut
+bir yeniden-deneme mantığı (dns.retries) zaten var; bu politika ondan bağımsızdır.
+
+Tekil `scan` ve toplu `batch` aynı `DnsClient`'ı kullandığından bu karar her iki
+yolda da aynı ham veriyi üretir.
+
 ---
 
 ## 3. Ne ölçüyoruz

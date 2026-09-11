@@ -431,7 +431,108 @@ def test_client_maps_servfail():
     exc = dns.resolver.NoNameservers("All nameservers failed; server answered SERVFAIL")
     client, _ = _client_with(exc)
     # NoNameservers carrying SERVFAIL maps to servfail, not a generic error.
-    assert client.resolve("x.example", "TXT").status == "servfail"
+    # (Default servfail_requeries=1 spends one extra pass; the state persists.)
+    query = client.resolve("x.example", "TXT")
+    assert query.status == "servfail"
+
+
+# ---------------------------------------------------------------------------
+# SERVFAIL re-query policy (PLAN.md K-11)
+# ---------------------------------------------------------------------------
+
+
+class _FlakyResolver:
+    """Raises SERVFAIL ``fail_times`` times, then returns ``answer`` (or keeps failing)."""
+
+    def __init__(self, fail_times: int, answer=None) -> None:
+        self.fail_times = fail_times
+        self.answer = answer
+        self.calls = 0
+
+    def resolve(self, name, rtype, raise_on_no_answer=True):
+        self.calls += 1
+        if self.calls <= self.fail_times or self.answer is None:
+            raise dns.resolver.NoNameservers(
+                "All nameservers failed; server answered SERVFAIL"
+            )
+        return self.answer
+
+
+class _FakeRdata:
+    def __init__(self, text: str) -> None:
+        self._text = text
+
+    def to_text(self) -> str:
+        return self._text
+
+
+class _FakeAnswer:
+    """Minimal stand-in for a dnspython Answer (iterable + response.flags)."""
+
+    def __init__(self, texts: list[str], ad: bool = False) -> None:
+        self._rdatas = [_FakeRdata(t) for t in texts]
+
+        class _Resp:
+            flags = dns.flags.AD if ad else 0
+
+        self.response = _Resp()
+
+    def __iter__(self):
+        return iter(self._rdatas)
+
+
+def _servfail_client(requeries: int) -> DnsClient:
+    client = DnsClient(
+        {
+            "retries": 0,
+            "retry_backoff_seconds": 0,
+            "rate_per_second": 0,
+            "timeout_seconds": 0.1,
+            "lifetime_seconds": 0.1,
+            "servfail_requeries": requeries,
+        }
+    )
+    return client
+
+
+def test_servfail_requeries_once_then_persists():
+    client = _servfail_client(requeries=1)
+    fake = _FlakyResolver(fail_times=99)  # never recovers
+    client._resolver = fake
+    query = client.resolve("x.example", "TXT")
+    assert query.status == "servfail"
+    assert query.requeried is True  # one extra pass was spent
+    assert fake.calls == 2  # initial + one re-query
+
+
+def test_servfail_requery_recovers():
+    client = _servfail_client(requeries=1)
+    fake = _FlakyResolver(fail_times=1, answer=_FakeAnswer(["1.2.3.4"]))
+    client._resolver = fake
+    query = client.resolve("x.example", "A")
+    assert query.status == "ok"
+    assert query.answers == ["1.2.3.4"]
+    assert query.requeried is True  # recorded that a re-query happened
+    assert fake.calls == 2
+
+
+def test_servfail_requery_disabled():
+    client = _servfail_client(requeries=0)
+    fake = _FlakyResolver(fail_times=99)
+    client._resolver = fake
+    query = client.resolve("x.example", "TXT")
+    assert query.status == "servfail"
+    assert query.requeried is False
+    assert fake.calls == 1  # no extra pass
+
+
+def test_ok_query_not_flagged_requeried():
+    client = _servfail_client(requeries=1)
+    fake = _FlakyResolver(fail_times=0, answer=_FakeAnswer(["1.2.3.4"]))
+    client._resolver = fake
+    query = client.resolve("x.example", "A")  # A uses to_text(); TXT needs .strings
+    assert query.status == "ok"
+    assert query.requeried is False
 
 
 def test_client_never_raises_on_unexpected_error():

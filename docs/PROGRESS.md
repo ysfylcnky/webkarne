@@ -224,3 +224,130 @@ monthly cron starts this sprint. **Before batch scanning, decide the still-open
 resolver questions** carried from Sprint 0: validating / multi-resolver choice and
 the SERVFAIL re-query policy (turkiye.gov.tr and internet.nl showed why both
 matter). Also add IPv6/AAAA presence (parity backlog) in Sprint 2.
+
+---
+
+## Sprint 2 · Session 1 — batch scanning engine (COMPLETE)
+
+**Sprint goal (engine part) reached:** `karne batch` applies dimension A to the
+frame in parallel, rate-limited, resumably, and gently — writing each result
+through the same raw-write contract as `karne scan`. This session built the engine
+and validated it live on a small subset; the **full 14,766 run and the monthly
+cron were intentionally NOT started** (left for a dedicated run, per the plan).
+
+### Resolver decision (Step 1 — asked and confirmed, then coded → PLAN.md K-11)
+
+Two open questions carried from Sprint 0/1 were closed and written into PLAN.md as
+**K-11** before any code:
+
+- **Fixed, DNSSEC-validating resolvers** `1.1.1.1` (primary) + `8.8.8.8` (backup),
+  set in `config/settings.toml` (`resolvers`). Replaces the system resolver, which
+  in Sprint 0 mis-reported the DNSSEC AD flag (internet.nl) and could mask records
+  (turkiye.gov.tr). Project-wide (affects `scan` too); makes DNSSEC observation
+  correct and the measurement reproducible.
+- **SERVFAIL re-query policy:** on SERVFAIL, wait `retry_backoff_seconds` and
+  re-query once; a persisting SERVFAIL is recorded with `requeried=true`, kept
+  distinct from NXDOMAIN (rule 6). Independent of the existing timeout retries.
+
+Implemented as a small, marked addition to `DnsClient.resolve()` + a new
+`DnsQuery.requeried` field; **COLLECTOR_VERSION 0.2.0 → 0.3.0**. Single and batch
+scans share one `DnsClient`, so both produce identical raw data.
+
+### What was done (Steps 2–4)
+
+- **`karne/batch.py`** (new orchestrator, not a collector):
+  - **Scan round = `run_label`** (default current UTC month, e.g. `2026-11`; aligns
+    with K-09). Stored on every `scans` row → longitudinal series is
+    `GROUP BY run_label`; resume is unambiguous.
+  - **Resume:** `select_domains_to_scan` returns frame domains without an ok/partial
+    scan in this round; re-running the same label skips done domains. `store_scan`
+    (shared write contract) + `store_error_scan` (collector crash → scan-level
+    `error` row, no raw result, rule 6).
+  - **Parallel + gentle:** network in worker threads (`ThreadPoolExecutor`,
+    `[dns].concurrency`), **all DB writes on the main thread** (one connection,
+    serialized — stdlib sqlite3 stays single-threaded). Per-domain pacing via the
+    collector's own rate limiter. A per-domain crash does not stop the run.
+  - **Progress/summary:** periodic `[n/N] ok/partial/error/remaining` + a final
+    summary (completed/scope, skipped, first 20 failures).
+- **`karne/cli.py`:** new `karne batch` command (`--run-label`, `--sector`,
+  `--limit`, `--concurrency`, `--db`, `--settings`); progress to stderr with an
+  adaptive cadence. `scan`'s `_store`/`_scan_status` now delegate to `batch` so the
+  two paths write identically.
+- **`karne/storage.py`:** schema **v1 → v2** (`scans.run_label` + index) via an
+  additive, idempotent `_migrate` (`ALTER TABLE ADD COLUMN` on old DBs). New read
+  helpers: `select_domains_to_scan`, `count_done_domains`, `count_domains`,
+  `run_status_counts`. `models.Scan.run_label` added. No refactor of existing code.
+- **Tests:** `tests/test_batch.py` (16 offline) — resume (skip-done, error re-scanned,
+  per-label selection), sector/limit filters, end-to-end raw writes, partial/crash
+  paths, **concurrency actually capped** (max active ≤ limit), **deterministic
+  rate-limiter** (fake clock). Plus 4 SERVFAIL-requery tests in `test_dns_email.py`.
+  **117 offline pass** (was 97), 3 network deselected, ruff clean.
+
+### Live validation (Step 4)
+
+Migration verified on a copy of the real `data/karne.db`: 11 existing scans + 14,767
+domains preserved, `run_label` column/index added, idempotent, schema history v1+v2.
+
+Ran `karne batch --sector bank --limit 20` (18 bank domains, label `2026-09` =
+current month). Result: **18/18 ok**, 0 partial, 0 error; every scan has a
+`scan_results` row; **305 `dns_records`** rows written. Raw payloads confirm the
+resolver set used was exactly **(1.1.1.1, 8.8.8.8)**, and the SERVFAIL policy fired
+live (**6 re-queries; 4 persisted as `servfail`**, kept distinct — rule 6).
+Re-running the same round scanned **nothing** (18 already done) — resume works live.
+
+### Decisions made
+
+- **`run_label` as a first-class column**, not derived from `started_at`: makes the
+  longitudinal series and resume explicit and unambiguous (worth a v2 migration).
+- **"Done" = ok OR partial.** `partial` means the collector code raised (not a
+  network failure — those keep status `ok`); a re-run would not fix it, and the
+  monthly cadence re-scans anyway. `error`/`running`/absent → re-scanned.
+- **DB writes serialized on the main thread**, workers do only network I/O — the
+  simplest safe way to use stdlib sqlite3 with a thread pool.
+- **Politeness = per-domain rate limiter × bounded concurrency**, queries aimed at
+  public validating resolvers; one worker per domain keeps per-target load low.
+  (No global cross-domain rate limiter — a shared DnsClient would leak query logs
+  across domains; each domain gets its own client with a clean log.)
+
+### Operational plan for the full run (decided this session)
+
+- **Where.** The full 14,766 run does NOT go through Claude — `karne batch` is an
+  independent OS process; Claude usage is spent only on conversation turns, not on
+  the scan runtime, so Claude's session limit is irrelevant to the scan. Decision:
+  run it in the **user's own terminal** (later, production monthly rounds → the VPS,
+  Sprint 3). Resume makes interruption (sleep/network/reboot) safe: re-run the same
+  `--run-label` and it continues.
+- **How.** Single high-concurrency run, e.g.
+  `uv run karne batch --run-label <YYYY-MM> --concurrency 10`. Raising concurrency
+  is gentle — queries hit public resolvers and each domain still gets one paced
+  worker, so per-target load is unchanged; it mainly cuts wall time (est. ~6–16 h
+  at concurrency 4 → roughly a third at 10–12). Keep the machine awake.
+- **`--dry-run` added** to `karne batch`: prints scope / already-done / pending +
+  the per-status breakdown for the round and exits without scanning. For monitoring
+  a long or chunked run without touching the network. (2 CLI tests; 119 offline now.)
+
+### Known gaps / next steps
+
+- **Full frame run NOT started.** The 18-domain bank subset validated the engine.
+  The full 14,766 run is long and should be run deliberately (overnight); it resumes
+  safely. Per-domain wall time is non-trivial (bank subset of 18 took several minutes
+  at concurrency 4) because of DKIM's 16-selector sweep, MTA-STS HTTP, DANE per-MX
+  TLSA, and timeout/servfail backoffs — budget accordingly for 14,766.
+- **Scope is 14,767, not 14,766:** the leftover `internet.nl` (source=manual,
+  Sprint 0) is still in `domains` and will be scanned too. Harmless; noted in Sprint 1.
+- **Monthly cron (K-09) NOT set up** — deliberately deferred; must be discussed
+  before wiring. Engine + manual run are solid first. Validation used label
+  `2026-09` (current month); production monthly rounds begin per K-09.
+- **IPv6/AAAA (Step 5, optional) SKIPPED this session.** Parity backlog item; the
+  engine is complete without it. When added: hand-write expected output first, bump
+  COLLECTOR_VERSION, update the PLAN parity table (still ⏳ Sprint 2 there).
+- **First analysis notebook (Bulgu #1) NOT started** — better as its own session
+  after the full run produces data. Turns raw data into "Türkiye's email-security
+  report card".
+
+### Next session starting point
+
+Engine is done and validated. Options for next session: (1) kick off the **full
+14,766 run** (resumable) and then (2) build the **first analysis notebook**
+(Bulgu #1); (3) set up the **monthly cron** (needs a go/no-go discussion);
+(4) optionally add **IPv6/AAAA** parity to dimension A.

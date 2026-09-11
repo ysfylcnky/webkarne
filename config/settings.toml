@@ -12,7 +12,16 @@ retries = 2                  # extra attempts on timeout (on top of the first tr
 retry_backoff_seconds = 0.5  # base backoff between retries
 rate_per_second = 10.0       # polite throughput cap across the whole scan
 concurrency = 4              # max parallel DNS queries (e.g. the DKIM selector sweep)
-resolvers = []               # explicit resolver IPs; empty = system default resolver
+# Fixed, DNSSEC-validating resolvers (PLAN.md K-11): 1.1.1.1 primary, 8.8.8.8
+# backup. Chosen over the system resolver so the DNSSEC AD flag is observed
+# correctly and the measurement is reproducible. Empty ([]) falls back to the
+# system resolver.
+resolvers = ["1.1.1.1", "8.8.8.8"]
+# SERVFAIL policy (PLAN.md K-11): on SERVFAIL, wait retry_backoff_seconds and
+# re-query once (the resolver list holds primary+backup, so both are retried).
+# A persisting SERVFAIL is still recorded as "could not measure" (rule 6), flagged
+# requeried=true. 0 disables re-querying. Independent of the timeout `retries`.
+servfail_requeries = 1
 
 [http]
 # Single short GET for the MTA-STS well-known policy; failures are tolerated.

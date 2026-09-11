@@ -257,3 +257,63 @@ def test_frontier_requires_a_source(tmp_path):
     result = runner.invoke(cli.app, ["frontier", "--db", str(tmp_path / "k.db")])
     assert result.exit_code != 0
     assert "tranco-file" in result.output or "list-id" in result.output
+
+
+# ---------------------------------------------------------------------------
+# batch command (Sprint 2) — offline, collector monkeypatched
+# ---------------------------------------------------------------------------
+
+from karne.models import Domain  # noqa: E402
+
+
+def _seed_domains(db_path, domains):
+    conn = storage.connect(db_path)
+    storage.init_db(conn)
+    storage.add_domains(conn, [Domain(domain=d, source="frame") for d in domains])
+    conn.close()
+
+
+def test_batch_runs_and_stores(monkeypatch, tmp_path):
+    db_path = tmp_path / "karne.db"
+    _seed_domains(db_path, ["a.tr", "b.tr"])
+    monkeypatch.setattr(cli.dns_email, "load_settings", lambda *a, **k: {})
+    # Per-domain canned payload (the real collector is not called).
+    monkeypatch.setattr(
+        cli.dns_email,
+        "collect",
+        lambda domain, settings: {**sample_payload(), "domain": domain, "input_domain": domain},
+    )
+    result = runner.invoke(
+        cli.app,
+        ["batch", "--run-label", "2026-11", "--db", str(db_path), "--concurrency", "1"],
+    )
+    assert result.exit_code == 0, result.output
+    assert "ok=2" in result.output
+
+    conn = storage.connect(db_path)
+    for domain in ("a.tr", "b.tr"):
+        scan = storage.latest_scan_for_domain(conn, domain)
+        assert scan.status == "ok" and scan.run_label == "2026-11"
+    conn.close()
+
+
+def test_batch_dry_run_writes_nothing(monkeypatch, tmp_path):
+    db_path = tmp_path / "karne.db"
+    _seed_domains(db_path, ["a.tr", "b.tr"])
+    monkeypatch.setattr(cli.dns_email, "load_settings", lambda *a, **k: {})
+    # collect must never be called in a dry run.
+    monkeypatch.setattr(
+        cli.dns_email,
+        "collect",
+        lambda *a, **k: (_ for _ in ()).throw(AssertionError("collect must not run on --dry-run")),
+    )
+    result = runner.invoke(
+        cli.app, ["batch", "--dry-run", "--run-label", "2026-11", "--db", str(db_path)]
+    )
+    assert result.exit_code == 0, result.output
+    assert "Dry run: nothing scanned." in result.output
+    assert "2 to scan this pass" in result.output
+
+    conn = storage.connect(db_path)
+    assert conn.execute("SELECT COUNT(*) FROM scans").fetchone()[0] == 0  # nothing written
+    conn.close()

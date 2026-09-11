@@ -17,9 +17,9 @@ from typing import Any
 
 import typer
 
-from karne import __version__, frontier, storage
+from karne import batch, frontier, storage
 from karne.collectors import dns_email
-from karne.models import STATUS_OK, STATUS_PARTIAL, DnsRecord, Domain, Scan, ScanResult
+from karne.models import Domain
 
 app = typer.Typer(
     add_completion=False,
@@ -27,52 +27,18 @@ app = typer.Typer(
     no_args_is_help=True,
 )
 
-_INDICATORS = ("spf", "dmarc", "dkim", "mx", "mta_sts", "tls_rpt", "dnssec", "caa")
-
 
 def _scan_status(payload: dict[str, Any]) -> tuple[str, str | None]:
-    """Partial if any indicator crashed (has an 'error' key); otherwise ok.
-
-    Network failures (timeout/servfail/nxdomain) are normal measurement outcomes,
-    not scan errors - the scan still completed.
-    """
-    errored = [
-        name
-        for name in _INDICATORS
-        if isinstance(payload.get(name), dict) and "error" in payload[name]
-    ]
-    if not errored:
-        return STATUS_OK, None
-    detail = "; ".join(f"{name}: {payload[name]['error']}" for name in errored)
-    return STATUS_PARTIAL, detail
+    """Delegate to the shared status logic (kept as a thin CLI-local alias)."""
+    return batch.scan_status(payload)
 
 
 def _store(db_path: Path, payload: dict[str, Any], status: str, error: str | None) -> int:
+    """Persist a single ad-hoc scan (no run_label) via the shared write contract."""
     conn = storage.connect(db_path)
     try:
         storage.init_db(conn)
-        domain = storage.get_or_create_domain(conn, payload["domain"], source="manual")
-        scan_id = storage.insert_scan(
-            conn,
-            Scan(
-                domain_id=domain.id,
-                scanner_version=__version__,
-                config_hash=payload.get("config_hash"),
-            ),
-        )
-        storage.insert_scan_result(
-            conn,
-            ScanResult(scan_id=scan_id, collector=dns_email.COLLECTOR_NAME, payload=payload),
-        )
-        storage.insert_dns_records(
-            conn,
-            [
-                DnsRecord(scan_id=scan_id, **row)
-                for row in dns_email.dns_records_from_payload(payload)
-            ],
-        )
-        storage.finish_scan(conn, scan_id, status=status, error=error)
-        return scan_id
+        return batch.store_scan(conn, payload, status=status, error=error, run_label=None)
     finally:
         conn.close()
 
@@ -274,6 +240,96 @@ def scan(
 
 
 # ---------------------------------------------------------------------------
+# batch command (Sprint 2) — scan the whole frame, resumable, rate-limited
+# ---------------------------------------------------------------------------
+
+
+@app.command("batch")
+def batch_scan(
+    run_label: str = typer.Option(
+        "", "--run-label", help="Round label (default: current UTC month, e.g. 2026-11)."
+    ),
+    sector: str = typer.Option(
+        "", "--sector", help="Only scan domains in this sector (e.g. bank, university)."
+    ),
+    limit: int = typer.Option(
+        0, "--limit", help="Scan at most N pending domains (0 = no cap). Good for validation runs."
+    ),
+    concurrency: int = typer.Option(
+        0, "--concurrency", help="Override [dns].concurrency parallel domain scans (0 = config)."
+    ),
+    dry_run: bool = typer.Option(
+        False, "--dry-run", help="Show the plan (done / pending / status breakdown) and exit."
+    ),
+    db: Path = typer.Option(
+        storage.DEFAULT_DB_PATH, "--db", help="SQLite database path.", show_default=True
+    ),
+    settings_file: str = typer.Option(
+        "", "--settings", help="Path to a settings.toml (defaults to config/settings.toml)."
+    ),
+) -> None:
+    """Scan the frame (dimension A) in parallel, resumably, into a monthly round.
+
+    Applies the existing dns_email collector to every pending domain in the
+    ``domains`` table. Re-running the same ``--run-label`` resumes: already-completed
+    domains (ok/partial) are skipped. This never scores or judges (rule 1); it only
+    stores raw measurements, exactly like ``karne scan``.
+    """
+    settings = (
+        dns_email.load_settings(settings_file) if settings_file else dns_email.load_settings()
+    )
+    label = run_label or batch.default_run_label()
+    sector_filter = sector or None
+    limit_val = limit or None
+    conc = concurrency or None
+
+    conn = storage.connect(db)
+    try:
+        storage.init_db(conn)
+        pending = storage.select_domains_to_scan(conn, label, sector=sector_filter, limit=limit_val)
+        scope_total = storage.count_domains(conn, sector=sector_filter)
+        already = storage.count_done_domains(conn, label, sector=sector_filter)
+        typer.echo(
+            f"Round '{label}': {scope_total} domains in scope"
+            + (f" (sector={sector_filter})" if sector_filter else "")
+            + f", {already} already done, {len(pending)} to scan this pass."
+        )
+
+        if dry_run:
+            counts = storage.run_status_counts(conn, label, sector=sector_filter)
+            if counts:
+                breakdown = ", ".join(f"{k}={v}" for k, v in sorted(counts.items()))
+                typer.echo(f"Scans so far this round (by status): {breakdown}")
+            typer.echo("Dry run: nothing scanned.")
+            return
+
+        if not pending:
+            typer.echo("Nothing to scan. (Round already complete for this scope.)")
+            return
+
+        def _report(p: batch.BatchProgress) -> None:
+            typer.echo("  " + p.progress_line(), err=True)  # stderr: unbuffered, live
+
+        # Show progress often on small validation runs, sparsely on a full run.
+        every = max(1, min(50, len(pending) // 20))
+
+        progress = batch.run_batch(
+            conn,
+            settings,
+            run_label=label,
+            sector=sector_filter,
+            limit=limit_val,
+            concurrency=conc,
+            progress_cb=_report,
+            progress_every=every,
+        )
+        typer.echo("")
+        typer.echo(progress.summary())
+    finally:
+        conn.close()
+
+
+# ---------------------------------------------------------------------------
 # frontier command (Sprint 1) — build the Türkiye sample frame (list only)
 # ---------------------------------------------------------------------------
 
@@ -342,9 +398,7 @@ def frontier_build(  # noqa: PLR0913 (a few independent, optional knobs)
         ua = settings.get("http", {}).get("user_agent", "karne-frontier/0.1")
         dest = Path("data/tranco") / f"tranco_{list_id}{f'_top{top}' if top else '_full'}.csv"
         typer.echo(f"Downloading Tranco list {list_id} -> {dest} ...")
-        source_path = frontier.fetch_tranco_csv(
-            list_id, dest, top=top or None, user_agent=ua
-        )
+        source_path = frontier.fetch_tranco_csv(list_id, dest, top=top or None, user_agent=ua)
 
     rows = frontier.read_tranco_csv(source_path)
     entries = frontier.build_frame(rows, include_curated=not no_curated)

@@ -67,6 +67,7 @@ class Scan:
     config_hash: str | None = None  # hash of the scan config used (reproducibility)
     consent_state: str | None = None  # dimension C only; None for dimension A
     error: str | None = None  # failure detail when status is partial/error
+    run_label: str | None = None  # batch round label, e.g. "2026-11"; None for ad-hoc scans
     id: int | None = None
 
 

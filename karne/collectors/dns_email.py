@@ -41,7 +41,8 @@ import dns.flags
 import dns.resolver
 
 COLLECTOR_NAME = "dns_email"
-COLLECTOR_VERSION = "0.2.0"  # 0.2.0: added DANE/TLSA over MX hosts
+# 0.3.0: SERVFAIL re-query policy + DnsQuery.requeried flag (PLAN.md K-11).
+COLLECTOR_VERSION = "0.3.0"
 
 DEFAULT_SETTINGS_PATH = Path(__file__).resolve().parents[2] / "config" / "settings.toml"
 
@@ -92,6 +93,7 @@ class DnsQuery:
     answers: list[str] = field(default_factory=list)
     rcode: str | None = None
     authenticated: bool | None = None  # DNSSEC AD flag (resolver's view; best-effort)
+    requeried: bool = False  # a SERVFAIL triggered one extra query pass (K-11)
     error_detail: str | None = None
 
     def as_dict(self) -> dict[str, Any]:
@@ -147,6 +149,8 @@ class DnsClient:
         self.nameservers = list(self._resolver.nameservers)
         self._retries = int(dns_settings.get("retries", 2))
         self._backoff = float(dns_settings.get("retry_backoff_seconds", 0.5))
+        # SERVFAIL re-query passes (PLAN.md K-11); 0 disables re-querying.
+        self._servfail_requeries = int(dns_settings.get("servfail_requeries", 1))
         self._rate = _RateLimiter(float(dns_settings.get("rate_per_second", 10.0)))
         self._lock = threading.Lock()
         self.queries: list[DnsQuery] = []
@@ -159,7 +163,9 @@ class DnsClient:
     def resolve(self, name: str, rtype: str) -> DnsQuery:
         """Resolve one name/type, never raising: failures become a logged status."""
         queried_at = datetime.now(UTC).isoformat()
-        attempt = 0
+        attempt = 0  # timeout retries (independent of the SERVFAIL policy)
+        servfail_tries = 0  # SERVFAIL re-query passes already spent (K-11)
+        requeried = False  # set once a SERVFAIL has forced an extra pass
         while True:
             self._rate.acquire()
             try:
@@ -175,17 +181,32 @@ class DnsClient:
                         answers=_extract_answers(rtype, answer),
                         rcode="NOERROR",
                         authenticated=ad,
+                        requeried=requeried,
                     )
                 )
             except dns.resolver.NXDOMAIN:
                 return self._record(
                     DnsQuery(
-                        name, rtype, "nxdomain", queried_at, self.nameservers, rcode="NXDOMAIN"
+                        name,
+                        rtype,
+                        "nxdomain",
+                        queried_at,
+                        self.nameservers,
+                        rcode="NXDOMAIN",
+                        requeried=requeried,
                     )
                 )
             except dns.resolver.NoAnswer:
                 return self._record(
-                    DnsQuery(name, rtype, "noanswer", queried_at, self.nameservers, rcode="NOERROR")
+                    DnsQuery(
+                        name,
+                        rtype,
+                        "noanswer",
+                        queried_at,
+                        self.nameservers,
+                        rcode="NOERROR",
+                        requeried=requeried,
+                    )
                 )
             except dns.exception.Timeout as exc:
                 attempt += 1
@@ -200,18 +221,41 @@ class DnsClient:
                         queried_at,
                         self.nameservers,
                         error_detail=str(exc),
+                        requeried=requeried,
                     )
                 )
             except dns.resolver.NoNameservers as exc:
                 detail = str(exc)
                 status = "servfail" if "SERVFAIL" in detail.upper() else "error"
+                # K-11: a SERVFAIL gets one short-delayed re-query pass before it is
+                # recorded, cleaning up intermittent / single-resolver SERVFAILs while
+                # preserving a persistent "could not measure" state (rule 6).
+                if status == "servfail" and servfail_tries < self._servfail_requeries:
+                    servfail_tries += 1
+                    requeried = True
+                    time.sleep(self._backoff)
+                    continue
                 return self._record(
-                    DnsQuery(name, rtype, status, queried_at, self.nameservers, error_detail=detail)
+                    DnsQuery(
+                        name,
+                        rtype,
+                        status,
+                        queried_at,
+                        self.nameservers,
+                        error_detail=detail,
+                        requeried=requeried,
+                    )
                 )
             except dns.exception.DNSException as exc:
                 return self._record(
                     DnsQuery(
-                        name, rtype, "error", queried_at, self.nameservers, error_detail=str(exc)
+                        name,
+                        rtype,
+                        "error",
+                        queried_at,
+                        self.nameservers,
+                        error_detail=str(exc),
+                        requeried=requeried,
                     )
                 )
             except Exception as exc:  # last resort: one query must never crash the scan
@@ -223,6 +267,7 @@ class DnsClient:
                         queried_at,
                         self.nameservers,
                         error_detail=f"{type(exc).__name__}: {exc}",
+                        requeried=requeried,
                     )
                 )
 

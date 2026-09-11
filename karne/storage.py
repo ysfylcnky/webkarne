@@ -20,7 +20,8 @@ from pathlib import Path
 from karne.models import DnsRecord, Domain, Finding, Scan, ScanResult, Score
 
 # Bumped whenever the schema changes; recorded in the schema_version table.
-SCHEMA_VERSION = 1
+# v2 (Sprint 2): scans.run_label — the batch round a scan belongs to (PLAN.md K-09/K-11).
+SCHEMA_VERSION = 2
 
 DEFAULT_DB_PATH = Path("data/karne.db")
 
@@ -48,7 +49,8 @@ CREATE TABLE IF NOT EXISTS scans (
     config_hash     TEXT,
     consent_state   TEXT,              -- dimension C only; NULL otherwise
     status          TEXT NOT NULL,     -- running/ok/partial/error
-    error           TEXT               -- failure detail; NULL on success
+    error           TEXT,              -- failure detail; NULL on success
+    run_label       TEXT               -- batch round (e.g. "2026-11"); NULL for ad-hoc scans
 );
 
 -- Raw, untouchable collector output (rule 1, rule 5). One row per collector per scan.
@@ -177,11 +179,30 @@ def connect(db_path: str | Path = DEFAULT_DB_PATH) -> sqlite3.Connection:
     return conn
 
 
+def _table_columns(conn: sqlite3.Connection, table: str) -> set[str]:
+    return {row["name"] for row in conn.execute(f"PRAGMA table_info({table});")}
+
+
+def _migrate(conn: sqlite3.Connection) -> None:
+    """Additive, idempotent migrations for databases created by an older schema.
+
+    Only adds columns/indexes; never drops or rewrites data (rule 5). Safe to run
+    on every startup — each step is guarded by a presence check.
+    """
+    # v2: scans.run_label (batch round). Absent on v1 databases.
+    if "run_label" not in _table_columns(conn, "scans"):
+        conn.execute("ALTER TABLE scans ADD COLUMN run_label TEXT;")
+    conn.execute("CREATE INDEX IF NOT EXISTS idx_scans_run_label ON scans(run_label);")
+
+
 def init_db(conn: sqlite3.Connection) -> None:
-    """Create the schema if absent and record the schema version."""
+    """Create the schema if absent, apply additive migrations, record the version."""
     conn.executescript(_SCHEMA)
+    _migrate(conn)
+    # Record the current schema version if this database has not reached it yet.
     row = conn.execute("SELECT MAX(version) AS v FROM schema_version;").fetchone()
-    if row["v"] is None:
+    current = row["v"]
+    if current is None or current < SCHEMA_VERSION:
         conn.execute(
             "INSERT INTO schema_version (version, applied_at) VALUES (?, ?);",
             (SCHEMA_VERSION, _iso(utcnow())),
@@ -222,6 +243,7 @@ def _row_to_scan(row: sqlite3.Row) -> Scan:
         consent_state=row["consent_state"],
         status=row["status"],
         error=row["error"],
+        run_label=row["run_label"],
     )
 
 
@@ -351,7 +373,8 @@ def insert_scan(conn: sqlite3.Connection, scan: Scan) -> int:
         scan.started_at = utcnow()
     cur = conn.execute(
         "INSERT INTO scans (domain_id, started_at, finished_at, scanner_version, "
-        "config_hash, consent_state, status, error) VALUES (?, ?, ?, ?, ?, ?, ?, ?);",
+        "config_hash, consent_state, status, error, run_label) "
+        "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);",
         (
             scan.domain_id,
             _iso(scan.started_at),
@@ -361,6 +384,7 @@ def insert_scan(conn: sqlite3.Connection, scan: Scan) -> int:
             scan.consent_state,
             scan.status,
             scan.error,
+            scan.run_label,
         ),
     )
     conn.commit()
@@ -451,6 +475,98 @@ def get_domain(conn: sqlite3.Connection, domain: str) -> Domain | None:
     return _row_to_domain(row) if row is not None else None
 
 
+# Statuses that mark a domain "already done" within a run (resume skips these).
+# ok = every collector ran; partial = a collector raised (a code-path failure that
+# a re-run would not fix). running/error/absent -> the domain is (re)scanned.
+DONE_STATUSES = ("ok", "partial")
+
+
+def select_domains_to_scan(
+    conn: sqlite3.Connection,
+    run_label: str,
+    *,
+    sector: str | None = None,
+    limit: int | None = None,
+    done_statuses: tuple[str, ...] = DONE_STATUSES,
+) -> list[Domain]:
+    """Domains still pending for ``run_label`` (resume: PLAN.md K-09).
+
+    Returns frame domains that do NOT yet have a scan in this run whose status is
+    one of ``done_statuses``. Optionally filtered by ``sector`` and capped by
+    ``limit``. Deterministic order (by id) so a resumed run is reproducible.
+    """
+    placeholders = ",".join("?" for _ in done_statuses)
+    params: list[object] = [run_label, *done_statuses]
+    sql = (
+        "SELECT * FROM domains d WHERE NOT EXISTS ("
+        "  SELECT 1 FROM scans s WHERE s.domain_id = d.id "
+        f"  AND s.run_label = ? AND s.status IN ({placeholders})"
+        ")"
+    )
+    if sector is not None:
+        sql += " AND d.sector = ?"
+        params.append(sector)
+    sql += " ORDER BY d.id"
+    if limit is not None:
+        sql += " LIMIT ?"
+        params.append(limit)
+    rows = conn.execute(sql, params).fetchall()
+    return [_row_to_domain(r) for r in rows]
+
+
+def run_status_counts(
+    conn: sqlite3.Connection, run_label: str, *, sector: str | None = None
+) -> dict[str, int]:
+    """Count scans in ``run_label`` grouped by status (progress/resume summary).
+
+    Counts scan rows, not domains; a domain re-scanned within a run contributes
+    more than once. For the "how many domains are done" figure use
+    :func:`count_done_domains`.
+    """
+    sql = (
+        "SELECT s.status AS status, COUNT(*) AS n FROM scans s "
+        "JOIN domains d ON d.id = s.domain_id WHERE s.run_label = ?"
+    )
+    params: list[object] = [run_label]
+    if sector is not None:
+        sql += " AND d.sector = ?"
+        params.append(sector)
+    sql += " GROUP BY s.status;"
+    return {row["status"]: row["n"] for row in conn.execute(sql, params)}
+
+
+def count_done_domains(
+    conn: sqlite3.Connection,
+    run_label: str,
+    *,
+    sector: str | None = None,
+    done_statuses: tuple[str, ...] = DONE_STATUSES,
+) -> int:
+    """Distinct domains already completed in ``run_label`` (for resume reporting)."""
+    placeholders = ",".join("?" for _ in done_statuses)
+    sql = (
+        "SELECT COUNT(DISTINCT s.domain_id) AS n FROM scans s "
+        "JOIN domains d ON d.id = s.domain_id "
+        f"WHERE s.run_label = ? AND s.status IN ({placeholders})"
+    )
+    params: list[object] = [run_label, *done_statuses]
+    if sector is not None:
+        sql += " AND d.sector = ?"
+        params.append(sector)
+    row = conn.execute(sql, params).fetchone()
+    return row["n"]
+
+
+def count_domains(conn: sqlite3.Connection, *, sector: str | None = None) -> int:
+    """Total frame domains (optionally filtered by sector)."""
+    sql = "SELECT COUNT(*) AS n FROM domains"
+    params: list[object] = []
+    if sector is not None:
+        sql += " WHERE sector = ?"
+        params.append(sector)
+    return conn.execute(sql, params).fetchone()["n"]
+
+
 def domain_sector_counts(conn: sqlite3.Connection) -> dict[str, int]:
     """Count stored domains grouped by sector (frame verification helper)."""
     rows = conn.execute(
@@ -508,3 +624,62 @@ def get_findings(conn: sqlite3.Connection, scan_id: int) -> list[Finding]:
         "SELECT * FROM findings WHERE scan_id = ? ORDER BY id;", (scan_id,)
     ).fetchall()
     return [_row_to_finding(r) for r in rows]
+
+
+def select_scans_for_scoring(
+    conn: sqlite3.Connection,
+    *,
+    run_label: str | None = None,
+    only_unscored: bool = False,
+    dimension: str = "email",
+    collector: str = "dns_email",
+) -> list[int]:
+    """Scan ids that have a raw ``collector`` payload and can be (re)scored.
+
+    Filters (combinable): ``run_label`` restricts to one batch round;
+    ``only_unscored`` restricts to scans with no ``scores`` row for ``dimension``.
+    Scores/findings are derived (K-02), so re-scoring an already-scored scan is
+    safe; ``only_unscored`` is for incremental runs. Ordered by scan id.
+    """
+    sql = [
+        "SELECT s.id AS id FROM scans s",
+        "JOIN scan_results sr ON sr.scan_id = s.id AND sr.collector = ?",
+    ]
+    params: list[object] = [collector]
+    where: list[str] = []
+    if run_label is not None:
+        where.append("s.run_label = ?")
+        params.append(run_label)
+    if only_unscored:
+        where.append(
+            "NOT EXISTS (SELECT 1 FROM scores sc WHERE sc.scan_id = s.id AND sc.dimension = ?)"
+        )
+        params.append(dimension)
+    if where:
+        sql.append("WHERE " + " AND ".join(where))
+    sql.append("ORDER BY s.id;")
+    rows = conn.execute("\n".join(sql), params).fetchall()
+    return [row["id"] for row in rows]
+
+
+def delete_scoring_for_dimension(
+    conn: sqlite3.Connection, scan_id: int, dimension: str, code_prefix: str
+) -> tuple[int, int]:
+    """Remove a scan's derived rows for one dimension so it can be re-scored.
+
+    Deletes the ``scores`` row(s) for ``dimension`` and the ``findings`` whose
+    ``code`` starts with ``code_prefix`` (finding codes are dimension-prefixed,
+    e.g. ``EMAIL_``), leaving other dimensions' derived rows intact. Never touches
+    ``scan_results`` (rule 5 / K-02). Returns (scores_deleted, findings_deleted).
+    """
+    cur = conn.execute(
+        "DELETE FROM scores WHERE scan_id = ? AND dimension = ?;",
+        (scan_id, dimension),
+    )
+    n_scores = cur.rowcount
+    cur = conn.execute(
+        "DELETE FROM findings WHERE scan_id = ? AND code LIKE ?;",
+        (scan_id, code_prefix + "%"),
+    )
+    n_findings = cur.rowcount
+    return n_scores, n_findings
