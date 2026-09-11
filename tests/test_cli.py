@@ -191,3 +191,69 @@ def test_scan_json_output(monkeypatch):
     parsed = json.loads(result.output)
     assert parsed["domain"] == "example.com"
     assert "queries" in parsed
+
+
+# ---------------------------------------------------------------------------
+# frontier command (Sprint 1) — offline, using a fixture CSV (no download)
+# ---------------------------------------------------------------------------
+
+MINI_TRANCO = (
+    "1,trendyol.com\n"       # curated ecommerce, also in Tranco
+    "2,google.com\n"         # non-Turkish -> excluded
+    "3,itu.edu.tr\n"         # university via TLD rule
+    "4,garantibbva.com.tr\n" # bank via seed
+    "5,randomcompany.com.tr\n"  # unknown .tr
+)
+
+
+def _write_mini(tmp_path):
+    path = tmp_path / "mini.csv"
+    path.write_text(MINI_TRANCO, encoding="utf-8")
+    return path
+
+
+def test_frontier_builds_and_stores(tmp_path):
+    csv_path = _write_mini(tmp_path)
+    db_path = tmp_path / "karne.db"
+    result = runner.invoke(
+        cli.app,
+        ["frontier", "--tranco-file", str(csv_path), "--db", str(db_path),
+         "--manifest-dir", str(tmp_path / "manifests")],
+    )
+    assert result.exit_code == 0, result.output
+    assert "added" in result.output
+
+    conn = storage.connect(db_path)
+    # The three .tr rows plus the curated set are stored; google.com is excluded.
+    assert storage.get_domain(conn, "itu.edu.tr").sector == "university"
+    assert storage.get_domain(conn, "garantibbva.com.tr").sector == "bank"
+    assert storage.get_domain(conn, "mumifashion.com").source == "curated_tr_com"
+    assert storage.get_domain(conn, "google.com") is None
+    conn.close()
+
+    # A manifest JSON was written (reproducibility metadata).
+    manifests = list((tmp_path / "manifests").glob("frame_*.json"))
+    assert len(manifests) == 1
+    man = json.loads(manifests[0].read_text(encoding="utf-8"))
+    assert man["frontier_version"] and man["total_domains"] >= 3
+
+
+def test_frontier_no_store(tmp_path):
+    csv_path = _write_mini(tmp_path)
+    db_path = tmp_path / "karne.db"
+    result = runner.invoke(
+        cli.app,
+        ["frontier", "--tranco-file", str(csv_path), "--no-store", "--db", str(db_path),
+         "--manifest-dir", str(tmp_path / "manifests")],
+    )
+    assert result.exit_code == 0
+    assert "no (--no-store)" in result.output
+    assert not db_path.exists()  # nothing written to the DB
+    # Manifest is still produced even without storing.
+    assert list((tmp_path / "manifests").glob("frame_*.json"))
+
+
+def test_frontier_requires_a_source(tmp_path):
+    result = runner.invoke(cli.app, ["frontier", "--db", str(tmp_path / "k.db")])
+    assert result.exit_code != 0
+    assert "tranco-file" in result.output or "list-id" in result.output

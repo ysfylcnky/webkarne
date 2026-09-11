@@ -307,6 +307,44 @@ def get_or_create_domain(
     )
 
 
+def add_domains(conn: sqlite3.Connection, domains: Iterable[Domain]) -> dict[str, int]:
+    """Bulk-upsert frame domains in one transaction. Returns add/update counts.
+
+    Sprint 1 helper for ``karne frontier``. New domains are inserted; for domains
+    that already exist, the frame metadata (``source`` / ``sector`` /
+    ``is_public_body``) is refreshed while ``added_at`` is preserved. This is the
+    frame's working index, not raw measurement data — reproducibility of a given
+    frame is captured by its per-run manifest, not by freezing these rows (rule 5
+    protects raw ``scan_results``, which this never touches).
+    """
+    existing = {row["domain"] for row in conn.execute("SELECT domain FROM domains;")}
+    to_insert: list[tuple] = []
+    to_update: list[tuple] = []
+    now = _iso(utcnow())
+    seen: set[str] = set()
+    for d in domains:
+        if d.domain in seen:
+            continue  # de-dup within the batch (last-writer would otherwise conflict)
+        seen.add(d.domain)
+        if d.domain in existing:
+            to_update.append((d.source, d.sector, _to_int(d.is_public_body), d.domain))
+        else:
+            to_insert.append((d.domain, d.source, d.sector, _to_int(d.is_public_body), now))
+    if to_insert:
+        conn.executemany(
+            "INSERT INTO domains (domain, source, sector, is_public_body, added_at) "
+            "VALUES (?, ?, ?, ?, ?);",
+            to_insert,
+        )
+    if to_update:
+        conn.executemany(
+            "UPDATE domains SET source = ?, sector = ?, is_public_body = ? WHERE domain = ?;",
+            to_update,
+        )
+    conn.commit()
+    return {"added": len(to_insert), "updated": len(to_update), "total": len(seen)}
+
+
 def insert_scan(conn: sqlite3.Connection, scan: Scan) -> int:
     """Insert a scan row and return its id. Defaults ``started_at`` to now."""
     if scan.started_at is None:
@@ -411,6 +449,15 @@ def insert_finding(conn: sqlite3.Connection, finding: Finding) -> int:
 def get_domain(conn: sqlite3.Connection, domain: str) -> Domain | None:
     row = conn.execute("SELECT * FROM domains WHERE domain = ?;", (domain,)).fetchone()
     return _row_to_domain(row) if row is not None else None
+
+
+def domain_sector_counts(conn: sqlite3.Connection) -> dict[str, int]:
+    """Count stored domains grouped by sector (frame verification helper)."""
+    rows = conn.execute(
+        "SELECT COALESCE(sector, 'unknown') AS sector, COUNT(*) AS n "
+        "FROM domains GROUP BY sector ORDER BY n DESC;"
+    ).fetchall()
+    return {row["sector"]: row["n"] for row in rows}
 
 
 def get_scan(conn: sqlite3.Connection, scan_id: int) -> Scan | None:

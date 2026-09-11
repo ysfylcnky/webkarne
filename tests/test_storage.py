@@ -11,6 +11,7 @@ from karne.models import (
     STATUS_OK,
     STATUS_RUNNING,
     DnsRecord,
+    Domain,
     Finding,
     Scan,
     ScanResult,
@@ -44,6 +45,65 @@ def conn(tmp_path):
 def _table_names(conn: sqlite3.Connection) -> set[str]:
     rows = conn.execute("SELECT name FROM sqlite_master WHERE type = 'table';").fetchall()
     return {r["name"] for r in rows}
+
+
+# ---------------------------------------------------------------------------
+# Frame domains (Sprint 1): bulk upsert + sector counts
+# ---------------------------------------------------------------------------
+
+
+def test_add_domains_inserts_new(conn):
+    result = storage.add_domains(
+        conn,
+        [
+            Domain("itu.edu.tr", source="tranco", sector="university", is_public_body=True),
+            Domain("mumifashion.com", source="curated_tr_com", sector="ecommerce",
+                   is_public_body=False),
+        ],
+    )
+    assert result == {"added": 2, "updated": 0, "total": 2}
+    row = storage.get_domain(conn, "itu.edu.tr")
+    assert row.sector == "university" and row.is_public_body is True
+    assert row.added_at is not None
+
+
+def test_add_domains_refreshes_existing_but_keeps_added_at(conn):
+    storage.add_domains(conn, [Domain("x.com.tr", source="tranco", sector="unknown")])
+    first = storage.get_domain(conn, "x.com.tr")
+    # Re-run with a refined label: metadata updates, added_at is preserved.
+    result = storage.add_domains(
+        conn, [Domain("x.com.tr", source="tranco", sector="bank", is_public_body=False)]
+    )
+    assert result == {"added": 0, "updated": 1, "total": 1}
+    row = storage.get_domain(conn, "x.com.tr")
+    assert row.sector == "bank"
+    assert row.added_at == first.added_at
+
+
+def test_add_domains_dedups_within_batch(conn):
+    result = storage.add_domains(
+        conn,
+        [
+            Domain("dup.edu.tr", source="tranco", sector="university"),
+            Domain("dup.edu.tr", source="tranco", sector="university"),
+        ],
+    )
+    assert result["added"] == 1
+    assert conn.execute("SELECT COUNT(*) FROM domains").fetchone()[0] == 1
+
+
+def test_domain_sector_counts(conn):
+    storage.add_domains(
+        conn,
+        [
+            Domain("a.edu.tr", sector="university"),
+            Domain("b.edu.tr", sector="university"),
+            Domain("c.gov.tr", sector="public_body"),
+        ],
+    )
+    counts = storage.domain_sector_counts(conn)
+    assert counts["university"] == 2
+    assert counts["public_body"] == 1
 
 
 # ---------------------------------------------------------------------------

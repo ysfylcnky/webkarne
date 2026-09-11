@@ -11,14 +11,15 @@ The summary presents observed facts only; it assigns no scores or grades
 from __future__ import annotations
 
 import json
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
 import typer
 
-from karne import __version__, storage
+from karne import __version__, frontier, storage
 from karne.collectors import dns_email
-from karne.models import STATUS_OK, STATUS_PARTIAL, DnsRecord, Scan, ScanResult
+from karne.models import STATUS_OK, STATUS_PARTIAL, DnsRecord, Domain, Scan, ScanResult
 
 app = typer.Typer(
     add_completion=False,
@@ -270,6 +271,131 @@ def scan(
         typer.echo(json.dumps(payload, indent=2, ensure_ascii=False))
     else:
         typer.echo(format_summary(payload, stored=not no_store, scan_id=scan_id, status=status))
+
+
+# ---------------------------------------------------------------------------
+# frontier command (Sprint 1) — build the Türkiye sample frame (list only)
+# ---------------------------------------------------------------------------
+
+
+def _frame_entry_to_domain(entry: frontier.FrameEntry) -> Domain:
+    return Domain(
+        domain=entry.domain,
+        source=entry.source,
+        sector=entry.sector,
+        is_public_body=entry.is_public_body,
+    )
+
+
+def _write_manifest(manifest: dict, out_dir: Path, list_id: str | None) -> Path:
+    """Write the frame manifest as timestamped JSON (never overwrites a prior run)."""
+    out_dir.mkdir(parents=True, exist_ok=True)
+    stamp = datetime.now(UTC).strftime("%Y%m%dT%H%M%SZ")
+    name = f"frame_{list_id or 'local'}_{stamp}.json"
+    path = out_dir / name
+    path.write_text(json.dumps(manifest, indent=2, ensure_ascii=False), encoding="utf-8")
+    return path
+
+
+@app.command("frontier")
+def frontier_build(  # noqa: PLR0913 (a few independent, optional knobs)
+    list_id: str = typer.Option(
+        "", "--list-id", help="Tranco permanent list id (tranco-list.eu/list/<ID>)."
+    ),
+    tranco_file: str = typer.Option(
+        "", "--tranco-file", help="Use an already-downloaded Tranco CSV instead of fetching."
+    ),
+    top: int = typer.Option(
+        0, "--top", help="Download only the top N ranks (0 = full); ignored with --tranco-file."
+    ),
+    no_curated: bool = typer.Option(
+        False, "--no-curated", help="Exclude the curated Turkish generic-TLD (.com) set."
+    ),
+    no_store: bool = typer.Option(
+        False, "--no-store", help="Build and report only; do not write the domains table."
+    ),
+    db: Path = typer.Option(
+        storage.DEFAULT_DB_PATH, "--db", help="SQLite database path.", show_default=True
+    ),
+    manifest_dir: Path = typer.Option(
+        Path("data/frontier"), "--manifest-dir", help="Where to write the run manifest JSON."
+    ),
+) -> None:
+    """Build the Türkiye sample frame and write it to the domains table (list only).
+
+    This produces a domain LIST; it does not scan any domain (that is Sprint 2). A
+    source is required: either an already-downloaded ``--tranco-file`` or a
+    ``--list-id`` to fetch. The permanent list id is recorded in the run manifest
+    for reproducibility.
+    """
+    if not tranco_file and not list_id:
+        raise typer.BadParameter("provide --tranco-file or --list-id")
+
+    if tranco_file:
+        source_path = Path(tranco_file)
+        source_url = None
+        if not source_path.exists():
+            raise typer.BadParameter(f"tranco file not found: {source_path}")
+    else:
+        source_url = frontier.tranco_download_url(list_id, top=top or None)
+        settings = dns_email.load_settings()
+        ua = settings.get("http", {}).get("user_agent", "karne-frontier/0.1")
+        dest = Path("data/tranco") / f"tranco_{list_id}{f'_top{top}' if top else '_full'}.csv"
+        typer.echo(f"Downloading Tranco list {list_id} -> {dest} ...")
+        source_path = frontier.fetch_tranco_csv(
+            list_id, dest, top=top or None, user_agent=ua
+        )
+
+    rows = frontier.read_tranco_csv(source_path)
+    entries = frontier.build_frame(rows, include_curated=not no_curated)
+    curated_note = "curated_tr_com" if not no_curated else "no curated set"
+    manifest = frontier.frame_manifest(
+        entries,
+        tranco_list_id=list_id or None,
+        tranco_source_url=source_url,
+        cctld_source=f"Tranco .tr subset + {curated_note}",
+    )
+
+    store_result: dict[str, int] | None = None
+    if not no_store:
+        conn = storage.connect(db)
+        try:
+            storage.init_db(conn)
+            store_result = storage.add_domains(conn, [_frame_entry_to_domain(e) for e in entries])
+        finally:
+            conn.close()
+
+    manifest_path = _write_manifest(manifest, manifest_dir, list_id or None)
+    typer.echo(_format_frontier_summary(manifest, store_result, manifest_path, source_path))
+
+
+def _format_frontier_summary(
+    manifest: dict, store: dict | None, manifest_path: Path, source_path: Path
+) -> str:
+    lines = [
+        f"Frame     : {manifest['total_domains']} domains "
+        f"(frontier {manifest['frontier_version']})",
+        f"Source    : {source_path}  (list id: {manifest['tranco_list_id'] or '-'})",
+        "",
+        "  Sectors:",
+    ]
+    for sector, n in sorted(manifest["sector_counts"].items(), key=lambda kv: -kv[1]):
+        lines.append(f"    {sector:14}: {n}")
+    lines.append(f"  is_public_body : {manifest['is_public_body_count']}")
+    lines.append("")
+    lines.append("  By source:")
+    for src, n in sorted(manifest["source_counts"].items()):
+        lines.append(f"    {src:16}: {n}")
+    lines.append("  By method:")
+    for method, n in sorted(manifest["method_counts"].items()):
+        lines.append(f"    {method:16}: {n}")
+    lines.append("")
+    if store is not None:
+        lines.append(f"Stored    : {store['added']} added, {store['updated']} updated")
+    else:
+        lines.append("Stored    : no (--no-store)")
+    lines.append(f"Manifest  : {manifest_path}")
+    return "\n".join(lines)
 
 
 if __name__ == "__main__":

@@ -133,3 +133,94 @@ Two documented limitations were confirmed live and are worth remembering:
   router) does not validate DNSSEC. For accurate DNSSEC measurement the scan must
   use a validating resolver (e.g. 1.1.1.1 / 8.8.8.8). Fold this into the Sprint 2
   resolver decision alongside the SERVFAIL re-query policy.
+
+---
+
+## Sprint 1 · Session 1 — the Türkiye sample frame (COMPLETE)
+
+**Sprint goal reached:** a reproducible, sector-labelled sample frame of **14,766
+domains** written to the `domains` table, produced from the Tranco `.tr` subset +
+a curated Turkish `.com` set. This is a LIST producer, not a collector — no domain
+was scanned (that is Sprint 2).
+
+### Method decisions (asked and confirmed this session)
+
+- **Tranco access:** stdlib `urllib` CSV download (no new dependency). The
+  **permanent list id** is recorded in the frame manifest, never hard-coded, so
+  the same id reproduces the frame. (Confirmed over the `tranco` PyPI package.)
+- **"Turkish site" definition (two-tier):** core universe = every `.tr` domain
+  (exact, no judgement); expansion set = a curated, hand-asserted set of Turkish
+  generic-TLD sites (`source=curated_tr_com`), never inferred. Generic-TLD domains
+  not on the curated list are **excluded** (not labelled "not Turkish"). Written up
+  and defended in `docs/frontier.md`. (Rejected an automatic IP/heuristic expansion
+  as indefensible for now.)
+
+### What was done (Steps 1–4)
+
+- **Step 1 — `karne/frontier.py`** (pure, no-I/O core + thin download boundary):
+  `.tr` detection (`is_dot_tr`, `tr_second_level`); `classify_sector()` with
+  precedence **seed_list → tld_rule → keyword → unknown**, each carrying a
+  provenance (`method` + `evidence`); `.tr` TLD rules (edu/gov/bel/pol/tsk →
+  sector + is_public_body); curated per-sector seed lists; a tiny high-precision
+  keyword set (`belediye`, `hastane`); Tranco parsing; `build_frame`,
+  `sector_counts`, `method_counts`, `frame_manifest`; and passive list I/O
+  (`tranco_download_url`, `fetch_tranco_csv`, `read_tranco_csv`).
+  `docs/frontier.md` written (English per K-08).
+- **Step 2 — 28 offline tests** (`tests/test_frontier.py`): fixture-based, no
+  network; the five known targets and the honest "unknown" case asserted with
+  hand-written expected output.
+- **Step 3 — storage + CLI wiring.** `storage.add_domains()` (bulk upsert in one
+  transaction: inserts new, refreshes frame metadata on existing, preserves
+  `added_at`, de-dups the batch) and `storage.domain_sector_counts()`. New CLI
+  command `karne frontier` (`--list-id` / `--tranco-file`, `--top`, `--no-curated`,
+  `--no-store`, `--db`, `--manifest-dir`). 7 new tests (4 storage + 3 CLI).
+- **Step 4 — built & verified on real data.** Ran `karne frontier --list-id Y8YQG`.
+  14,766 domains (14,742 `.tr` from Tranco + 24 curated). All five targets land
+  correctly: itu.edu.tr / istanbul.edu.tr → university (pub=1), garantibbva.com.tr
+  → bank, turkiye.gov.tr → public_body (pub=1), mumifashion.com → ecommerce
+  (curated). Manifest written to `data/frontier/frame_Y8YQG_<ts>.json`.
+
+Tests: **97 offline pass**, 3 network deselected, ruff clean.
+
+### Sector breakdown (frame Y8YQG, frontier 0.1.0)
+
+unknown 13,665 · public_body 474 · university 287 · municipality 261 · hospital 30
+· bank 18 · ecommerce 17 · media 14. `is_public_body` = 1,022. By method: none
+13,665 · tld_rule 1,018 · seed_list 56 · keyword 27.
+
+### Decisions made
+
+- **No schema change for provenance.** The `domains` table stores only
+  `sector` / `is_public_body` / `source`; per-row `method` is not a column. It is
+  re-derivable by re-running the versioned pure `classify_sector`, and recorded at
+  method+count granularity in the manifest. (Kept the sprint's "no refactor" rule.)
+- **`add_domains` refreshes existing rows' frame metadata** (does not freeze them).
+  Rule 5 protects raw `scan_results`, which this never touches; frame
+  reproducibility lives in the per-run manifest. `added_at` is preserved.
+- **is_public_body is a TLD/seed-criterion signal**, not a per-institution legal
+  determination (edu.tr marks both state and foundation universities). Documented.
+
+### Known gaps / limitations
+
+- **Sector coverage is partial by design.** ~92.5% of the frame is `unknown`:
+  seed lists cover a defensible subset and `.tr` TLD rules cover edu/gov/bel/pol/tsk
+  broadly, but the large `com.tr` commercial mass is mostly unlabelled. Honest
+  sampling limitation, recorded in the manifest — not a defect. Growing the seed
+  lists (or moving them to a versioned `config/` file) is a future refinement.
+- **Expansion set is small (24 curated `.com`).** Turkish institutions on generic
+  TLDs are under-represented; the curated set can grow in later sessions.
+- **Leftover non-frame domain kept:** `internet.nl` (source=manual, from Sprint 0)
+  remains in `domains` — the frame builder never deletes rows. Correct behaviour;
+  it is simply not part of the Türkiye frame.
+- **Ethics board:** no code action; if the department requires approval, the
+  application is due this month (PLAN.md section 4). Status unchanged this session.
+
+### Next session starting point
+
+Sprint 1 is done. Next is **Sprint 2 (November): first country-wide scan** — batch
+scanning infrastructure (parallelism, rate limit, error handling, resumable scans),
+applying dimension A to the whole frame, and the first analysis notebook. The
+monthly cron starts this sprint. **Before batch scanning, decide the still-open
+resolver questions** carried from Sprint 0: validating / multi-resolver choice and
+the SERVFAIL re-query policy (turkiye.gov.tr and internet.nl showed why both
+matter). Also add IPv6/AAAA presence (parity backlog) in Sprint 2.
