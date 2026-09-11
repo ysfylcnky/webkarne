@@ -116,13 +116,7 @@ tools agreed, which independently validates Karne's parsers.
 - **IPv6 / AAAA** → Sprint 2 (passive: AAAA-record presence for web/MX/NS).
 - **HTTPS / TLS / certificate / HSTS**, **security headers** → Sprint 3 (dim. B).
 - **RPKI** → Sprint 5 (dim. D, infra).
-- **STARTTLS** → decision pending: needs a live SMTP connection (port 25), which
-  is in tension with K-07 (passive/browser-equivalent). Karne does NOT do it
-  until PLAN.md section 4 is updated; mail-transport security is meanwhile
-  covered DNS-side via MTA-STS + TLS-RPT + DANE.
-
-### Open question for the user
-
-Whether to allow a minimal, clearly-identified `EHLO`+`STARTTLS` capability
-probe (no data sent) as a gated active check, or stay strictly DNS-passive.
-This changes the K-07 boundary and is the user's ethics call.
+- **STARTTLS** → **decided (2026-09-11): stay DNS-passive.** No live SMTP probe;
+  K-07 preserved. Mail-transport security is covered DNS-side via MTA-STS +
+  TLS-RPT + DANE. Revisitable in Sprint 3 (transport layer) if needed. PLAN.md
+  section 4 records the decision.

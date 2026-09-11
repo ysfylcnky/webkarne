@@ -206,7 +206,7 @@ bu yüzden yüzde/not değil **göstergeler** kıyaslanır.
 | DNSSEC | A boyutu | ✅ Sprint 0 (alan adının DS'i; MX host imzası eklenecek) |
 | DANE / TLSA | A boyutu | ✅ Sprint 0 (Adım 3'te atlanmış, sonradan eklendi) |
 | MTA-STS · TLS-RPT | A boyutu | ✅ Sprint 0 |
-| STARTTLS (posta sunucu TLS) | A boyutu — yeni | ⏳ Etik kararı bekliyor (bkz. bölüm 4) |
+| STARTTLS (posta sunucu TLS) | — (K-07: pasif kalır) | ❌ Kapsam dışı; DNS-tarafı DANE/MTA-STS/TLS-RPT karşılar (bkz. bölüm 4) |
 | IPv6 / erişilebilirlik | A boyutu — yeni (AAAA kaydı varlığı) | ⏳ Sprint 2 |
 | HTTPS zorunluluğu · TLS · sertifika · HSTS | B boyutu | ⏳ Sprint 3 |
 | Güvenlik başlıkları (CSP, X-Frame-Options…) | B boyutu | ⏳ Sprint 3 |
@@ -259,15 +259,17 @@ Sınırların bir kısmı yorum değil, doğrudan yazılım kısıtıdır.
 - Kişisel veri toplama; ölçüm kurumsal alan adı düzeyinde kalır
 - Bot korumasını aşmaya çalışma; engellenirsek "ölçülemedi" diye kaydedip geçeriz
 
-### Karar bekleyen sınır: STARTTLS
+### Sınır kararı: STARTTLS — DNS-pasif kalınır
 
 internet.nl, posta sunucularında STARTTLS'i **canlı SMTP bağlantısıyla** test eder.
 Bu, saf DNS'in ötesinde port 25'e bağlantı demektir ve yukarıdaki "port taraması
-yok / tarayıcının gördüğünden fazlası yok" sınırıyla gerilim taşır. **Karar
-verilene kadar Karne bunu YAPMAZ**; posta-aktarım güvenliğini yalnız DNS-tarafı
-sinyallerle (MTA-STS, TLS-RPT, DANE) ölçer. Olası çözüm: veri göndermeyen, kimliği
-açıkça bildiren tek bir `EHLO`+`STARTTLS` *yetenek* kontrolü — ayrıca kapılı bir
-seçenek olarak. Bu paragraf güncellenmeden STARTTLS kodu yazılmaz.
+yok / tarayıcının gördüğünden fazlası yok" sınırıyla gerilim taşır.
+
+**Karar (2026-09-11): Karne STARTTLS için canlı SMTP bağlantısı yapmaz.** K-07
+korunur; posta-aktarım güvenliği yalnız DNS-tarafı sinyallerle (MTA-STS, TLS-RPT,
+DANE) ölçülür. Konu, aktarım katmanının ele alındığı **Sprint 3'te**, gerekirse
+etik kurul bağlamıyla yeniden değerlendirilebilir; o zamana dek kapsam dışıdır ve
+bu paragraf güncellenmeden STARTTLS kodu yazılmaz.
 
 ---
 
