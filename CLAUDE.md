@@ -127,12 +127,23 @@ uv run ruff format .          # format
 - Do not conflate `NXDOMAIN` with a query error (rule 6).
 - Do not add a dependency without asking.
 
-## Active sprint — Sprint 0 (10–30 Sep): skeleton + first measurement
+## Active sprint — Sprint 1 (October): the Türkiye sample frame
 
-**In scope:** repo skeleton, `CLAUDE.md`, package layout, SQLite schema, the
-`karne scan <domain>` command, and **dimension A only** (DNS/email collector).
-Output: a single command that produces a domain's raw email report.
+**Sprint 0 is COMPLETE** (2026-09-11): repo skeleton, SQLite schema, the
+`karne scan <domain>` command, and dimension A (DNS/email) including DANE/TLSA.
+Verified on the five target domains; 62 offline + 3 network tests pass. See
+docs/PROGRESS.md for the full record and carried-over decisions.
 
-**Out of scope this sprint (do not build yet):** web UI, FastAPI, Playwright/browser
-measurement (dimension C), TLS/HTTP (dimension B), the scoring engine itself, batch
+**In scope (Sprint 1):** `karne/frontier.py` — build the Türkiye universe from the
+Tranco list and `.tr` extensions; sector labelling (bank, university, public body,
+municipality, hospital, e-commerce, media); and a written, defensible definition of
+"a Turkish site" (a method decision for the thesis). Ethics-board application this
+month if the department requires it. Output: a ~10,000-domain, sector-labelled
+sample frame. (PLAN.md section 7.)
+
+**Carried-over for batch scanning (Sprint 2):** the validating-resolver /
+multi-resolver choice and the SERVFAIL re-query policy (see docs/PROGRESS.md).
+
+**Still out of scope (do not build yet):** web UI, FastAPI, Playwright/browser
+measurement (dimension C), TLS/HTTP (dimension B), the scoring engine, batch
 scanning, Docker, CI. These are later sprints (see PLAN.md section 7).
