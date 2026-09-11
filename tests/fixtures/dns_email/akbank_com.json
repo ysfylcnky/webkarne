@@ -1,0 +1,1239 @@
+{
+ "caa": {
+  "present": false,
+  "query": {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "akbank.com",
+   "queried_at": "2026-09-11T15:24:28.806105+00:00",
+   "rcode": "NOERROR",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "CAA",
+   "status": "noanswer"
+  },
+  "records": []
+ },
+ "collected_at": "2026-09-11T15:24:21.951251+00:00",
+ "collector": "dns_email",
+ "collector_version": "0.3.0",
+ "config_hash": "f1f1eeaa8a3f76c807bcbdb25c0e9299e66f6641060ff05cab2fc2ded8fba814",
+ "dane": {
+  "hosts": [
+   {
+    "mx_host": "mail06.akbank.com",
+    "present": false,
+    "query": {
+     "answers": [],
+     "authenticated": null,
+     "error_detail": null,
+     "name": "_25._tcp.mail06.akbank.com",
+     "queried_at": "2026-09-11T15:24:24.281037+00:00",
+     "rcode": "NXDOMAIN",
+     "requeried": false,
+     "resolver": [
+      "1.1.1.1",
+      "8.8.8.8"
+     ],
+     "rtype": "TLSA",
+     "status": "nxdomain"
+    },
+    "records": []
+   },
+   {
+    "mx_host": "mail05.akbank.com",
+    "present": false,
+    "query": {
+     "answers": [],
+     "authenticated": null,
+     "error_detail": null,
+     "name": "_25._tcp.mail05.akbank.com",
+     "queried_at": "2026-09-11T15:24:24.895246+00:00",
+     "rcode": "NXDOMAIN",
+     "requeried": false,
+     "resolver": [
+      "1.1.1.1",
+      "8.8.8.8"
+     ],
+     "rtype": "TLSA",
+     "status": "nxdomain"
+    },
+    "records": []
+   },
+   {
+    "mx_host": "mail04.akbank.com",
+    "present": false,
+    "query": {
+     "answers": [],
+     "authenticated": null,
+     "error_detail": null,
+     "name": "_25._tcp.mail04.akbank.com",
+     "queried_at": "2026-09-11T15:24:25.506987+00:00",
+     "rcode": "NXDOMAIN",
+     "requeried": false,
+     "resolver": [
+      "1.1.1.1",
+      "8.8.8.8"
+     ],
+     "rtype": "TLSA",
+     "status": "nxdomain"
+    },
+    "records": []
+   },
+   {
+    "mx_host": "mail03.akbank.com",
+    "present": false,
+    "query": {
+     "answers": [],
+     "authenticated": null,
+     "error_detail": null,
+     "name": "_25._tcp.mail03.akbank.com",
+     "queried_at": "2026-09-11T15:24:26.123135+00:00",
+     "rcode": "NXDOMAIN",
+     "requeried": false,
+     "resolver": [
+      "1.1.1.1",
+      "8.8.8.8"
+     ],
+     "rtype": "TLSA",
+     "status": "nxdomain"
+    },
+    "records": []
+   },
+   {
+    "mx_host": "mail02.akbank.com",
+    "present": false,
+    "query": {
+     "answers": [],
+     "authenticated": null,
+     "error_detail": null,
+     "name": "_25._tcp.mail02.akbank.com",
+     "queried_at": "2026-09-11T15:24:26.736353+00:00",
+     "rcode": "NXDOMAIN",
+     "requeried": false,
+     "resolver": [
+      "1.1.1.1",
+      "8.8.8.8"
+     ],
+     "rtype": "TLSA",
+     "status": "nxdomain"
+    },
+    "records": []
+   },
+   {
+    "mx_host": "mail01.akbank.com",
+    "present": false,
+    "query": {
+     "answers": [],
+     "authenticated": null,
+     "error_detail": null,
+     "name": "_25._tcp.mail01.akbank.com",
+     "queried_at": "2026-09-11T15:24:27.093185+00:00",
+     "rcode": "NXDOMAIN",
+     "requeried": false,
+     "resolver": [
+      "1.1.1.1",
+      "8.8.8.8"
+     ],
+     "rtype": "TLSA",
+     "status": "nxdomain"
+    },
+    "records": []
+   }
+  ],
+  "mx_hosts_checked": [
+   "mail06.akbank.com",
+   "mail05.akbank.com",
+   "mail04.akbank.com",
+   "mail03.akbank.com",
+   "mail02.akbank.com",
+   "mail01.akbank.com"
+  ],
+  "note": "DANE requires DNSSEC-signed TLSA records to be trustworthy",
+  "present": false
+ },
+ "dkim": {
+  "attempts": [
+   {
+    "present": false,
+    "query": {
+     "answers": [],
+     "authenticated": null,
+     "error_detail": null,
+     "name": "selector1._domainkey.akbank.com",
+     "queried_at": "2026-09-11T15:24:22.488463+00:00",
+     "rcode": "NXDOMAIN",
+     "requeried": false,
+     "resolver": [
+      "1.1.1.1",
+      "8.8.8.8"
+     ],
+     "rtype": "TXT",
+     "status": "nxdomain"
+    },
+    "selector": "selector1"
+   },
+   {
+    "present": false,
+    "query": {
+     "answers": [],
+     "authenticated": null,
+     "error_detail": null,
+     "name": "selector2._domainkey.akbank.com",
+     "queried_at": "2026-09-11T15:24:22.488923+00:00",
+     "rcode": "NXDOMAIN",
+     "requeried": false,
+     "resolver": [
+      "1.1.1.1",
+      "8.8.8.8"
+     ],
+     "rtype": "TXT",
+     "status": "nxdomain"
+    },
+    "selector": "selector2"
+   },
+   {
+    "present": false,
+    "query": {
+     "answers": [],
+     "authenticated": null,
+     "error_detail": null,
+     "name": "google._domainkey.akbank.com",
+     "queried_at": "2026-09-11T15:24:22.489093+00:00",
+     "rcode": "NXDOMAIN",
+     "requeried": false,
+     "resolver": [
+      "1.1.1.1",
+      "8.8.8.8"
+     ],
+     "rtype": "TXT",
+     "status": "nxdomain"
+    },
+    "selector": "google"
+   },
+   {
+    "present": false,
+    "query": {
+     "answers": [],
+     "authenticated": null,
+     "error_detail": null,
+     "name": "default._domainkey.akbank.com",
+     "queried_at": "2026-09-11T15:24:22.489301+00:00",
+     "rcode": "NXDOMAIN",
+     "requeried": false,
+     "resolver": [
+      "1.1.1.1",
+      "8.8.8.8"
+     ],
+     "rtype": "TXT",
+     "status": "nxdomain"
+    },
+    "selector": "default"
+   },
+   {
+    "present": false,
+    "query": {
+     "answers": [],
+     "authenticated": null,
+     "error_detail": null,
+     "name": "dkim._domainkey.akbank.com",
+     "queried_at": "2026-09-11T15:24:22.489461+00:00",
+     "rcode": "NXDOMAIN",
+     "requeried": false,
+     "resolver": [
+      "1.1.1.1",
+      "8.8.8.8"
+     ],
+     "rtype": "TXT",
+     "status": "nxdomain"
+    },
+    "selector": "dkim"
+   },
+   {
+    "present": false,
+    "query": {
+     "answers": [],
+     "authenticated": null,
+     "error_detail": null,
+     "name": "mail._domainkey.akbank.com",
+     "queried_at": "2026-09-11T15:24:22.489613+00:00",
+     "rcode": "NXDOMAIN",
+     "requeried": false,
+     "resolver": [
+      "1.1.1.1",
+      "8.8.8.8"
+     ],
+     "rtype": "TXT",
+     "status": "nxdomain"
+    },
+    "selector": "mail"
+   },
+   {
+    "present": false,
+    "query": {
+     "answers": [],
+     "authenticated": null,
+     "error_detail": null,
+     "name": "k1._domainkey.akbank.com",
+     "queried_at": "2026-09-11T15:24:22.489768+00:00",
+     "rcode": "NXDOMAIN",
+     "requeried": false,
+     "resolver": [
+      "1.1.1.1",
+      "8.8.8.8"
+     ],
+     "rtype": "TXT",
+     "status": "nxdomain"
+    },
+    "selector": "k1"
+   },
+   {
+    "present": false,
+    "query": {
+     "answers": [],
+     "authenticated": null,
+     "error_detail": null,
+     "name": "k2._domainkey.akbank.com",
+     "queried_at": "2026-09-11T15:24:22.489937+00:00",
+     "rcode": "NXDOMAIN",
+     "requeried": false,
+     "resolver": [
+      "1.1.1.1",
+      "8.8.8.8"
+     ],
+     "rtype": "TXT",
+     "status": "nxdomain"
+    },
+    "selector": "k2"
+   },
+   {
+    "present": false,
+    "query": {
+     "answers": [],
+     "authenticated": null,
+     "error_detail": null,
+     "name": "s1._domainkey.akbank.com",
+     "queried_at": "2026-09-11T15:24:22.879733+00:00",
+     "rcode": "NXDOMAIN",
+     "requeried": false,
+     "resolver": [
+      "1.1.1.1",
+      "8.8.8.8"
+     ],
+     "rtype": "TXT",
+     "status": "nxdomain"
+    },
+    "selector": "s1"
+   },
+   {
+    "present": false,
+    "query": {
+     "answers": [],
+     "authenticated": null,
+     "error_detail": null,
+     "name": "s2._domainkey.akbank.com",
+     "queried_at": "2026-09-11T15:24:23.045495+00:00",
+     "rcode": "NXDOMAIN",
+     "requeried": false,
+     "resolver": [
+      "1.1.1.1",
+      "8.8.8.8"
+     ],
+     "rtype": "TXT",
+     "status": "nxdomain"
+    },
+    "selector": "s2"
+   },
+   {
+    "present": false,
+    "query": {
+     "answers": [],
+     "authenticated": null,
+     "error_detail": null,
+     "name": "zoho._domainkey.akbank.com",
+     "queried_at": "2026-09-11T15:24:23.180210+00:00",
+     "rcode": "NXDOMAIN",
+     "requeried": false,
+     "resolver": [
+      "1.1.1.1",
+      "8.8.8.8"
+     ],
+     "rtype": "TXT",
+     "status": "nxdomain"
+    },
+    "selector": "zoho"
+   },
+   {
+    "present": false,
+    "query": {
+     "answers": [],
+     "authenticated": null,
+     "error_detail": null,
+     "name": "mandrill._domainkey.akbank.com",
+     "queried_at": "2026-09-11T15:24:23.202936+00:00",
+     "rcode": "NXDOMAIN",
+     "requeried": false,
+     "resolver": [
+      "1.1.1.1",
+      "8.8.8.8"
+     ],
+     "rtype": "TXT",
+     "status": "nxdomain"
+    },
+    "selector": "mandrill"
+   },
+   {
+    "present": false,
+    "query": {
+     "answers": [],
+     "authenticated": null,
+     "error_detail": null,
+     "name": "smtp._domainkey.akbank.com",
+     "queried_at": "2026-09-11T15:24:23.203176+00:00",
+     "rcode": "NXDOMAIN",
+     "requeried": false,
+     "resolver": [
+      "1.1.1.1",
+      "8.8.8.8"
+     ],
+     "rtype": "TXT",
+     "status": "nxdomain"
+    },
+    "selector": "smtp"
+   },
+   {
+    "present": false,
+    "query": {
+     "answers": [],
+     "authenticated": null,
+     "error_detail": null,
+     "name": "email._domainkey.akbank.com",
+     "queried_at": "2026-09-11T15:24:23.398809+00:00",
+     "rcode": "NXDOMAIN",
+     "requeried": false,
+     "resolver": [
+      "1.1.1.1",
+      "8.8.8.8"
+     ],
+     "rtype": "TXT",
+     "status": "nxdomain"
+    },
+    "selector": "email"
+   },
+   {
+    "present": false,
+    "query": {
+     "answers": [],
+     "authenticated": null,
+     "error_detail": null,
+     "name": "mailjet._domainkey.akbank.com",
+     "queried_at": "2026-09-11T15:24:23.582861+00:00",
+     "rcode": "NXDOMAIN",
+     "requeried": false,
+     "resolver": [
+      "1.1.1.1",
+      "8.8.8.8"
+     ],
+     "rtype": "TXT",
+     "status": "nxdomain"
+    },
+    "selector": "mailjet"
+   },
+   {
+    "present": false,
+    "query": {
+     "answers": [],
+     "authenticated": null,
+     "error_detail": null,
+     "name": "sendgrid._domainkey.akbank.com",
+     "queried_at": "2026-09-11T15:24:23.602447+00:00",
+     "rcode": "NXDOMAIN",
+     "requeried": false,
+     "resolver": [
+      "1.1.1.1",
+      "8.8.8.8"
+     ],
+     "rtype": "TXT",
+     "status": "nxdomain"
+    },
+    "selector": "sendgrid"
+   }
+  ],
+  "found_selectors": [],
+  "method": "selector_guessing",
+  "selectors_tried": [
+   "selector1",
+   "selector2",
+   "google",
+   "default",
+   "dkim",
+   "mail",
+   "k1",
+   "k2",
+   "s1",
+   "s2",
+   "zoho",
+   "mandrill",
+   "smtp",
+   "email",
+   "mailjet",
+   "sendgrid"
+  ]
+ },
+ "dmarc": {
+  "multiple": false,
+  "parsed": {
+   "adkim": null,
+   "aspf": null,
+   "fo": null,
+   "has_aggregate_reporting": true,
+   "issues": [],
+   "p": "reject",
+   "pct": null,
+   "rua": "mailto:akbank-com@dmarcanalyze.com",
+   "ruf": null,
+   "sp": "reject",
+   "tags": {
+    "p": "reject",
+    "rf": "afrf",
+    "ri": "3600",
+    "rua": "mailto:akbank-com@dmarcanalyze.com",
+    "sp": "reject",
+    "v": "DMARC1"
+   },
+   "valid": true
+  },
+  "present": true,
+  "query": {
+   "answers": [
+    "v=DMARC1; p=reject; sp=reject; rua=mailto:akbank-com@dmarcanalyze.com; rf=afrf; ri=3600"
+   ],
+   "authenticated": false,
+   "error_detail": null,
+   "name": "_dmarc.akbank.com",
+   "queried_at": "2026-09-11T15:24:22.308545+00:00",
+   "rcode": "NOERROR",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "ok"
+  },
+  "records": [
+   "v=DMARC1; p=reject; sp=reject; rua=mailto:akbank-com@dmarcanalyze.com; rf=afrf; ri=3600"
+  ]
+ },
+ "dnssec": {
+  "ds_present": false,
+  "note": "resolver_authenticated is the resolver's DNSSEC AD flag, not local validation",
+  "query": {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "akbank.com",
+   "queried_at": "2026-09-11T15:24:28.798774+00:00",
+   "rcode": "NOERROR",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "DS",
+   "status": "noanswer"
+  },
+  "resolver_authenticated": null
+ },
+ "domain": "akbank.com",
+ "input_domain": "akbank.com",
+ "mta_sts": {
+  "dns": {
+   "present": false,
+   "query": {
+    "answers": [
+     "google-site-verification=W7HJgxb7T5AXCYjB0JpfM6tRQ26apblwpyr0MJHKJQw",
+     "google-site-verification=Q8Ce3tFcEzQsywBtuN3uyRsqNpLw5IjpUacdQ-J4j28",
+     "dtm-domain-verification=pXPsXtMZcahW5P4yrVnKV73yC9_7Onxo19iX8Ftd8Us",
+     "google-gws-recovery-domain-verification=68623051",
+     "Google-gws-recovery-domain-verification=68526712",
+     "ZOOM_verify_XkFBaTMUQNKJK7ckhzesNQ",
+     "google-site-verification=eyWz-M5Pa9c4RR062KRfnGAEQhA3NqlQmt-q_2jQnJ4",
+     "cisco-ci-domain-verification=208bfb0677097e9b1f20a1d59aba77dcc915c2c2612e01a2d8d30415e4cf3475"
+    ],
+    "authenticated": false,
+    "error_detail": null,
+    "name": "_mta-sts.akbank.com",
+    "queried_at": "2026-09-11T15:24:27.707895+00:00",
+    "rcode": "NOERROR",
+    "requeried": false,
+    "resolver": [
+     "1.1.1.1",
+     "8.8.8.8"
+    ],
+    "rtype": "TXT",
+    "status": "ok"
+   },
+   "records": []
+  },
+  "policy": {
+   "error_detail": "URLError: <urlopen error [Errno 11001] getaddrinfo failed>",
+   "redirected": false,
+   "status": "error",
+   "url": "https://mta-sts.akbank.com/.well-known/mta-sts.txt"
+  }
+ },
+ "mx": {
+  "present": true,
+  "providers": [
+   "local"
+  ],
+  "query": {
+   "answers": [
+    "10 mail06.akbank.com.",
+    "10 mail05.akbank.com.",
+    "10 mail04.akbank.com.",
+    "10 mail03.akbank.com.",
+    "10 mail02.akbank.com.",
+    "10 mail01.akbank.com."
+   ],
+   "authenticated": false,
+   "error_detail": null,
+   "name": "akbank.com",
+   "queried_at": "2026-09-11T15:24:21.898235+00:00",
+   "rcode": "NOERROR",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "MX",
+   "status": "ok"
+  },
+  "records": [
+   {
+    "exchange": "mail06.akbank.com.",
+    "preference": 10,
+    "provider": "local"
+   },
+   {
+    "exchange": "mail05.akbank.com.",
+    "preference": 10,
+    "provider": "local"
+   },
+   {
+    "exchange": "mail04.akbank.com.",
+    "preference": 10,
+    "provider": "local"
+   },
+   {
+    "exchange": "mail03.akbank.com.",
+    "preference": 10,
+    "provider": "local"
+   },
+   {
+    "exchange": "mail02.akbank.com.",
+    "preference": 10,
+    "provider": "local"
+   },
+   {
+    "exchange": "mail01.akbank.com.",
+    "preference": 10,
+    "provider": "local"
+   }
+  ]
+ },
+ "queries": [
+  {
+   "answers": [
+    "10 mail06.akbank.com.",
+    "10 mail05.akbank.com.",
+    "10 mail04.akbank.com.",
+    "10 mail03.akbank.com.",
+    "10 mail02.akbank.com.",
+    "10 mail01.akbank.com."
+   ],
+   "authenticated": false,
+   "error_detail": null,
+   "name": "akbank.com",
+   "queried_at": "2026-09-11T15:24:21.898235+00:00",
+   "rcode": "NOERROR",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "MX",
+   "status": "ok"
+  },
+  {
+   "answers": [
+    "google-site-verification=eyWz-M5Pa9c4RR062KRfnGAEQhA3NqlQmt-q_2jQnJ4",
+    "cisco-ci-domain-verification=208bfb0677097e9b1f20a1d59aba77dcc915c2c2612e01a2d8d30415e4cf3475",
+    "google-site-verification=W7HJgxb7T5AXCYjB0JpfM6tRQ26apblwpyr0MJHKJQw",
+    "google-site-verification=Q8Ce3tFcEzQsywBtuN3uyRsqNpLw5IjpUacdQ-J4j28",
+    "dtm-domain-verification=pXPsXtMZcahW5P4yrVnKV73yC9_7Onxo19iX8Ftd8Us",
+    "perplexity-ai-domain-verification-6j799q=T18I7FeTMEnJYFQV48BPO5FNF",
+    "google-gws-recovery-domain-verification=68623051",
+    "Google-gws-recovery-domain-verification=68526712",
+    "MS=629AC2EB64108E9461E60BA95F075B37A3BC153D",
+    "apple-domain-verification=GJuylnCktHnjmWI8",
+    "ZOOM_verify_XkFBaTMUQNKJK7ckhzesNQ",
+    "_acrut3s6gs8u4idb6g5y0vuqh1upg57",
+    "8k5fpq3tzkqfp29c3v2nj83lb1yt4fyf",
+    "MS=ms24129817",
+    "v=spf1 ip4:217.169.192.0/22 ip4:217.169.204.33 ip4:217.169.204.34 -all"
+   ],
+   "authenticated": false,
+   "error_detail": null,
+   "name": "akbank.com",
+   "queried_at": "2026-09-11T15:24:21.951317+00:00",
+   "rcode": "NOERROR",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "ok"
+  },
+  {
+   "answers": [
+    "v=DMARC1; p=reject; sp=reject; rua=mailto:akbank-com@dmarcanalyze.com; rf=afrf; ri=3600"
+   ],
+   "authenticated": false,
+   "error_detail": null,
+   "name": "_dmarc.akbank.com",
+   "queried_at": "2026-09-11T15:24:22.308545+00:00",
+   "rcode": "NOERROR",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "ok"
+  },
+  {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "selector1._domainkey.akbank.com",
+   "queried_at": "2026-09-11T15:24:22.488463+00:00",
+   "rcode": "NXDOMAIN",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "nxdomain"
+  },
+  {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "google._domainkey.akbank.com",
+   "queried_at": "2026-09-11T15:24:22.489093+00:00",
+   "rcode": "NXDOMAIN",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "nxdomain"
+  },
+  {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "default._domainkey.akbank.com",
+   "queried_at": "2026-09-11T15:24:22.489301+00:00",
+   "rcode": "NXDOMAIN",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "nxdomain"
+  },
+  {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "dkim._domainkey.akbank.com",
+   "queried_at": "2026-09-11T15:24:22.489461+00:00",
+   "rcode": "NXDOMAIN",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "nxdomain"
+  },
+  {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "selector2._domainkey.akbank.com",
+   "queried_at": "2026-09-11T15:24:22.488923+00:00",
+   "rcode": "NXDOMAIN",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "nxdomain"
+  },
+  {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "k1._domainkey.akbank.com",
+   "queried_at": "2026-09-11T15:24:22.489768+00:00",
+   "rcode": "NXDOMAIN",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "nxdomain"
+  },
+  {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "k2._domainkey.akbank.com",
+   "queried_at": "2026-09-11T15:24:22.489937+00:00",
+   "rcode": "NXDOMAIN",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "nxdomain"
+  },
+  {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "mail._domainkey.akbank.com",
+   "queried_at": "2026-09-11T15:24:22.489613+00:00",
+   "rcode": "NXDOMAIN",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "nxdomain"
+  },
+  {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "s1._domainkey.akbank.com",
+   "queried_at": "2026-09-11T15:24:22.879733+00:00",
+   "rcode": "NXDOMAIN",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "nxdomain"
+  },
+  {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "s2._domainkey.akbank.com",
+   "queried_at": "2026-09-11T15:24:23.045495+00:00",
+   "rcode": "NXDOMAIN",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "nxdomain"
+  },
+  {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "mandrill._domainkey.akbank.com",
+   "queried_at": "2026-09-11T15:24:23.202936+00:00",
+   "rcode": "NXDOMAIN",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "nxdomain"
+  },
+  {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "zoho._domainkey.akbank.com",
+   "queried_at": "2026-09-11T15:24:23.180210+00:00",
+   "rcode": "NXDOMAIN",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "nxdomain"
+  },
+  {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "smtp._domainkey.akbank.com",
+   "queried_at": "2026-09-11T15:24:23.203176+00:00",
+   "rcode": "NXDOMAIN",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "nxdomain"
+  },
+  {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "sendgrid._domainkey.akbank.com",
+   "queried_at": "2026-09-11T15:24:23.602447+00:00",
+   "rcode": "NXDOMAIN",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "nxdomain"
+  },
+  {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "email._domainkey.akbank.com",
+   "queried_at": "2026-09-11T15:24:23.398809+00:00",
+   "rcode": "NXDOMAIN",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "nxdomain"
+  },
+  {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "mailjet._domainkey.akbank.com",
+   "queried_at": "2026-09-11T15:24:23.582861+00:00",
+   "rcode": "NXDOMAIN",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "nxdomain"
+  },
+  {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "_25._tcp.mail06.akbank.com",
+   "queried_at": "2026-09-11T15:24:24.281037+00:00",
+   "rcode": "NXDOMAIN",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TLSA",
+   "status": "nxdomain"
+  },
+  {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "_25._tcp.mail05.akbank.com",
+   "queried_at": "2026-09-11T15:24:24.895246+00:00",
+   "rcode": "NXDOMAIN",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TLSA",
+   "status": "nxdomain"
+  },
+  {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "_25._tcp.mail04.akbank.com",
+   "queried_at": "2026-09-11T15:24:25.506987+00:00",
+   "rcode": "NXDOMAIN",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TLSA",
+   "status": "nxdomain"
+  },
+  {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "_25._tcp.mail03.akbank.com",
+   "queried_at": "2026-09-11T15:24:26.123135+00:00",
+   "rcode": "NXDOMAIN",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TLSA",
+   "status": "nxdomain"
+  },
+  {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "_25._tcp.mail02.akbank.com",
+   "queried_at": "2026-09-11T15:24:26.736353+00:00",
+   "rcode": "NXDOMAIN",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TLSA",
+   "status": "nxdomain"
+  },
+  {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "_25._tcp.mail01.akbank.com",
+   "queried_at": "2026-09-11T15:24:27.093185+00:00",
+   "rcode": "NXDOMAIN",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TLSA",
+   "status": "nxdomain"
+  },
+  {
+   "answers": [
+    "google-site-verification=W7HJgxb7T5AXCYjB0JpfM6tRQ26apblwpyr0MJHKJQw",
+    "google-site-verification=Q8Ce3tFcEzQsywBtuN3uyRsqNpLw5IjpUacdQ-J4j28",
+    "dtm-domain-verification=pXPsXtMZcahW5P4yrVnKV73yC9_7Onxo19iX8Ftd8Us",
+    "google-gws-recovery-domain-verification=68623051",
+    "Google-gws-recovery-domain-verification=68526712",
+    "ZOOM_verify_XkFBaTMUQNKJK7ckhzesNQ",
+    "google-site-verification=eyWz-M5Pa9c4RR062KRfnGAEQhA3NqlQmt-q_2jQnJ4",
+    "cisco-ci-domain-verification=208bfb0677097e9b1f20a1d59aba77dcc915c2c2612e01a2d8d30415e4cf3475"
+   ],
+   "authenticated": false,
+   "error_detail": null,
+   "name": "_mta-sts.akbank.com",
+   "queried_at": "2026-09-11T15:24:27.707895+00:00",
+   "rcode": "NOERROR",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "ok"
+  },
+  {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "_smtp._tls.akbank.com",
+   "queried_at": "2026-09-11T15:24:28.440237+00:00",
+   "rcode": "NXDOMAIN",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "nxdomain"
+  },
+  {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "akbank.com",
+   "queried_at": "2026-09-11T15:24:28.798774+00:00",
+   "rcode": "NOERROR",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "DS",
+   "status": "noanswer"
+  },
+  {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "akbank.com",
+   "queried_at": "2026-09-11T15:24:28.806105+00:00",
+   "rcode": "NOERROR",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "CAA",
+   "status": "noanswer"
+  }
+ ],
+ "resolvers": [
+  "1.1.1.1",
+  "8.8.8.8"
+ ],
+ "spf": {
+  "lookups": {
+   "chain": [
+    {
+     "includes": [],
+     "lookup_terms_here": 0,
+     "name": "<root>",
+     "record": "v=spf1 ip4:217.169.192.0/22 ip4:217.169.204.33 ip4:217.169.204.34 -all",
+     "redirect": null
+    }
+   ],
+   "exceeds_limit": false,
+   "limit": 10,
+   "loop_detected": false,
+   "method": "rfc7208_terms_recursive_simplified",
+   "total_lookups": 0,
+   "truncated": false
+  },
+  "multiple": false,
+  "parsed": {
+   "exp": null,
+   "includes": [],
+   "lookup_terms_here": 0,
+   "mechanisms": [
+    {
+     "qualifier": "+",
+     "raw": "ip4:217.169.192.0/22",
+     "type": "ip4",
+     "value": "217.169.192.0/22"
+    },
+    {
+     "qualifier": "+",
+     "raw": "ip4:217.169.204.33",
+     "type": "ip4",
+     "value": "217.169.204.33"
+    },
+    {
+     "qualifier": "+",
+     "raw": "ip4:217.169.204.34",
+     "type": "ip4",
+     "value": "217.169.204.34"
+    },
+    {
+     "qualifier": "-",
+     "raw": "-all",
+     "type": "all",
+     "value": null
+    }
+   ],
+   "redirect": null,
+   "terminator": {
+    "qualifier": "-",
+    "raw": "-all",
+    "type": "all",
+    "value": null
+   },
+   "unknown_modifiers": [],
+   "version_ok": true
+  },
+  "present": true,
+  "query": {
+   "answers": [
+    "google-site-verification=eyWz-M5Pa9c4RR062KRfnGAEQhA3NqlQmt-q_2jQnJ4",
+    "cisco-ci-domain-verification=208bfb0677097e9b1f20a1d59aba77dcc915c2c2612e01a2d8d30415e4cf3475",
+    "google-site-verification=W7HJgxb7T5AXCYjB0JpfM6tRQ26apblwpyr0MJHKJQw",
+    "google-site-verification=Q8Ce3tFcEzQsywBtuN3uyRsqNpLw5IjpUacdQ-J4j28",
+    "dtm-domain-verification=pXPsXtMZcahW5P4yrVnKV73yC9_7Onxo19iX8Ftd8Us",
+    "perplexity-ai-domain-verification-6j799q=T18I7FeTMEnJYFQV48BPO5FNF",
+    "google-gws-recovery-domain-verification=68623051",
+    "Google-gws-recovery-domain-verification=68526712",
+    "MS=629AC2EB64108E9461E60BA95F075B37A3BC153D",
+    "apple-domain-verification=GJuylnCktHnjmWI8",
+    "ZOOM_verify_XkFBaTMUQNKJK7ckhzesNQ",
+    "_acrut3s6gs8u4idb6g5y0vuqh1upg57",
+    "8k5fpq3tzkqfp29c3v2nj83lb1yt4fyf",
+    "MS=ms24129817",
+    "v=spf1 ip4:217.169.192.0/22 ip4:217.169.204.33 ip4:217.169.204.34 -all"
+   ],
+   "authenticated": false,
+   "error_detail": null,
+   "name": "akbank.com",
+   "queried_at": "2026-09-11T15:24:21.951317+00:00",
+   "rcode": "NOERROR",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "ok"
+  },
+  "records": [
+   "v=spf1 ip4:217.169.192.0/22 ip4:217.169.204.33 ip4:217.169.204.34 -all"
+  ]
+ },
+ "tls_rpt": {
+  "present": false,
+  "query": {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "_smtp._tls.akbank.com",
+   "queried_at": "2026-09-11T15:24:28.440237+00:00",
+   "rcode": "NXDOMAIN",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "nxdomain"
+  },
+  "records": []
+ }
+}

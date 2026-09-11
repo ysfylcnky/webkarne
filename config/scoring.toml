@@ -5,39 +5,222 @@
 # (karne/analyze/scoring.py) that turns raw `scan_results` into `scores` and
 # `findings`, and can be re-run at any time against previously stored raw data.
 # Every score record stores the `version` below so a scan can be traced to the
-# exact ruleset that produced it.
+# exact ruleset that produced it. Change a rule -> bump `version`.
 #
-# Sprint 0 status: SKELETON ONLY. No scoring logic exists yet. The structure
-# below is a placeholder to be filled starting in Sprint 3 (the December
-# milestone). Values are intentionally left unset.
+# Sprint 3, Session 1 (2026-09-11): dimension A (email & domain identity) is now
+# fully defined. Dimensions B/C/D are added in later sprints. The A model and the
+# decisions behind it (grade scale, weights, "could not measure", DKIM) are
+# recorded in PLAN.md K-12.
+#
+# Changelog:
+#   1.0.0 - initial dimension-A model.
+#   1.1.0 - SPF softfail (~all) is compensated when DMARC actively enforces
+#           (p=reject/quarantine): the softfail no longer leaves a real gap, so it
+#           is scored near-full instead of half. Surfaced by the internet.nl
+#           comparison; a principled fix for a double-count, not a calibration to
+#           that tool. Does not change the six known-domain grades. (PLAN.md K-12.)
+#
+# No threshold or weight is hard-coded in scoring.py; the code reads every number
+# from this file. The code decides WHICH condition maps to WHICH finding code
+# (logic); the severity and translation key of each code live here.
 
-version = "0.0.0-skeleton"
+version = "1.1.0"
 
-[dimensions]
-# The four scoring dimensions (see PLAN.md section 3). Listed here for
-# reference; weights and rules are defined per dimension in Sprint 3+.
-# email     = "A — email & domain identity"      (collector exists in Sprint 0)
-# transport = "B — transport & server security"
-# privacy   = "C — privacy & tracking"
-# tech      = "D — technology & visible surface"
-
+# ---------------------------------------------------------------------------
+# Letter-grade cut-offs (0-100 raw_score -> letter). Security-calibrated
+# (PLAN.md K-12): stricter than the classic 90/80/70 so the Turkish sample is
+# discriminated rather than collapsed into F. A raw_score at or above a cut-off
+# earns that letter; below `D` is `F`. Grade "I" (insufficient data) is assigned
+# by logic (see [scoring].insufficient_data_ratio), not by a cut-off.
+# ---------------------------------------------------------------------------
 [grades]
-# Letter-grade cut-offs, to be defined in Sprint 3.
-# Example shape (not active):
-#   A = 90
-#   B = 80
-#   C = 70
-#   D = 60
+A = 85
+B = 70
+C = 55
+D = 40
 
-[weights]
-# Per-indicator weights, to be defined in Sprint 3.
-# Example shape (not active):
-#   [weights.email]
-#   dmarc_policy = 0
-#   spf_terminator = 0
+[scoring]
+# If measured_weight / applicable_weight < this ratio, too much of the domain's
+# applicable surface could not be measured (servfail/timeout) to grade fairly;
+# the letter becomes "I" (insufficient data). raw_score is still recorded for
+# transparency. NB: "not applicable" (e.g. no MX -> transport indicators) is
+# excluded from applicable_weight and does NOT count toward this ratio.
+insufficient_data_ratio = 0.5
 
-[findings]
-# Finding codes come from a fixed list (e.g. EMAIL_NO_DMARC,
-# PRIVACY_PRECONSENT_TRACKER, TLS_LEGACY_VERSION). This table will map each code
-# to a severity. Human-readable explanations and fix hints live in translation
-# files, not here (PLAN.md section 5). To be defined in Sprint 3.
+# ---------------------------------------------------------------------------
+# Dimension A - email & domain identity.
+# Max weight per SCORED indicator; the scored weights sum to 100.
+# DKIM and MX are intentionally NOT scored (weight 0): DKIM because selector
+# names cannot be discovered from DNS (guessing only -> absence is not "no DKIM",
+# PLAN.md K-12); MX because it is informational/sector data, not a control.
+# ---------------------------------------------------------------------------
+[dimensions.email.weights]
+dmarc = 35
+spf = 25
+dnssec = 15
+dane = 8
+caa = 7
+mta_sts = 6
+tls_rpt = 4
+
+# --- DMARC (35): the single strongest indicator (PLAN.md dimension-A table). ---
+# The 35 points split into policy / aggregate-reporting / subdomain-policy.
+[dimensions.email.dmarc]
+policy_weight = 25
+rua_weight = 5
+sp_weight = 5
+pct_full = 100            # pct below this -> EMAIL_DMARC_PCT_PARTIAL finding
+# p= policy -> fraction of policy_weight
+policy_reject = 1.0
+policy_quarantine = 0.6
+policy_none = 0.15
+# effective subdomain policy (sp=, defaults to p= when absent) -> fraction of sp_weight
+sp_reject = 1.0
+sp_quarantine = 0.6
+sp_none = 0.15
+
+# --- SPF (25): presence + terminator strictness + 10-lookup limit. ---
+[dimensions.email.spf]
+terminator_weight = 18
+lookup_weight = 7
+# terminator qualifier -> fraction of terminator_weight
+term_fail = 1.0          # -all   (hard fail; full protection)
+term_softfail = 0.5      # ~all   (when DMARC does NOT enforce)
+term_neutral = 0.1       # ?all
+term_pass = 0.0          # +all   (no protection)
+# ~all when DMARC actively enforces (p=reject/quarantine): the softfail is
+# compensated (v1.1.0). Near-full, keeping a small edge for a hard -all.
+term_softfail_dmarc_enforced = 0.9
+
+# --- DNSSEC (15): DS record + resolver AD flag (the resolver's view, K-02). ---
+[dimensions.email.dnssec]
+ds_authenticated = 1.0   # DS present AND resolver_authenticated (AD) true
+ds_unvalidated = 0.7     # DS present but AD flag not set
+
+# --- DANE/TLSA (8): only meaningful with DNSSEC; requires MX (else N/A). ---
+[dimensions.email.dane]
+present = 1.0            # at least one MX host publishes a TLSA record
+without_dnssec = 0.6    # TLSA present but the zone is not DNSSEC-signed
+
+# --- MTA-STS (6): TXT record + fetched policy mode. Requires MX (else N/A). ---
+[dimensions.email.mta_sts]
+mode_enforce = 1.0
+mode_testing = 0.5
+mode_unknown = 0.3       # TXT present but policy not fetchable / mode unknown
+
+# --- TLS-RPT (4): presence only. Requires MX (else N/A). ---
+[dimensions.email.tls_rpt]
+present = 1.0
+
+# --- DKIM: NOT scored (weight 0). Observation-only threshold for the finding. ---
+[dimensions.email.dkim]
+min_key_bits = 2048      # RSA key below this -> EMAIL_DKIM_KEY_SHORT (low)
+
+# ---------------------------------------------------------------------------
+# Finding catalogue. Codes come from this fixed list; scoring.py emits a code +
+# machine-readable evidence. Human-readable explanation and copy-paste fix text
+# live in translation files keyed by `fix_hint_key` (PLAN.md section 5, K-08),
+# NOT here and NOT in code. `severity` in {high, medium, low, info}.
+# ---------------------------------------------------------------------------
+
+# -- SPF --
+[findings.EMAIL_NO_SPF]
+severity = "high"
+fix_hint_key = "email.no_spf"
+[findings.EMAIL_SPF_MULTIPLE]
+severity = "high"
+fix_hint_key = "email.spf_multiple"
+[findings.EMAIL_SPF_SOFTFAIL]
+severity = "medium"
+fix_hint_key = "email.spf_softfail"
+[findings.EMAIL_SPF_NEUTRAL]
+severity = "medium"
+fix_hint_key = "email.spf_neutral"
+[findings.EMAIL_SPF_PASS_ALL]
+severity = "high"
+fix_hint_key = "email.spf_pass_all"
+[findings.EMAIL_SPF_LOOKUP_LIMIT]
+severity = "medium"
+fix_hint_key = "email.spf_lookup_limit"
+
+# -- DMARC --
+[findings.EMAIL_NO_DMARC]
+severity = "high"
+fix_hint_key = "email.no_dmarc"
+[findings.EMAIL_DMARC_MULTIPLE]
+severity = "high"
+fix_hint_key = "email.dmarc_multiple"
+[findings.EMAIL_DMARC_INVALID]
+severity = "high"
+fix_hint_key = "email.dmarc_invalid"
+[findings.EMAIL_DMARC_POLICY_NONE]
+severity = "medium"
+fix_hint_key = "email.dmarc_policy_none"
+[findings.EMAIL_DMARC_POLICY_QUARANTINE]
+severity = "low"
+fix_hint_key = "email.dmarc_policy_quarantine"
+[findings.EMAIL_DMARC_NO_RUA]
+severity = "medium"
+fix_hint_key = "email.dmarc_no_rua"
+[findings.EMAIL_DMARC_SUBDOMAIN_WEAK]
+severity = "low"
+fix_hint_key = "email.dmarc_subdomain_weak"
+[findings.EMAIL_DMARC_PCT_PARTIAL]
+severity = "low"
+fix_hint_key = "email.dmarc_pct_partial"
+
+# -- DNSSEC --
+[findings.EMAIL_NO_DNSSEC]
+severity = "medium"
+fix_hint_key = "email.no_dnssec"
+[findings.EMAIL_DNSSEC_UNVALIDATED]
+severity = "low"
+fix_hint_key = "email.dnssec_unvalidated"
+
+# -- DANE --
+[findings.EMAIL_NO_DANE]
+severity = "low"
+fix_hint_key = "email.no_dane"
+[findings.EMAIL_DANE_WITHOUT_DNSSEC]
+severity = "low"
+fix_hint_key = "email.dane_without_dnssec"
+
+# -- CAA --
+[findings.EMAIL_NO_CAA]
+severity = "low"
+fix_hint_key = "email.no_caa"
+
+# -- MTA-STS / TLS-RPT --
+[findings.EMAIL_NO_MTA_STS]
+severity = "low"
+fix_hint_key = "email.no_mta_sts"
+[findings.EMAIL_MTA_STS_TESTING]
+severity = "low"
+fix_hint_key = "email.mta_sts_testing"
+[findings.EMAIL_NO_TLS_RPT]
+severity = "low"
+fix_hint_key = "email.no_tls_rpt"
+
+# -- MX (informational; not scored) --
+[findings.EMAIL_NO_MX]
+severity = "info"
+fix_hint_key = "email.no_mx"
+
+# -- DKIM (observation-only; not scored, PLAN.md K-12) --
+[findings.EMAIL_DKIM_FOUND]
+severity = "info"
+fix_hint_key = "email.dkim_found"
+[findings.EMAIL_DKIM_NOT_OBSERVED]
+severity = "info"
+fix_hint_key = "email.dkim_not_observed"
+[findings.EMAIL_DKIM_KEY_SHORT]
+severity = "low"
+fix_hint_key = "email.dkim_key_short"
+
+# -- Measurement quality (rule 6 / K-12) --
+[findings.EMAIL_INDICATORS_UNMEASURED]
+severity = "info"
+fix_hint_key = "email.indicators_unmeasured"
+[findings.EMAIL_INSUFFICIENT_DATA]
+severity = "info"
+fix_hint_key = "email.insufficient_data"

@@ -1,0 +1,1191 @@
+{
+ "caa": {
+  "present": true,
+  "query": {
+   "answers": [
+    "0 iodef \"mailto:question@internet.nl\"",
+    "0 issue \"letsencrypt.org;validationmethods=http-01,tls-alpn-01\"",
+    "0 issue \"sectigo.com\"",
+    "0 issuevmc \";\"",
+    "0 issuemail \";\"",
+    "0 issuewild \";\""
+   ],
+   "authenticated": true,
+   "error_detail": null,
+   "name": "internet.nl",
+   "queried_at": "2026-09-11T16:07:01.746016+00:00",
+   "rcode": "NOERROR",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "CAA",
+   "status": "ok"
+  },
+  "records": [
+   "0 iodef \"mailto:question@internet.nl\"",
+   "0 issue \"letsencrypt.org;validationmethods=http-01,tls-alpn-01\"",
+   "0 issue \"sectigo.com\"",
+   "0 issuevmc \";\"",
+   "0 issuemail \";\"",
+   "0 issuewild \";\""
+  ]
+ },
+ "collected_at": "2026-09-11T16:06:59.083573+00:00",
+ "collector": "dns_email",
+ "collector_version": "0.3.0",
+ "config_hash": "f1f1eeaa8a3f76c807bcbdb25c0e9299e66f6641060ff05cab2fc2ded8fba814",
+ "dane": {
+  "hosts": [
+   {
+    "mx_host": "vmx01.prolocation.nl",
+    "present": true,
+    "query": {
+     "answers": [
+      "2 1 1 e1ae9c3de848ece1ba72e0d991ae4d0d9ec547c6bad1dddab9d6beb0a7e0e0d8",
+      "3 1 1 0d5a5c8f3d8aab82bba32bf8d711fa2433e4fe5fa4828b0443364d3ab5cdc1d5"
+     ],
+     "authenticated": true,
+     "error_detail": null,
+     "name": "_25._tcp.vmx01.prolocation.nl",
+     "queried_at": "2026-09-11T16:07:00.939854+00:00",
+     "rcode": "NOERROR",
+     "requeried": false,
+     "resolver": [
+      "1.1.1.1",
+      "8.8.8.8"
+     ],
+     "rtype": "TLSA",
+     "status": "ok"
+    },
+    "records": [
+     {
+      "cert_association": "e1ae9c3de848ece1ba72e0d991ae4d0d9ec547c6bad1dddab9d6beb0a7e0e0d8",
+      "matching_type": 1,
+      "raw": "2 1 1 e1ae9c3de848ece1ba72e0d991ae4d0d9ec547c6bad1dddab9d6beb0a7e0e0d8",
+      "selector": 1,
+      "usage": 2,
+      "valid": true
+     },
+     {
+      "cert_association": "0d5a5c8f3d8aab82bba32bf8d711fa2433e4fe5fa4828b0443364d3ab5cdc1d5",
+      "matching_type": 1,
+      "raw": "3 1 1 0d5a5c8f3d8aab82bba32bf8d711fa2433e4fe5fa4828b0443364d3ab5cdc1d5",
+      "selector": 1,
+      "usage": 3,
+      "valid": true
+     }
+    ]
+   },
+   {
+    "mx_host": "vmx02.prolocation.nl",
+    "present": true,
+    "query": {
+     "answers": [
+      "2 1 1 e1ae9c3de848ece1ba72e0d991ae4d0d9ec547c6bad1dddab9d6beb0a7e0e0d8",
+      "3 1 1 55cae87df5bfbfc448eab96ff13c039a3ab0e6f0a256bb79b8d54fff3f709515"
+     ],
+     "authenticated": true,
+     "error_detail": null,
+     "name": "_25._tcp.vmx02.prolocation.nl",
+     "queried_at": "2026-09-11T16:07:01.218682+00:00",
+     "rcode": "NOERROR",
+     "requeried": false,
+     "resolver": [
+      "1.1.1.1",
+      "8.8.8.8"
+     ],
+     "rtype": "TLSA",
+     "status": "ok"
+    },
+    "records": [
+     {
+      "cert_association": "e1ae9c3de848ece1ba72e0d991ae4d0d9ec547c6bad1dddab9d6beb0a7e0e0d8",
+      "matching_type": 1,
+      "raw": "2 1 1 e1ae9c3de848ece1ba72e0d991ae4d0d9ec547c6bad1dddab9d6beb0a7e0e0d8",
+      "selector": 1,
+      "usage": 2,
+      "valid": true
+     },
+     {
+      "cert_association": "55cae87df5bfbfc448eab96ff13c039a3ab0e6f0a256bb79b8d54fff3f709515",
+      "matching_type": 1,
+      "raw": "3 1 1 55cae87df5bfbfc448eab96ff13c039a3ab0e6f0a256bb79b8d54fff3f709515",
+      "selector": 1,
+      "usage": 3,
+      "valid": true
+     }
+    ]
+   },
+   {
+    "mx_host": "vmx03.prolocation.net",
+    "present": true,
+    "query": {
+     "answers": [
+      "2 1 1 e1ae9c3de848ece1ba72e0d991ae4d0d9ec547c6bad1dddab9d6beb0a7e0e0d8",
+      "3 1 1 44858cd78c2d1a04739ecfc07fd23401b220d7a5a670bb81e24014f2dc0e1104"
+     ],
+     "authenticated": true,
+     "error_detail": null,
+     "name": "_25._tcp.vmx03.prolocation.net",
+     "queried_at": "2026-09-11T16:07:01.376951+00:00",
+     "rcode": "NOERROR",
+     "requeried": false,
+     "resolver": [
+      "1.1.1.1",
+      "8.8.8.8"
+     ],
+     "rtype": "TLSA",
+     "status": "ok"
+    },
+    "records": [
+     {
+      "cert_association": "e1ae9c3de848ece1ba72e0d991ae4d0d9ec547c6bad1dddab9d6beb0a7e0e0d8",
+      "matching_type": 1,
+      "raw": "2 1 1 e1ae9c3de848ece1ba72e0d991ae4d0d9ec547c6bad1dddab9d6beb0a7e0e0d8",
+      "selector": 1,
+      "usage": 2,
+      "valid": true
+     },
+     {
+      "cert_association": "44858cd78c2d1a04739ecfc07fd23401b220d7a5a670bb81e24014f2dc0e1104",
+      "matching_type": 1,
+      "raw": "3 1 1 44858cd78c2d1a04739ecfc07fd23401b220d7a5a670bb81e24014f2dc0e1104",
+      "selector": 1,
+      "usage": 3,
+      "valid": true
+     }
+    ]
+   }
+  ],
+  "mx_hosts_checked": [
+   "vmx01.prolocation.nl",
+   "vmx02.prolocation.nl",
+   "vmx03.prolocation.net"
+  ],
+  "note": "DANE requires DNSSEC-signed TLSA records to be trustworthy",
+  "present": true
+ },
+ "dkim": {
+  "attempts": [
+   {
+    "present": false,
+    "query": {
+     "answers": [],
+     "authenticated": null,
+     "error_detail": null,
+     "name": "selector1._domainkey.internet.nl",
+     "queried_at": "2026-09-11T16:06:59.341300+00:00",
+     "rcode": "NXDOMAIN",
+     "requeried": false,
+     "resolver": [
+      "1.1.1.1",
+      "8.8.8.8"
+     ],
+     "rtype": "TXT",
+     "status": "nxdomain"
+    },
+    "selector": "selector1"
+   },
+   {
+    "present": false,
+    "query": {
+     "answers": [],
+     "authenticated": null,
+     "error_detail": null,
+     "name": "selector2._domainkey.internet.nl",
+     "queried_at": "2026-09-11T16:06:59.341478+00:00",
+     "rcode": "NXDOMAIN",
+     "requeried": false,
+     "resolver": [
+      "1.1.1.1",
+      "8.8.8.8"
+     ],
+     "rtype": "TXT",
+     "status": "nxdomain"
+    },
+    "selector": "selector2"
+   },
+   {
+    "present": false,
+    "query": {
+     "answers": [],
+     "authenticated": null,
+     "error_detail": null,
+     "name": "google._domainkey.internet.nl",
+     "queried_at": "2026-09-11T16:06:59.341690+00:00",
+     "rcode": "NXDOMAIN",
+     "requeried": false,
+     "resolver": [
+      "1.1.1.1",
+      "8.8.8.8"
+     ],
+     "rtype": "TXT",
+     "status": "nxdomain"
+    },
+    "selector": "google"
+   },
+   {
+    "present": false,
+    "query": {
+     "answers": [],
+     "authenticated": null,
+     "error_detail": null,
+     "name": "default._domainkey.internet.nl",
+     "queried_at": "2026-09-11T16:06:59.341858+00:00",
+     "rcode": "NXDOMAIN",
+     "requeried": false,
+     "resolver": [
+      "1.1.1.1",
+      "8.8.8.8"
+     ],
+     "rtype": "TXT",
+     "status": "nxdomain"
+    },
+    "selector": "default"
+   },
+   {
+    "present": false,
+    "query": {
+     "answers": [],
+     "authenticated": null,
+     "error_detail": null,
+     "name": "dkim._domainkey.internet.nl",
+     "queried_at": "2026-09-11T16:06:59.342061+00:00",
+     "rcode": "NXDOMAIN",
+     "requeried": false,
+     "resolver": [
+      "1.1.1.1",
+      "8.8.8.8"
+     ],
+     "rtype": "TXT",
+     "status": "nxdomain"
+    },
+    "selector": "dkim"
+   },
+   {
+    "present": false,
+    "query": {
+     "answers": [],
+     "authenticated": null,
+     "error_detail": null,
+     "name": "mail._domainkey.internet.nl",
+     "queried_at": "2026-09-11T16:06:59.342271+00:00",
+     "rcode": "NXDOMAIN",
+     "requeried": false,
+     "resolver": [
+      "1.1.1.1",
+      "8.8.8.8"
+     ],
+     "rtype": "TXT",
+     "status": "nxdomain"
+    },
+    "selector": "mail"
+   },
+   {
+    "present": false,
+    "query": {
+     "answers": [],
+     "authenticated": null,
+     "error_detail": null,
+     "name": "k1._domainkey.internet.nl",
+     "queried_at": "2026-09-11T16:06:59.342471+00:00",
+     "rcode": "NXDOMAIN",
+     "requeried": false,
+     "resolver": [
+      "1.1.1.1",
+      "8.8.8.8"
+     ],
+     "rtype": "TXT",
+     "status": "nxdomain"
+    },
+    "selector": "k1"
+   },
+   {
+    "present": false,
+    "query": {
+     "answers": [],
+     "authenticated": null,
+     "error_detail": null,
+     "name": "k2._domainkey.internet.nl",
+     "queried_at": "2026-09-11T16:06:59.342666+00:00",
+     "rcode": "NXDOMAIN",
+     "requeried": false,
+     "resolver": [
+      "1.1.1.1",
+      "8.8.8.8"
+     ],
+     "rtype": "TXT",
+     "status": "nxdomain"
+    },
+    "selector": "k2"
+   },
+   {
+    "present": false,
+    "query": {
+     "answers": [],
+     "authenticated": null,
+     "error_detail": null,
+     "name": "s1._domainkey.internet.nl",
+     "queried_at": "2026-09-11T16:06:59.471284+00:00",
+     "rcode": "NXDOMAIN",
+     "requeried": false,
+     "resolver": [
+      "1.1.1.1",
+      "8.8.8.8"
+     ],
+     "rtype": "TXT",
+     "status": "nxdomain"
+    },
+    "selector": "s1"
+   },
+   {
+    "present": false,
+    "query": {
+     "answers": [],
+     "authenticated": null,
+     "error_detail": null,
+     "name": "s2._domainkey.internet.nl",
+     "queried_at": "2026-09-11T16:06:59.571716+00:00",
+     "rcode": "NXDOMAIN",
+     "requeried": false,
+     "resolver": [
+      "1.1.1.1",
+      "8.8.8.8"
+     ],
+     "rtype": "TXT",
+     "status": "nxdomain"
+    },
+    "selector": "s2"
+   },
+   {
+    "present": false,
+    "query": {
+     "answers": [],
+     "authenticated": null,
+     "error_detail": null,
+     "name": "zoho._domainkey.internet.nl",
+     "queried_at": "2026-09-11T16:06:59.669004+00:00",
+     "rcode": "NXDOMAIN",
+     "requeried": false,
+     "resolver": [
+      "1.1.1.1",
+      "8.8.8.8"
+     ],
+     "rtype": "TXT",
+     "status": "nxdomain"
+    },
+    "selector": "zoho"
+   },
+   {
+    "present": false,
+    "query": {
+     "answers": [],
+     "authenticated": null,
+     "error_detail": null,
+     "name": "mandrill._domainkey.internet.nl",
+     "queried_at": "2026-09-11T16:06:59.748838+00:00",
+     "rcode": "NXDOMAIN",
+     "requeried": false,
+     "resolver": [
+      "1.1.1.1",
+      "8.8.8.8"
+     ],
+     "rtype": "TXT",
+     "status": "nxdomain"
+    },
+    "selector": "mandrill"
+   },
+   {
+    "present": false,
+    "query": {
+     "answers": [],
+     "authenticated": null,
+     "error_detail": null,
+     "name": "smtp._domainkey.internet.nl",
+     "queried_at": "2026-09-11T16:06:59.842420+00:00",
+     "rcode": "NXDOMAIN",
+     "requeried": false,
+     "resolver": [
+      "1.1.1.1",
+      "8.8.8.8"
+     ],
+     "rtype": "TXT",
+     "status": "nxdomain"
+    },
+    "selector": "smtp"
+   },
+   {
+    "present": false,
+    "query": {
+     "answers": [],
+     "authenticated": null,
+     "error_detail": null,
+     "name": "email._domainkey.internet.nl",
+     "queried_at": "2026-09-11T16:06:59.939289+00:00",
+     "rcode": "NXDOMAIN",
+     "requeried": false,
+     "resolver": [
+      "1.1.1.1",
+      "8.8.8.8"
+     ],
+     "rtype": "TXT",
+     "status": "nxdomain"
+    },
+    "selector": "email"
+   },
+   {
+    "present": false,
+    "query": {
+     "answers": [],
+     "authenticated": null,
+     "error_detail": null,
+     "name": "mailjet._domainkey.internet.nl",
+     "queried_at": "2026-09-11T16:07:00.040999+00:00",
+     "rcode": "NXDOMAIN",
+     "requeried": false,
+     "resolver": [
+      "1.1.1.1",
+      "8.8.8.8"
+     ],
+     "rtype": "TXT",
+     "status": "nxdomain"
+    },
+    "selector": "mailjet"
+   },
+   {
+    "present": false,
+    "query": {
+     "answers": [],
+     "authenticated": null,
+     "error_detail": null,
+     "name": "sendgrid._domainkey.internet.nl",
+     "queried_at": "2026-09-11T16:07:00.161493+00:00",
+     "rcode": "NXDOMAIN",
+     "requeried": false,
+     "resolver": [
+      "1.1.1.1",
+      "8.8.8.8"
+     ],
+     "rtype": "TXT",
+     "status": "nxdomain"
+    },
+    "selector": "sendgrid"
+   }
+  ],
+  "found_selectors": [],
+  "method": "selector_guessing",
+  "selectors_tried": [
+   "selector1",
+   "selector2",
+   "google",
+   "default",
+   "dkim",
+   "mail",
+   "k1",
+   "k2",
+   "s1",
+   "s2",
+   "zoho",
+   "mandrill",
+   "smtp",
+   "email",
+   "mailjet",
+   "sendgrid"
+  ]
+ },
+ "dmarc": {
+  "multiple": false,
+  "parsed": {
+   "adkim": "r",
+   "aspf": "r",
+   "fo": null,
+   "has_aggregate_reporting": true,
+   "issues": [],
+   "p": "reject",
+   "pct": null,
+   "rua": "mailto:dmarc-rua@internet.nl",
+   "ruf": null,
+   "sp": "reject",
+   "tags": {
+    "adkim": "r",
+    "aspf": "r",
+    "np": "reject",
+    "p": "reject",
+    "psd": "n",
+    "rua": "mailto:dmarc-rua@internet.nl",
+    "sp": "reject",
+    "t": "n",
+    "v": "DMARC1"
+   },
+   "valid": true
+  },
+  "present": true,
+  "query": {
+   "answers": [
+    "v=DMARC1; p=reject; sp=reject; np=reject; psd=n; t=n; adkim=r; aspf=r; rua=mailto:dmarc-rua@internet.nl"
+   ],
+   "authenticated": true,
+   "error_detail": null,
+   "name": "_dmarc.internet.nl",
+   "queried_at": "2026-09-11T16:06:59.263030+00:00",
+   "rcode": "NOERROR",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "ok"
+  },
+  "records": [
+   "v=DMARC1; p=reject; sp=reject; np=reject; psd=n; t=n; adkim=r; aspf=r; rua=mailto:dmarc-rua@internet.nl"
+  ]
+ },
+ "dnssec": {
+  "ds_present": true,
+  "note": "resolver_authenticated is the resolver's DNSSEC AD flag, not local validation",
+  "query": {
+   "answers": [
+    "22707 13 2 a69c3d2d414e4ef8ceaa66d39d90ed2b20ef36d9f4007d678cea0c0d803a0b7e"
+   ],
+   "authenticated": true,
+   "error_detail": null,
+   "name": "internet.nl",
+   "queried_at": "2026-09-11T16:07:01.671151+00:00",
+   "rcode": "NOERROR",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "DS",
+   "status": "ok"
+  },
+  "resolver_authenticated": true
+ },
+ "domain": "internet.nl",
+ "input_domain": "internet.nl",
+ "mta_sts": {
+  "dns": {
+   "present": false,
+   "query": {
+    "answers": [
+     "v=spf1 -all"
+    ],
+    "authenticated": true,
+    "error_detail": null,
+    "name": "_mta-sts.internet.nl",
+    "queried_at": "2026-09-11T16:07:01.386710+00:00",
+    "rcode": "NOERROR",
+    "requeried": false,
+    "resolver": [
+     "1.1.1.1",
+     "8.8.8.8"
+    ],
+    "rtype": "TXT",
+    "status": "ok"
+   },
+   "records": []
+  },
+  "policy": {
+   "error_detail": "URLError: <urlopen error [Errno 11001] getaddrinfo failed>",
+   "redirected": false,
+   "status": "error",
+   "url": "https://mta-sts.internet.nl/.well-known/mta-sts.txt"
+  }
+ },
+ "mx": {
+  "present": true,
+  "providers": [
+   "other"
+  ],
+  "query": {
+   "answers": [
+    "10 vmx01.prolocation.nl.",
+    "10 vmx02.prolocation.nl.",
+    "10 vmx03.prolocation.net."
+   ],
+   "authenticated": true,
+   "error_detail": null,
+   "name": "internet.nl",
+   "queried_at": "2026-09-11T16:06:59.009114+00:00",
+   "rcode": "NOERROR",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "MX",
+   "status": "ok"
+  },
+  "records": [
+   {
+    "exchange": "vmx01.prolocation.nl.",
+    "preference": 10,
+    "provider": "other"
+   },
+   {
+    "exchange": "vmx02.prolocation.nl.",
+    "preference": 10,
+    "provider": "other"
+   },
+   {
+    "exchange": "vmx03.prolocation.net.",
+    "preference": 10,
+    "provider": "other"
+   }
+  ]
+ },
+ "queries": [
+  {
+   "answers": [
+    "10 vmx01.prolocation.nl.",
+    "10 vmx02.prolocation.nl.",
+    "10 vmx03.prolocation.net."
+   ],
+   "authenticated": true,
+   "error_detail": null,
+   "name": "internet.nl",
+   "queried_at": "2026-09-11T16:06:59.009114+00:00",
+   "rcode": "NOERROR",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "MX",
+   "status": "ok"
+  },
+  {
+   "answers": [
+    "v=spf1 a include:spfinc.prolocation.net ~all"
+   ],
+   "authenticated": true,
+   "error_detail": null,
+   "name": "internet.nl",
+   "queried_at": "2026-09-11T16:06:59.083638+00:00",
+   "rcode": "NOERROR",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "ok"
+  },
+  {
+   "answers": [
+    "v=spf1 mx ip4:94.228.133.0/24 ip4:94.228.129.0/24 ip6:2a00:d00:ff:129::/64 ip6:2a00:d00:ff:133::/64 -all"
+   ],
+   "authenticated": true,
+   "error_detail": null,
+   "name": "spfinc.prolocation.net",
+   "queried_at": "2026-09-11T16:06:59.136439+00:00",
+   "rcode": "NOERROR",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "ok"
+  },
+  {
+   "answers": [
+    "v=DMARC1; p=reject; sp=reject; np=reject; psd=n; t=n; adkim=r; aspf=r; rua=mailto:dmarc-rua@internet.nl"
+   ],
+   "authenticated": true,
+   "error_detail": null,
+   "name": "_dmarc.internet.nl",
+   "queried_at": "2026-09-11T16:06:59.263030+00:00",
+   "rcode": "NOERROR",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "ok"
+  },
+  {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "selector1._domainkey.internet.nl",
+   "queried_at": "2026-09-11T16:06:59.341300+00:00",
+   "rcode": "NXDOMAIN",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "nxdomain"
+  },
+  {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "selector2._domainkey.internet.nl",
+   "queried_at": "2026-09-11T16:06:59.341478+00:00",
+   "rcode": "NXDOMAIN",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "nxdomain"
+  },
+  {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "google._domainkey.internet.nl",
+   "queried_at": "2026-09-11T16:06:59.341690+00:00",
+   "rcode": "NXDOMAIN",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "nxdomain"
+  },
+  {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "default._domainkey.internet.nl",
+   "queried_at": "2026-09-11T16:06:59.341858+00:00",
+   "rcode": "NXDOMAIN",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "nxdomain"
+  },
+  {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "dkim._domainkey.internet.nl",
+   "queried_at": "2026-09-11T16:06:59.342061+00:00",
+   "rcode": "NXDOMAIN",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "nxdomain"
+  },
+  {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "mail._domainkey.internet.nl",
+   "queried_at": "2026-09-11T16:06:59.342271+00:00",
+   "rcode": "NXDOMAIN",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "nxdomain"
+  },
+  {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "k1._domainkey.internet.nl",
+   "queried_at": "2026-09-11T16:06:59.342471+00:00",
+   "rcode": "NXDOMAIN",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "nxdomain"
+  },
+  {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "k2._domainkey.internet.nl",
+   "queried_at": "2026-09-11T16:06:59.342666+00:00",
+   "rcode": "NXDOMAIN",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "nxdomain"
+  },
+  {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "s1._domainkey.internet.nl",
+   "queried_at": "2026-09-11T16:06:59.471284+00:00",
+   "rcode": "NXDOMAIN",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "nxdomain"
+  },
+  {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "s2._domainkey.internet.nl",
+   "queried_at": "2026-09-11T16:06:59.571716+00:00",
+   "rcode": "NXDOMAIN",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "nxdomain"
+  },
+  {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "zoho._domainkey.internet.nl",
+   "queried_at": "2026-09-11T16:06:59.669004+00:00",
+   "rcode": "NXDOMAIN",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "nxdomain"
+  },
+  {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "mandrill._domainkey.internet.nl",
+   "queried_at": "2026-09-11T16:06:59.748838+00:00",
+   "rcode": "NXDOMAIN",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "nxdomain"
+  },
+  {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "smtp._domainkey.internet.nl",
+   "queried_at": "2026-09-11T16:06:59.842420+00:00",
+   "rcode": "NXDOMAIN",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "nxdomain"
+  },
+  {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "email._domainkey.internet.nl",
+   "queried_at": "2026-09-11T16:06:59.939289+00:00",
+   "rcode": "NXDOMAIN",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "nxdomain"
+  },
+  {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "mailjet._domainkey.internet.nl",
+   "queried_at": "2026-09-11T16:07:00.040999+00:00",
+   "rcode": "NXDOMAIN",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "nxdomain"
+  },
+  {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "sendgrid._domainkey.internet.nl",
+   "queried_at": "2026-09-11T16:07:00.161493+00:00",
+   "rcode": "NXDOMAIN",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "nxdomain"
+  },
+  {
+   "answers": [
+    "2 1 1 e1ae9c3de848ece1ba72e0d991ae4d0d9ec547c6bad1dddab9d6beb0a7e0e0d8",
+    "3 1 1 0d5a5c8f3d8aab82bba32bf8d711fa2433e4fe5fa4828b0443364d3ab5cdc1d5"
+   ],
+   "authenticated": true,
+   "error_detail": null,
+   "name": "_25._tcp.vmx01.prolocation.nl",
+   "queried_at": "2026-09-11T16:07:00.939854+00:00",
+   "rcode": "NOERROR",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TLSA",
+   "status": "ok"
+  },
+  {
+   "answers": [
+    "2 1 1 e1ae9c3de848ece1ba72e0d991ae4d0d9ec547c6bad1dddab9d6beb0a7e0e0d8",
+    "3 1 1 55cae87df5bfbfc448eab96ff13c039a3ab0e6f0a256bb79b8d54fff3f709515"
+   ],
+   "authenticated": true,
+   "error_detail": null,
+   "name": "_25._tcp.vmx02.prolocation.nl",
+   "queried_at": "2026-09-11T16:07:01.218682+00:00",
+   "rcode": "NOERROR",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TLSA",
+   "status": "ok"
+  },
+  {
+   "answers": [
+    "2 1 1 e1ae9c3de848ece1ba72e0d991ae4d0d9ec547c6bad1dddab9d6beb0a7e0e0d8",
+    "3 1 1 44858cd78c2d1a04739ecfc07fd23401b220d7a5a670bb81e24014f2dc0e1104"
+   ],
+   "authenticated": true,
+   "error_detail": null,
+   "name": "_25._tcp.vmx03.prolocation.net",
+   "queried_at": "2026-09-11T16:07:01.376951+00:00",
+   "rcode": "NOERROR",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TLSA",
+   "status": "ok"
+  },
+  {
+   "answers": [
+    "v=spf1 -all"
+   ],
+   "authenticated": true,
+   "error_detail": null,
+   "name": "_mta-sts.internet.nl",
+   "queried_at": "2026-09-11T16:07:01.386710+00:00",
+   "rcode": "NOERROR",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "ok"
+  },
+  {
+   "answers": [
+    "v=spf1 -all"
+   ],
+   "authenticated": true,
+   "error_detail": null,
+   "name": "_smtp._tls.internet.nl",
+   "queried_at": "2026-09-11T16:07:01.563813+00:00",
+   "rcode": "NOERROR",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "ok"
+  },
+  {
+   "answers": [
+    "22707 13 2 a69c3d2d414e4ef8ceaa66d39d90ed2b20ef36d9f4007d678cea0c0d803a0b7e"
+   ],
+   "authenticated": true,
+   "error_detail": null,
+   "name": "internet.nl",
+   "queried_at": "2026-09-11T16:07:01.671151+00:00",
+   "rcode": "NOERROR",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "DS",
+   "status": "ok"
+  },
+  {
+   "answers": [
+    "0 iodef \"mailto:question@internet.nl\"",
+    "0 issue \"letsencrypt.org;validationmethods=http-01,tls-alpn-01\"",
+    "0 issue \"sectigo.com\"",
+    "0 issuevmc \";\"",
+    "0 issuemail \";\"",
+    "0 issuewild \";\""
+   ],
+   "authenticated": true,
+   "error_detail": null,
+   "name": "internet.nl",
+   "queried_at": "2026-09-11T16:07:01.746016+00:00",
+   "rcode": "NOERROR",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "CAA",
+   "status": "ok"
+  }
+ ],
+ "resolvers": [
+  "1.1.1.1",
+  "8.8.8.8"
+ ],
+ "spf": {
+  "lookups": {
+   "chain": [
+    {
+     "includes": [
+      "spfinc.prolocation.net"
+     ],
+     "lookup_terms_here": 2,
+     "name": "<root>",
+     "record": "v=spf1 a include:spfinc.prolocation.net ~all",
+     "redirect": null
+    },
+    {
+     "includes": [],
+     "lookup_terms_here": 1,
+     "name": "spfinc.prolocation.net",
+     "record": "v=spf1 mx ip4:94.228.133.0/24 ip4:94.228.129.0/24 ip6:2a00:d00:ff:129::/64 ip6:2a00:d00:ff:133::/64 -all",
+     "redirect": null
+    }
+   ],
+   "exceeds_limit": false,
+   "limit": 10,
+   "loop_detected": false,
+   "method": "rfc7208_terms_recursive_simplified",
+   "total_lookups": 3,
+   "truncated": false
+  },
+  "multiple": false,
+  "parsed": {
+   "exp": null,
+   "includes": [
+    "spfinc.prolocation.net"
+   ],
+   "lookup_terms_here": 2,
+   "mechanisms": [
+    {
+     "qualifier": "+",
+     "raw": "a",
+     "type": "a",
+     "value": null
+    },
+    {
+     "qualifier": "+",
+     "raw": "include:spfinc.prolocation.net",
+     "type": "include",
+     "value": "spfinc.prolocation.net"
+    },
+    {
+     "qualifier": "~",
+     "raw": "~all",
+     "type": "all",
+     "value": null
+    }
+   ],
+   "redirect": null,
+   "terminator": {
+    "qualifier": "~",
+    "raw": "~all",
+    "type": "all",
+    "value": null
+   },
+   "unknown_modifiers": [],
+   "version_ok": true
+  },
+  "present": true,
+  "query": {
+   "answers": [
+    "v=spf1 a include:spfinc.prolocation.net ~all"
+   ],
+   "authenticated": true,
+   "error_detail": null,
+   "name": "internet.nl",
+   "queried_at": "2026-09-11T16:06:59.083638+00:00",
+   "rcode": "NOERROR",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "ok"
+  },
+  "records": [
+   "v=spf1 a include:spfinc.prolocation.net ~all"
+  ]
+ },
+ "tls_rpt": {
+  "present": false,
+  "query": {
+   "answers": [
+    "v=spf1 -all"
+   ],
+   "authenticated": true,
+   "error_detail": null,
+   "name": "_smtp._tls.internet.nl",
+   "queried_at": "2026-09-11T16:07:01.563813+00:00",
+   "rcode": "NOERROR",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "ok"
+  },
+  "records": []
+ }
+}

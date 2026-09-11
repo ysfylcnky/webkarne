@@ -1,0 +1,1085 @@
+{
+ "caa": {
+  "present": false,
+  "query": {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "mumifashion.com",
+   "queried_at": "2026-09-11T16:07:01.627796+00:00",
+   "rcode": "NOERROR",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "CAA",
+   "status": "noanswer"
+  },
+  "records": []
+ },
+ "collected_at": "2026-09-11T16:06:59.042515+00:00",
+ "collector": "dns_email",
+ "collector_version": "0.3.0",
+ "config_hash": "f1f1eeaa8a3f76c807bcbdb25c0e9299e66f6641060ff05cab2fc2ded8fba814",
+ "dane": {
+  "hosts": [
+   {
+    "mx_host": "mx1.hostinger.com",
+    "present": false,
+    "query": {
+     "answers": [],
+     "authenticated": null,
+     "error_detail": null,
+     "name": "_25._tcp.mx1.hostinger.com",
+     "queried_at": "2026-09-11T16:07:01.142424+00:00",
+     "rcode": "NOERROR",
+     "requeried": false,
+     "resolver": [
+      "1.1.1.1",
+      "8.8.8.8"
+     ],
+     "rtype": "TLSA",
+     "status": "noanswer"
+    },
+    "records": []
+   },
+   {
+    "mx_host": "mx2.hostinger.com",
+    "present": false,
+    "query": {
+     "answers": [],
+     "authenticated": null,
+     "error_detail": null,
+     "name": "_25._tcp.mx2.hostinger.com",
+     "queried_at": "2026-09-11T16:07:01.224254+00:00",
+     "rcode": "NOERROR",
+     "requeried": false,
+     "resolver": [
+      "1.1.1.1",
+      "8.8.8.8"
+     ],
+     "rtype": "TLSA",
+     "status": "noanswer"
+    },
+    "records": []
+   }
+  ],
+  "mx_hosts_checked": [
+   "mx1.hostinger.com",
+   "mx2.hostinger.com"
+  ],
+  "note": "DANE requires DNSSEC-signed TLSA records to be trustworthy",
+  "present": false
+ },
+ "dkim": {
+  "attempts": [
+   {
+    "present": false,
+    "query": {
+     "answers": [],
+     "authenticated": null,
+     "error_detail": null,
+     "name": "selector1._domainkey.mumifashion.com",
+     "queried_at": "2026-09-11T16:06:59.544588+00:00",
+     "rcode": "NXDOMAIN",
+     "requeried": false,
+     "resolver": [
+      "1.1.1.1",
+      "8.8.8.8"
+     ],
+     "rtype": "TXT",
+     "status": "nxdomain"
+    },
+    "selector": "selector1"
+   },
+   {
+    "present": false,
+    "query": {
+     "answers": [],
+     "authenticated": null,
+     "error_detail": null,
+     "name": "selector2._domainkey.mumifashion.com",
+     "queried_at": "2026-09-11T16:06:59.544771+00:00",
+     "rcode": "NXDOMAIN",
+     "requeried": false,
+     "resolver": [
+      "1.1.1.1",
+      "8.8.8.8"
+     ],
+     "rtype": "TXT",
+     "status": "nxdomain"
+    },
+    "selector": "selector2"
+   },
+   {
+    "present": false,
+    "query": {
+     "answers": [],
+     "authenticated": null,
+     "error_detail": null,
+     "name": "google._domainkey.mumifashion.com",
+     "queried_at": "2026-09-11T16:06:59.544955+00:00",
+     "rcode": "NXDOMAIN",
+     "requeried": false,
+     "resolver": [
+      "1.1.1.1",
+      "8.8.8.8"
+     ],
+     "rtype": "TXT",
+     "status": "nxdomain"
+    },
+    "selector": "google"
+   },
+   {
+    "present": false,
+    "query": {
+     "answers": [],
+     "authenticated": null,
+     "error_detail": null,
+     "name": "default._domainkey.mumifashion.com",
+     "queried_at": "2026-09-11T16:06:59.545152+00:00",
+     "rcode": "NXDOMAIN",
+     "requeried": false,
+     "resolver": [
+      "1.1.1.1",
+      "8.8.8.8"
+     ],
+     "rtype": "TXT",
+     "status": "nxdomain"
+    },
+    "selector": "default"
+   },
+   {
+    "present": false,
+    "query": {
+     "answers": [],
+     "authenticated": null,
+     "error_detail": null,
+     "name": "dkim._domainkey.mumifashion.com",
+     "queried_at": "2026-09-11T16:06:59.545321+00:00",
+     "rcode": "NXDOMAIN",
+     "requeried": false,
+     "resolver": [
+      "1.1.1.1",
+      "8.8.8.8"
+     ],
+     "rtype": "TXT",
+     "status": "nxdomain"
+    },
+    "selector": "dkim"
+   },
+   {
+    "present": false,
+    "query": {
+     "answers": [],
+     "authenticated": null,
+     "error_detail": null,
+     "name": "mail._domainkey.mumifashion.com",
+     "queried_at": "2026-09-11T16:06:59.545475+00:00",
+     "rcode": "NXDOMAIN",
+     "requeried": false,
+     "resolver": [
+      "1.1.1.1",
+      "8.8.8.8"
+     ],
+     "rtype": "TXT",
+     "status": "nxdomain"
+    },
+    "selector": "mail"
+   },
+   {
+    "present": false,
+    "query": {
+     "answers": [],
+     "authenticated": null,
+     "error_detail": null,
+     "name": "k1._domainkey.mumifashion.com",
+     "queried_at": "2026-09-11T16:06:59.545618+00:00",
+     "rcode": "NXDOMAIN",
+     "requeried": false,
+     "resolver": [
+      "1.1.1.1",
+      "8.8.8.8"
+     ],
+     "rtype": "TXT",
+     "status": "nxdomain"
+    },
+    "selector": "k1"
+   },
+   {
+    "present": false,
+    "query": {
+     "answers": [],
+     "authenticated": null,
+     "error_detail": null,
+     "name": "k2._domainkey.mumifashion.com",
+     "queried_at": "2026-09-11T16:06:59.545795+00:00",
+     "rcode": "NXDOMAIN",
+     "requeried": false,
+     "resolver": [
+      "1.1.1.1",
+      "8.8.8.8"
+     ],
+     "rtype": "TXT",
+     "status": "nxdomain"
+    },
+    "selector": "k2"
+   },
+   {
+    "present": false,
+    "query": {
+     "answers": [],
+     "authenticated": null,
+     "error_detail": null,
+     "name": "s1._domainkey.mumifashion.com",
+     "queried_at": "2026-09-11T16:06:59.645977+00:00",
+     "rcode": "NXDOMAIN",
+     "requeried": false,
+     "resolver": [
+      "1.1.1.1",
+      "8.8.8.8"
+     ],
+     "rtype": "TXT",
+     "status": "nxdomain"
+    },
+    "selector": "s1"
+   },
+   {
+    "present": false,
+    "query": {
+     "answers": [],
+     "authenticated": null,
+     "error_detail": null,
+     "name": "s2._domainkey.mumifashion.com",
+     "queried_at": "2026-09-11T16:06:59.717180+00:00",
+     "rcode": "NXDOMAIN",
+     "requeried": false,
+     "resolver": [
+      "1.1.1.1",
+      "8.8.8.8"
+     ],
+     "rtype": "TXT",
+     "status": "nxdomain"
+    },
+    "selector": "s2"
+   },
+   {
+    "present": false,
+    "query": {
+     "answers": [],
+     "authenticated": null,
+     "error_detail": null,
+     "name": "zoho._domainkey.mumifashion.com",
+     "queried_at": "2026-09-11T16:06:59.815041+00:00",
+     "rcode": "NXDOMAIN",
+     "requeried": false,
+     "resolver": [
+      "1.1.1.1",
+      "8.8.8.8"
+     ],
+     "rtype": "TXT",
+     "status": "nxdomain"
+    },
+    "selector": "zoho"
+   },
+   {
+    "present": false,
+    "query": {
+     "answers": [],
+     "authenticated": null,
+     "error_detail": null,
+     "name": "mandrill._domainkey.mumifashion.com",
+     "queried_at": "2026-09-11T16:06:59.914676+00:00",
+     "rcode": "NXDOMAIN",
+     "requeried": false,
+     "resolver": [
+      "1.1.1.1",
+      "8.8.8.8"
+     ],
+     "rtype": "TXT",
+     "status": "nxdomain"
+    },
+    "selector": "mandrill"
+   },
+   {
+    "present": false,
+    "query": {
+     "answers": [],
+     "authenticated": null,
+     "error_detail": null,
+     "name": "smtp._domainkey.mumifashion.com",
+     "queried_at": "2026-09-11T16:07:00.015230+00:00",
+     "rcode": "NXDOMAIN",
+     "requeried": false,
+     "resolver": [
+      "1.1.1.1",
+      "8.8.8.8"
+     ],
+     "rtype": "TXT",
+     "status": "nxdomain"
+    },
+    "selector": "smtp"
+   },
+   {
+    "present": false,
+    "query": {
+     "answers": [],
+     "authenticated": null,
+     "error_detail": null,
+     "name": "email._domainkey.mumifashion.com",
+     "queried_at": "2026-09-11T16:07:00.116345+00:00",
+     "rcode": "NXDOMAIN",
+     "requeried": false,
+     "resolver": [
+      "1.1.1.1",
+      "8.8.8.8"
+     ],
+     "rtype": "TXT",
+     "status": "nxdomain"
+    },
+    "selector": "email"
+   },
+   {
+    "present": false,
+    "query": {
+     "answers": [],
+     "authenticated": null,
+     "error_detail": null,
+     "name": "mailjet._domainkey.mumifashion.com",
+     "queried_at": "2026-09-11T16:07:00.214289+00:00",
+     "rcode": "NXDOMAIN",
+     "requeried": false,
+     "resolver": [
+      "1.1.1.1",
+      "8.8.8.8"
+     ],
+     "rtype": "TXT",
+     "status": "nxdomain"
+    },
+    "selector": "mailjet"
+   },
+   {
+    "present": false,
+    "query": {
+     "answers": [],
+     "authenticated": null,
+     "error_detail": null,
+     "name": "sendgrid._domainkey.mumifashion.com",
+     "queried_at": "2026-09-11T16:07:00.319798+00:00",
+     "rcode": "NXDOMAIN",
+     "requeried": false,
+     "resolver": [
+      "1.1.1.1",
+      "8.8.8.8"
+     ],
+     "rtype": "TXT",
+     "status": "nxdomain"
+    },
+    "selector": "sendgrid"
+   }
+  ],
+  "found_selectors": [],
+  "method": "selector_guessing",
+  "selectors_tried": [
+   "selector1",
+   "selector2",
+   "google",
+   "default",
+   "dkim",
+   "mail",
+   "k1",
+   "k2",
+   "s1",
+   "s2",
+   "zoho",
+   "mandrill",
+   "smtp",
+   "email",
+   "mailjet",
+   "sendgrid"
+  ]
+ },
+ "dmarc": {
+  "multiple": false,
+  "parsed": {
+   "adkim": null,
+   "aspf": null,
+   "fo": null,
+   "has_aggregate_reporting": false,
+   "issues": [],
+   "p": "none",
+   "pct": null,
+   "rua": null,
+   "ruf": null,
+   "sp": null,
+   "tags": {
+    "p": "none",
+    "v": "DMARC1"
+   },
+   "valid": true
+  },
+  "present": true,
+  "query": {
+   "answers": [
+    "v=DMARC1; p=none"
+   ],
+   "authenticated": false,
+   "error_detail": null,
+   "name": "_dmarc.mumifashion.com",
+   "queried_at": "2026-09-11T16:06:59.445854+00:00",
+   "rcode": "NOERROR",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "ok"
+  },
+  "records": [
+   "v=DMARC1; p=none"
+  ]
+ },
+ "dnssec": {
+  "ds_present": false,
+  "note": "resolver_authenticated is the resolver's DNSSEC AD flag, not local validation",
+  "query": {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "mumifashion.com",
+   "queried_at": "2026-09-11T16:07:01.529577+00:00",
+   "rcode": "NOERROR",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "DS",
+   "status": "noanswer"
+  },
+  "resolver_authenticated": null
+ },
+ "domain": "mumifashion.com",
+ "input_domain": "mumifashion.com",
+ "mta_sts": {
+  "dns": {
+   "present": false,
+   "query": {
+    "answers": [],
+    "authenticated": null,
+    "error_detail": null,
+    "name": "_mta-sts.mumifashion.com",
+    "queried_at": "2026-09-11T16:07:01.315575+00:00",
+    "rcode": "NXDOMAIN",
+    "requeried": false,
+    "resolver": [
+     "1.1.1.1",
+     "8.8.8.8"
+    ],
+    "rtype": "TXT",
+    "status": "nxdomain"
+   },
+   "records": []
+  },
+  "policy": {
+   "error_detail": "URLError: <urlopen error [Errno 11001] getaddrinfo failed>",
+   "redirected": false,
+   "status": "error",
+   "url": "https://mta-sts.mumifashion.com/.well-known/mta-sts.txt"
+  }
+ },
+ "mx": {
+  "present": true,
+  "providers": [
+   "other"
+  ],
+  "query": {
+   "answers": [
+    "10 mx2.hostinger.com.",
+    "5 mx1.hostinger.com."
+   ],
+   "authenticated": false,
+   "error_detail": null,
+   "name": "mumifashion.com",
+   "queried_at": "2026-09-11T16:06:59.006697+00:00",
+   "rcode": "NOERROR",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "MX",
+   "status": "ok"
+  },
+  "records": [
+   {
+    "exchange": "mx1.hostinger.com.",
+    "preference": 5,
+    "provider": "other"
+   },
+   {
+    "exchange": "mx2.hostinger.com.",
+    "preference": 10,
+    "provider": "other"
+   }
+  ]
+ },
+ "queries": [
+  {
+   "answers": [
+    "10 mx2.hostinger.com.",
+    "5 mx1.hostinger.com."
+   ],
+   "authenticated": false,
+   "error_detail": null,
+   "name": "mumifashion.com",
+   "queried_at": "2026-09-11T16:06:59.006697+00:00",
+   "rcode": "NOERROR",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "MX",
+   "status": "ok"
+  },
+  {
+   "answers": [
+    "v=spf1 include:_spf.mail.hostinger.com ~all"
+   ],
+   "authenticated": false,
+   "error_detail": null,
+   "name": "mumifashion.com",
+   "queried_at": "2026-09-11T16:06:59.042586+00:00",
+   "rcode": "NOERROR",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "ok"
+  },
+  {
+   "answers": [
+    "v=spf1 include:relay.mail.hostinger.com include:relay.mailchannels.net ~all"
+   ],
+   "authenticated": true,
+   "error_detail": null,
+   "name": "_spf.mail.hostinger.com",
+   "queried_at": "2026-09-11T16:06:59.142370+00:00",
+   "rcode": "NOERROR",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "ok"
+  },
+  {
+   "answers": [
+    "yahoo-verification-key=VSlCavxWFv2OYDytm3foLptA9w+PTUE5a1MR7xLHSF0=",
+    "v=spf1 ip4:148.222.54.0/24 ip4:148.222.55.0/24 ip4:189.12.192.0/22 ip6:2a02:4780:5a:c0de::/64 ip6:2a02:4780:5b:c0de::/64 ~all"
+   ],
+   "authenticated": true,
+   "error_detail": null,
+   "name": "relay.mail.hostinger.com",
+   "queried_at": "2026-09-11T16:06:59.212324+00:00",
+   "rcode": "NOERROR",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "ok"
+  },
+  {
+   "answers": [
+    "v=spf1 ip4:23.83.208.0/20 ip4:35.85.190.185/32 ~all"
+   ],
+   "authenticated": true,
+   "error_detail": null,
+   "name": "relay.mailchannels.net",
+   "queried_at": "2026-09-11T16:06:59.313332+00:00",
+   "rcode": "NOERROR",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "ok"
+  },
+  {
+   "answers": [
+    "v=DMARC1; p=none"
+   ],
+   "authenticated": false,
+   "error_detail": null,
+   "name": "_dmarc.mumifashion.com",
+   "queried_at": "2026-09-11T16:06:59.445854+00:00",
+   "rcode": "NOERROR",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "ok"
+  },
+  {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "selector1._domainkey.mumifashion.com",
+   "queried_at": "2026-09-11T16:06:59.544588+00:00",
+   "rcode": "NXDOMAIN",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "nxdomain"
+  },
+  {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "selector2._domainkey.mumifashion.com",
+   "queried_at": "2026-09-11T16:06:59.544771+00:00",
+   "rcode": "NXDOMAIN",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "nxdomain"
+  },
+  {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "google._domainkey.mumifashion.com",
+   "queried_at": "2026-09-11T16:06:59.544955+00:00",
+   "rcode": "NXDOMAIN",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "nxdomain"
+  },
+  {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "default._domainkey.mumifashion.com",
+   "queried_at": "2026-09-11T16:06:59.545152+00:00",
+   "rcode": "NXDOMAIN",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "nxdomain"
+  },
+  {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "dkim._domainkey.mumifashion.com",
+   "queried_at": "2026-09-11T16:06:59.545321+00:00",
+   "rcode": "NXDOMAIN",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "nxdomain"
+  },
+  {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "mail._domainkey.mumifashion.com",
+   "queried_at": "2026-09-11T16:06:59.545475+00:00",
+   "rcode": "NXDOMAIN",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "nxdomain"
+  },
+  {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "k1._domainkey.mumifashion.com",
+   "queried_at": "2026-09-11T16:06:59.545618+00:00",
+   "rcode": "NXDOMAIN",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "nxdomain"
+  },
+  {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "k2._domainkey.mumifashion.com",
+   "queried_at": "2026-09-11T16:06:59.545795+00:00",
+   "rcode": "NXDOMAIN",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "nxdomain"
+  },
+  {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "s1._domainkey.mumifashion.com",
+   "queried_at": "2026-09-11T16:06:59.645977+00:00",
+   "rcode": "NXDOMAIN",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "nxdomain"
+  },
+  {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "s2._domainkey.mumifashion.com",
+   "queried_at": "2026-09-11T16:06:59.717180+00:00",
+   "rcode": "NXDOMAIN",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "nxdomain"
+  },
+  {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "zoho._domainkey.mumifashion.com",
+   "queried_at": "2026-09-11T16:06:59.815041+00:00",
+   "rcode": "NXDOMAIN",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "nxdomain"
+  },
+  {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "mandrill._domainkey.mumifashion.com",
+   "queried_at": "2026-09-11T16:06:59.914676+00:00",
+   "rcode": "NXDOMAIN",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "nxdomain"
+  },
+  {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "smtp._domainkey.mumifashion.com",
+   "queried_at": "2026-09-11T16:07:00.015230+00:00",
+   "rcode": "NXDOMAIN",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "nxdomain"
+  },
+  {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "email._domainkey.mumifashion.com",
+   "queried_at": "2026-09-11T16:07:00.116345+00:00",
+   "rcode": "NXDOMAIN",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "nxdomain"
+  },
+  {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "mailjet._domainkey.mumifashion.com",
+   "queried_at": "2026-09-11T16:07:00.214289+00:00",
+   "rcode": "NXDOMAIN",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "nxdomain"
+  },
+  {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "sendgrid._domainkey.mumifashion.com",
+   "queried_at": "2026-09-11T16:07:00.319798+00:00",
+   "rcode": "NXDOMAIN",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "nxdomain"
+  },
+  {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "_25._tcp.mx1.hostinger.com",
+   "queried_at": "2026-09-11T16:07:01.142424+00:00",
+   "rcode": "NOERROR",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TLSA",
+   "status": "noanswer"
+  },
+  {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "_25._tcp.mx2.hostinger.com",
+   "queried_at": "2026-09-11T16:07:01.224254+00:00",
+   "rcode": "NOERROR",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TLSA",
+   "status": "noanswer"
+  },
+  {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "_mta-sts.mumifashion.com",
+   "queried_at": "2026-09-11T16:07:01.315575+00:00",
+   "rcode": "NXDOMAIN",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "nxdomain"
+  },
+  {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "_smtp._tls.mumifashion.com",
+   "queried_at": "2026-09-11T16:07:01.445094+00:00",
+   "rcode": "NXDOMAIN",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "nxdomain"
+  },
+  {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "mumifashion.com",
+   "queried_at": "2026-09-11T16:07:01.529577+00:00",
+   "rcode": "NOERROR",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "DS",
+   "status": "noanswer"
+  },
+  {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "mumifashion.com",
+   "queried_at": "2026-09-11T16:07:01.627796+00:00",
+   "rcode": "NOERROR",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "CAA",
+   "status": "noanswer"
+  }
+ ],
+ "resolvers": [
+  "1.1.1.1",
+  "8.8.8.8"
+ ],
+ "spf": {
+  "lookups": {
+   "chain": [
+    {
+     "includes": [
+      "_spf.mail.hostinger.com"
+     ],
+     "lookup_terms_here": 1,
+     "name": "<root>",
+     "record": "v=spf1 include:_spf.mail.hostinger.com ~all",
+     "redirect": null
+    },
+    {
+     "includes": [
+      "relay.mail.hostinger.com",
+      "relay.mailchannels.net"
+     ],
+     "lookup_terms_here": 2,
+     "name": "_spf.mail.hostinger.com",
+     "record": "v=spf1 include:relay.mail.hostinger.com include:relay.mailchannels.net ~all",
+     "redirect": null
+    },
+    {
+     "includes": [],
+     "lookup_terms_here": 0,
+     "name": "relay.mail.hostinger.com",
+     "record": "v=spf1 ip4:148.222.54.0/24 ip4:148.222.55.0/24 ip4:189.12.192.0/22 ip6:2a02:4780:5a:c0de::/64 ip6:2a02:4780:5b:c0de::/64 ~all",
+     "redirect": null
+    },
+    {
+     "includes": [],
+     "lookup_terms_here": 0,
+     "name": "relay.mailchannels.net",
+     "record": "v=spf1 ip4:23.83.208.0/20 ip4:35.85.190.185/32 ~all",
+     "redirect": null
+    }
+   ],
+   "exceeds_limit": false,
+   "limit": 10,
+   "loop_detected": false,
+   "method": "rfc7208_terms_recursive_simplified",
+   "total_lookups": 3,
+   "truncated": false
+  },
+  "multiple": false,
+  "parsed": {
+   "exp": null,
+   "includes": [
+    "_spf.mail.hostinger.com"
+   ],
+   "lookup_terms_here": 1,
+   "mechanisms": [
+    {
+     "qualifier": "+",
+     "raw": "include:_spf.mail.hostinger.com",
+     "type": "include",
+     "value": "_spf.mail.hostinger.com"
+    },
+    {
+     "qualifier": "~",
+     "raw": "~all",
+     "type": "all",
+     "value": null
+    }
+   ],
+   "redirect": null,
+   "terminator": {
+    "qualifier": "~",
+    "raw": "~all",
+    "type": "all",
+    "value": null
+   },
+   "unknown_modifiers": [],
+   "version_ok": true
+  },
+  "present": true,
+  "query": {
+   "answers": [
+    "v=spf1 include:_spf.mail.hostinger.com ~all"
+   ],
+   "authenticated": false,
+   "error_detail": null,
+   "name": "mumifashion.com",
+   "queried_at": "2026-09-11T16:06:59.042586+00:00",
+   "rcode": "NOERROR",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "ok"
+  },
+  "records": [
+   "v=spf1 include:_spf.mail.hostinger.com ~all"
+  ]
+ },
+ "tls_rpt": {
+  "present": false,
+  "query": {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "_smtp._tls.mumifashion.com",
+   "queried_at": "2026-09-11T16:07:01.445094+00:00",
+   "rcode": "NXDOMAIN",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "nxdomain"
+  },
+  "records": []
+ }
+}

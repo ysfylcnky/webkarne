@@ -18,6 +18,7 @@ from typing import Any
 import typer
 
 from karne import batch, frontier, storage
+from karne.analyze import rescore, scoring
 from karne.collectors import dns_email
 from karne.models import Domain
 
@@ -325,6 +326,99 @@ def batch_scan(
         )
         typer.echo("")
         typer.echo(progress.summary())
+    finally:
+        conn.close()
+
+
+# ---------------------------------------------------------------------------
+# rescore command (Sprint 3) — derive scores/findings from stored raw data
+# ---------------------------------------------------------------------------
+
+
+@app.command("rescore")
+def rescore_cmd(
+    scan_id: int = typer.Option(0, "--scan-id", help="Rescore only this scan id (0 = not by id)."),
+    run_label: str = typer.Option(
+        "", "--run-label", help="Rescore every scan in this round (e.g. 2026-09)."
+    ),
+    only_unscored: bool = typer.Option(
+        False,
+        "--only-unscored",
+        help="Only scans with no score yet for the dimension (incremental).",
+    ),
+    dimension: str = typer.Option(
+        "email", "--dimension", help="Scoring dimension (only 'email' exists in Sprint 3)."
+    ),
+    scoring_file: str = typer.Option(
+        "", "--scoring", help="Path to a scoring.toml (defaults to config/scoring.toml)."
+    ),
+    dry_run: bool = typer.Option(
+        False, "--dry-run", help="Show how many scans would be (re)scored and exit."
+    ),
+    db: Path = typer.Option(
+        storage.DEFAULT_DB_PATH, "--db", help="SQLite database path.", show_default=True
+    ),
+) -> None:
+    """Derive scores/findings from stored raw data, using a versioned ruleset (K-02/K-03).
+
+    Reads ``scan_results`` and writes the derived ``scores``/``findings``; it NEVER
+    modifies raw data (rule 5). Scores/findings are reproducible, so re-running is
+    safe: a scan's prior derived rows for the dimension are replaced, and each
+    ``scores`` row records its ``ruleset_version`` (so November's raw data can be
+    re-graded with May's rules). Target one ``--scan-id``, one ``--run-label``, or
+    (default) all not-yet-scored scans.
+    """
+    if dimension != "email":
+        typer.echo(
+            f"Unknown dimension '{dimension}'. Only 'email' (dimension A) exists in Sprint 3.",
+            err=True,
+        )
+        raise typer.Exit(code=2)
+
+    ruleset = scoring.load_ruleset(scoring_file or None)
+    version = ruleset.get("version")
+    sid = scan_id or None
+    label = run_label or None
+
+    conn = storage.connect(db)
+    try:
+        storage.init_db(conn)
+        if sid is not None:
+            ids = [sid]
+        else:
+            ids = storage.select_scans_for_scoring(
+                conn, run_label=label, only_unscored=only_unscored, dimension=dimension
+            )
+
+        selectors = []
+        if sid is not None:
+            selectors.append(f"scan-id={sid}")
+        if label is not None:
+            selectors.append(f"run-label={label}")
+        if only_unscored:
+            selectors.append("only-unscored")
+        scope = (" [" + ", ".join(selectors) + "]") if selectors else " [all scored+unscored]"
+        typer.echo(
+            f"Rescore dimension '{dimension}' with ruleset {version}: "
+            f"{len(ids)} scan(s) selected{scope}."
+        )
+
+        if dry_run:
+            typer.echo("Dry run: nothing written.")
+            return
+        if not ids:
+            typer.echo("Nothing to rescore.")
+            return
+
+        every = max(1, min(500, len(ids) // 20))
+
+        def _report(i: int, n: int) -> None:
+            if i % every == 0 or i == n:
+                typer.echo(f"  [{i}/{n}] rescored", err=True)
+
+        summary = rescore.rescore_scans(conn, ids, ruleset, dimension=dimension, progress=_report)
+        typer.echo("")
+        typer.echo(summary.summary_line())
     finally:
         conn.close()
 

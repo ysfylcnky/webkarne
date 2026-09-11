@@ -317,3 +317,58 @@ def test_batch_dry_run_writes_nothing(monkeypatch, tmp_path):
     conn = storage.connect(db_path)
     assert conn.execute("SELECT COUNT(*) FROM scans").fetchone()[0] == 0  # nothing written
     conn.close()
+
+
+# ---------------------------------------------------------------------------
+# rescore command (Sprint 3) — offline, collector monkeypatched
+# ---------------------------------------------------------------------------
+
+
+def _store_one_scan(monkeypatch, db_path):
+    """Store a single ad-hoc scan via the scan command; returns nothing."""
+    _patch_collect(monkeypatch)
+    runner.invoke(cli.app, ["scan", "example.com", "--db", str(db_path)])
+
+
+def test_rescore_scores_unscored_scans(monkeypatch, tmp_path):
+    db_path = tmp_path / "karne.db"
+    _store_one_scan(monkeypatch, db_path)
+
+    result = runner.invoke(cli.app, ["rescore", "--db", str(db_path)])
+    assert result.exit_code == 0, result.output
+    assert "1 scan(s) selected" in result.output
+    assert "1/1 scored" in result.output
+
+    conn = storage.connect(db_path)
+    try:
+        scan = storage.latest_scan_for_domain(conn, "example.com")
+        scores = storage.get_scores(conn, scan.id)
+        assert len(scores) == 1
+        assert scores[0].dimension == "email"
+        assert scores[0].ruleset_version  # a version was stamped
+    finally:
+        conn.close()
+
+
+def test_rescore_dry_run_writes_nothing(monkeypatch, tmp_path):
+    db_path = tmp_path / "karne.db"
+    _store_one_scan(monkeypatch, db_path)
+
+    result = runner.invoke(cli.app, ["rescore", "--db", str(db_path), "--dry-run"])
+    assert result.exit_code == 0, result.output
+    assert "Dry run: nothing written." in result.output
+
+    conn = storage.connect(db_path)
+    try:
+        assert conn.execute("SELECT COUNT(*) FROM scores").fetchone()[0] == 0
+    finally:
+        conn.close()
+
+
+def test_rescore_rejects_unknown_dimension(tmp_path):
+    db_path = tmp_path / "karne.db"
+    result = runner.invoke(
+        cli.app, ["rescore", "--dimension", "transport", "--db", str(db_path)]
+    )
+    assert result.exit_code == 2
+    assert "Only 'email'" in result.output

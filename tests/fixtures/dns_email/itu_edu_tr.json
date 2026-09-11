@@ -1,0 +1,1081 @@
+{
+ "caa": {
+  "present": false,
+  "query": {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "itu.edu.tr",
+   "queried_at": "2026-09-11T16:07:01.386170+00:00",
+   "rcode": "NOERROR",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "CAA",
+   "status": "noanswer"
+  },
+  "records": []
+ },
+ "collected_at": "2026-09-11T16:06:59.054217+00:00",
+ "collector": "dns_email",
+ "collector_version": "0.3.0",
+ "config_hash": "f1f1eeaa8a3f76c807bcbdb25c0e9299e66f6641060ff05cab2fc2ded8fba814",
+ "dane": {
+  "hosts": [
+   {
+    "mx_host": "fgw1.itu.edu.tr",
+    "present": false,
+    "query": {
+     "answers": [],
+     "authenticated": null,
+     "error_detail": null,
+     "name": "_25._tcp.fgw1.itu.edu.tr",
+     "queried_at": "2026-09-11T16:07:00.857479+00:00",
+     "rcode": "NXDOMAIN",
+     "requeried": false,
+     "resolver": [
+      "1.1.1.1",
+      "8.8.8.8"
+     ],
+     "rtype": "TLSA",
+     "status": "nxdomain"
+    },
+    "records": []
+   },
+   {
+    "mx_host": "fgw2.itu.edu.tr",
+    "present": false,
+    "query": {
+     "answers": [],
+     "authenticated": null,
+     "error_detail": null,
+     "name": "_25._tcp.fgw2.itu.edu.tr",
+     "queried_at": "2026-09-11T16:07:00.996072+00:00",
+     "rcode": "NXDOMAIN",
+     "requeried": false,
+     "resolver": [
+      "1.1.1.1",
+      "8.8.8.8"
+     ],
+     "rtype": "TLSA",
+     "status": "nxdomain"
+    },
+    "records": []
+   }
+  ],
+  "mx_hosts_checked": [
+   "fgw1.itu.edu.tr",
+   "fgw2.itu.edu.tr"
+  ],
+  "note": "DANE requires DNSSEC-signed TLSA records to be trustworthy",
+  "present": false
+ },
+ "dkim": {
+  "attempts": [
+   {
+    "present": false,
+    "query": {
+     "answers": [],
+     "authenticated": null,
+     "error_detail": null,
+     "name": "selector1._domainkey.itu.edu.tr",
+     "queried_at": "2026-09-11T16:06:59.253844+00:00",
+     "rcode": "NXDOMAIN",
+     "requeried": false,
+     "resolver": [
+      "1.1.1.1",
+      "8.8.8.8"
+     ],
+     "rtype": "TXT",
+     "status": "nxdomain"
+    },
+    "selector": "selector1"
+   },
+   {
+    "present": false,
+    "query": {
+     "answers": [],
+     "authenticated": null,
+     "error_detail": null,
+     "name": "selector2._domainkey.itu.edu.tr",
+     "queried_at": "2026-09-11T16:06:59.254209+00:00",
+     "rcode": "NXDOMAIN",
+     "requeried": false,
+     "resolver": [
+      "1.1.1.1",
+      "8.8.8.8"
+     ],
+     "rtype": "TXT",
+     "status": "nxdomain"
+    },
+    "selector": "selector2"
+   },
+   {
+    "present": false,
+    "query": {
+     "answers": [],
+     "authenticated": null,
+     "error_detail": null,
+     "name": "google._domainkey.itu.edu.tr",
+     "queried_at": "2026-09-11T16:06:59.254451+00:00",
+     "rcode": "NXDOMAIN",
+     "requeried": false,
+     "resolver": [
+      "1.1.1.1",
+      "8.8.8.8"
+     ],
+     "rtype": "TXT",
+     "status": "nxdomain"
+    },
+    "selector": "google"
+   },
+   {
+    "present": false,
+    "query": {
+     "answers": [],
+     "authenticated": null,
+     "error_detail": null,
+     "name": "default._domainkey.itu.edu.tr",
+     "queried_at": "2026-09-11T16:06:59.254813+00:00",
+     "rcode": "NXDOMAIN",
+     "requeried": false,
+     "resolver": [
+      "1.1.1.1",
+      "8.8.8.8"
+     ],
+     "rtype": "TXT",
+     "status": "nxdomain"
+    },
+    "selector": "default"
+   },
+   {
+    "present": false,
+    "query": {
+     "answers": [],
+     "authenticated": null,
+     "error_detail": null,
+     "name": "dkim._domainkey.itu.edu.tr",
+     "queried_at": "2026-09-11T16:06:59.255132+00:00",
+     "rcode": "NXDOMAIN",
+     "requeried": false,
+     "resolver": [
+      "1.1.1.1",
+      "8.8.8.8"
+     ],
+     "rtype": "TXT",
+     "status": "nxdomain"
+    },
+    "selector": "dkim"
+   },
+   {
+    "parsed": {
+     "key_bits": 1024,
+     "key_type": "rsa",
+     "p_empty": false,
+     "p_present": true,
+     "tags": {
+      "k": "rsa",
+      "p": "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDeMVIzrCa3T14JsNY0IRv5/2V1/v2itlviLQBwXsa7shBD6TrBkswsFUToPyMRWC9tbR/5ey0nRBH0ZVxp+lsmTxid2Y2z+FApQ6ra2VsXfbJP3HE6wAO0YTVEJt1TmeczhEd2Jiz/fcabIISgXEdSpTYJhb0ct0VJRxcg4c8c7wIDAQAB"
+     },
+     "testing": false
+    },
+    "present": true,
+    "query": {
+     "answers": [
+      "k=rsa;p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDeMVIzrCa3T14JsNY0IRv5/2V1/v2itlviLQBwXsa7shBD6TrBkswsFUToPyMRWC9tbR/5ey0nRBH0ZVxp+lsmTxid2Y2z+FApQ6ra2VsXfbJP3HE6wAO0YTVEJt1TmeczhEd2Jiz/fcabIISgXEdSpTYJhb0ct0VJRxcg4c8c7wIDAQAB"
+     ],
+     "authenticated": false,
+     "error_detail": null,
+     "name": "mail._domainkey.itu.edu.tr",
+     "queried_at": "2026-09-11T16:06:59.255475+00:00",
+     "rcode": "NOERROR",
+     "requeried": false,
+     "resolver": [
+      "1.1.1.1",
+      "8.8.8.8"
+     ],
+     "rtype": "TXT",
+     "status": "ok"
+    },
+    "selector": "mail"
+   },
+   {
+    "present": false,
+    "query": {
+     "answers": [],
+     "authenticated": null,
+     "error_detail": null,
+     "name": "k1._domainkey.itu.edu.tr",
+     "queried_at": "2026-09-11T16:06:59.255751+00:00",
+     "rcode": "NXDOMAIN",
+     "requeried": false,
+     "resolver": [
+      "1.1.1.1",
+      "8.8.8.8"
+     ],
+     "rtype": "TXT",
+     "status": "nxdomain"
+    },
+    "selector": "k1"
+   },
+   {
+    "present": false,
+    "query": {
+     "answers": [],
+     "authenticated": null,
+     "error_detail": null,
+     "name": "k2._domainkey.itu.edu.tr",
+     "queried_at": "2026-09-11T16:06:59.256000+00:00",
+     "rcode": "NXDOMAIN",
+     "requeried": false,
+     "resolver": [
+      "1.1.1.1",
+      "8.8.8.8"
+     ],
+     "rtype": "TXT",
+     "status": "nxdomain"
+    },
+    "selector": "k2"
+   },
+   {
+    "present": false,
+    "query": {
+     "answers": [],
+     "authenticated": null,
+     "error_detail": null,
+     "name": "s1._domainkey.itu.edu.tr",
+     "queried_at": "2026-09-11T16:06:59.393785+00:00",
+     "rcode": "NXDOMAIN",
+     "requeried": false,
+     "resolver": [
+      "1.1.1.1",
+      "8.8.8.8"
+     ],
+     "rtype": "TXT",
+     "status": "nxdomain"
+    },
+    "selector": "s1"
+   },
+   {
+    "present": false,
+    "query": {
+     "answers": [],
+     "authenticated": null,
+     "error_detail": null,
+     "name": "s2._domainkey.itu.edu.tr",
+     "queried_at": "2026-09-11T16:06:59.494765+00:00",
+     "rcode": "NXDOMAIN",
+     "requeried": false,
+     "resolver": [
+      "1.1.1.1",
+      "8.8.8.8"
+     ],
+     "rtype": "TXT",
+     "status": "nxdomain"
+    },
+    "selector": "s2"
+   },
+   {
+    "present": false,
+    "query": {
+     "answers": [],
+     "authenticated": null,
+     "error_detail": null,
+     "name": "zoho._domainkey.itu.edu.tr",
+     "queried_at": "2026-09-11T16:06:59.593232+00:00",
+     "rcode": "NXDOMAIN",
+     "requeried": false,
+     "resolver": [
+      "1.1.1.1",
+      "8.8.8.8"
+     ],
+     "rtype": "TXT",
+     "status": "nxdomain"
+    },
+    "selector": "zoho"
+   },
+   {
+    "present": false,
+    "query": {
+     "answers": [],
+     "authenticated": null,
+     "error_detail": null,
+     "name": "mandrill._domainkey.itu.edu.tr",
+     "queried_at": "2026-09-11T16:06:59.653027+00:00",
+     "rcode": "NXDOMAIN",
+     "requeried": false,
+     "resolver": [
+      "1.1.1.1",
+      "8.8.8.8"
+     ],
+     "rtype": "TXT",
+     "status": "nxdomain"
+    },
+    "selector": "mandrill"
+   },
+   {
+    "present": false,
+    "query": {
+     "answers": [],
+     "authenticated": null,
+     "error_detail": null,
+     "name": "smtp._domainkey.itu.edu.tr",
+     "queried_at": "2026-09-11T16:06:59.753411+00:00",
+     "rcode": "NXDOMAIN",
+     "requeried": false,
+     "resolver": [
+      "1.1.1.1",
+      "8.8.8.8"
+     ],
+     "rtype": "TXT",
+     "status": "nxdomain"
+    },
+    "selector": "smtp"
+   },
+   {
+    "present": false,
+    "query": {
+     "answers": [],
+     "authenticated": null,
+     "error_detail": null,
+     "name": "email._domainkey.itu.edu.tr",
+     "queried_at": "2026-09-11T16:06:59.852872+00:00",
+     "rcode": "NXDOMAIN",
+     "requeried": false,
+     "resolver": [
+      "1.1.1.1",
+      "8.8.8.8"
+     ],
+     "rtype": "TXT",
+     "status": "nxdomain"
+    },
+    "selector": "email"
+   },
+   {
+    "present": false,
+    "query": {
+     "answers": [],
+     "authenticated": null,
+     "error_detail": null,
+     "name": "mailjet._domainkey.itu.edu.tr",
+     "queried_at": "2026-09-11T16:06:59.959338+00:00",
+     "rcode": "NXDOMAIN",
+     "requeried": false,
+     "resolver": [
+      "1.1.1.1",
+      "8.8.8.8"
+     ],
+     "rtype": "TXT",
+     "status": "nxdomain"
+    },
+    "selector": "mailjet"
+   },
+   {
+    "present": false,
+    "query": {
+     "answers": [],
+     "authenticated": null,
+     "error_detail": null,
+     "name": "sendgrid._domainkey.itu.edu.tr",
+     "queried_at": "2026-09-11T16:07:00.052480+00:00",
+     "rcode": "NXDOMAIN",
+     "requeried": false,
+     "resolver": [
+      "1.1.1.1",
+      "8.8.8.8"
+     ],
+     "rtype": "TXT",
+     "status": "nxdomain"
+    },
+    "selector": "sendgrid"
+   }
+  ],
+  "found_selectors": [
+   "mail"
+  ],
+  "method": "selector_guessing",
+  "selectors_tried": [
+   "selector1",
+   "selector2",
+   "google",
+   "default",
+   "dkim",
+   "mail",
+   "k1",
+   "k2",
+   "s1",
+   "s2",
+   "zoho",
+   "mandrill",
+   "smtp",
+   "email",
+   "mailjet",
+   "sendgrid"
+  ]
+ },
+ "dmarc": {
+  "multiple": false,
+  "parsed": {
+   "adkim": "r",
+   "aspf": "r",
+   "fo": null,
+   "has_aggregate_reporting": true,
+   "issues": [],
+   "p": "reject",
+   "pct": null,
+   "rua": "mailto:dmarc_account@itu.edu.tr",
+   "ruf": null,
+   "sp": "reject",
+   "tags": {
+    "adkim": "r",
+    "aspf": "r",
+    "np": "quarantine",
+    "p": "reject",
+    "rua": "mailto:dmarc_account@itu.edu.tr",
+    "sp": "reject",
+    "v": "DMARC1"
+   },
+   "valid": true
+  },
+  "present": true,
+  "query": {
+   "answers": [
+    "v=DMARC1; p=reject;  rua=mailto:dmarc_account@itu.edu.tr; sp=reject; np=quarantine; adkim=r; aspf=r"
+   ],
+   "authenticated": false,
+   "error_detail": null,
+   "name": "_dmarc.itu.edu.tr",
+   "queried_at": "2026-09-11T16:06:59.153208+00:00",
+   "rcode": "NOERROR",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "ok"
+  },
+  "records": [
+   "v=DMARC1; p=reject;  rua=mailto:dmarc_account@itu.edu.tr; sp=reject; np=quarantine; adkim=r; aspf=r"
+  ]
+ },
+ "dnssec": {
+  "ds_present": false,
+  "note": "resolver_authenticated is the resolver's DNSSEC AD flag, not local validation",
+  "query": {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "itu.edu.tr",
+   "queried_at": "2026-09-11T16:07:01.354865+00:00",
+   "rcode": "NOERROR",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "DS",
+   "status": "noanswer"
+  },
+  "resolver_authenticated": null
+ },
+ "domain": "itu.edu.tr",
+ "input_domain": "itu.edu.tr",
+ "mta_sts": {
+  "dns": {
+   "present": false,
+   "query": {
+    "answers": [],
+    "authenticated": null,
+    "error_detail": null,
+    "name": "_mta-sts.itu.edu.tr",
+    "queried_at": "2026-09-11T16:07:01.134698+00:00",
+    "rcode": "NXDOMAIN",
+    "requeried": false,
+    "resolver": [
+     "1.1.1.1",
+     "8.8.8.8"
+    ],
+    "rtype": "TXT",
+    "status": "nxdomain"
+   },
+   "records": []
+  },
+  "policy": {
+   "error_detail": "URLError: <urlopen error [Errno 11001] getaddrinfo failed>",
+   "redirected": false,
+   "status": "error",
+   "url": "https://mta-sts.itu.edu.tr/.well-known/mta-sts.txt"
+  }
+ },
+ "mx": {
+  "present": true,
+  "providers": [
+   "local"
+  ],
+  "query": {
+   "answers": [
+    "6 fgw1.itu.edu.tr.",
+    "6 fgw2.itu.edu.tr."
+   ],
+   "authenticated": false,
+   "error_detail": null,
+   "name": "itu.edu.tr",
+   "queried_at": "2026-09-11T16:06:59.005347+00:00",
+   "rcode": "NOERROR",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "MX",
+   "status": "ok"
+  },
+  "records": [
+   {
+    "exchange": "fgw1.itu.edu.tr.",
+    "preference": 6,
+    "provider": "local"
+   },
+   {
+    "exchange": "fgw2.itu.edu.tr.",
+    "preference": 6,
+    "provider": "local"
+   }
+  ]
+ },
+ "queries": [
+  {
+   "answers": [
+    "6 fgw1.itu.edu.tr.",
+    "6 fgw2.itu.edu.tr."
+   ],
+   "authenticated": false,
+   "error_detail": null,
+   "name": "itu.edu.tr",
+   "queried_at": "2026-09-11T16:06:59.005347+00:00",
+   "rcode": "NOERROR",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "MX",
+   "status": "ok"
+  },
+  {
+   "answers": [
+    "brevo-code:95579070c719ebfbe2ef4683207e1865",
+    "v=spf1 mx  ip4:160.75.25.115 ip4:160.75.25.116 ip4:160.75.25.117 ip4:160.75.25.118 ip4:160.75.25.119 ip4:160.75.25.93 ip4:160.75.25.111 ip4:160.75.25.112 -all",
+    "google-site-verification=Mh45W4oeM0DL3PfI4To-pMwkFc0tJdEybwnDg3P7SaY",
+    "ISTANBUL TECHNICAL UNIVERSITY"
+   ],
+   "authenticated": false,
+   "error_detail": null,
+   "name": "itu.edu.tr",
+   "queried_at": "2026-09-11T16:06:59.054279+00:00",
+   "rcode": "NOERROR",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "ok"
+  },
+  {
+   "answers": [
+    "v=DMARC1; p=reject;  rua=mailto:dmarc_account@itu.edu.tr; sp=reject; np=quarantine; adkim=r; aspf=r"
+   ],
+   "authenticated": false,
+   "error_detail": null,
+   "name": "_dmarc.itu.edu.tr",
+   "queried_at": "2026-09-11T16:06:59.153208+00:00",
+   "rcode": "NOERROR",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "ok"
+  },
+  {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "selector1._domainkey.itu.edu.tr",
+   "queried_at": "2026-09-11T16:06:59.253844+00:00",
+   "rcode": "NXDOMAIN",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "nxdomain"
+  },
+  {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "selector2._domainkey.itu.edu.tr",
+   "queried_at": "2026-09-11T16:06:59.254209+00:00",
+   "rcode": "NXDOMAIN",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "nxdomain"
+  },
+  {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "google._domainkey.itu.edu.tr",
+   "queried_at": "2026-09-11T16:06:59.254451+00:00",
+   "rcode": "NXDOMAIN",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "nxdomain"
+  },
+  {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "default._domainkey.itu.edu.tr",
+   "queried_at": "2026-09-11T16:06:59.254813+00:00",
+   "rcode": "NXDOMAIN",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "nxdomain"
+  },
+  {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "dkim._domainkey.itu.edu.tr",
+   "queried_at": "2026-09-11T16:06:59.255132+00:00",
+   "rcode": "NXDOMAIN",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "nxdomain"
+  },
+  {
+   "answers": [
+    "k=rsa;p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDeMVIzrCa3T14JsNY0IRv5/2V1/v2itlviLQBwXsa7shBD6TrBkswsFUToPyMRWC9tbR/5ey0nRBH0ZVxp+lsmTxid2Y2z+FApQ6ra2VsXfbJP3HE6wAO0YTVEJt1TmeczhEd2Jiz/fcabIISgXEdSpTYJhb0ct0VJRxcg4c8c7wIDAQAB"
+   ],
+   "authenticated": false,
+   "error_detail": null,
+   "name": "mail._domainkey.itu.edu.tr",
+   "queried_at": "2026-09-11T16:06:59.255475+00:00",
+   "rcode": "NOERROR",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "ok"
+  },
+  {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "k1._domainkey.itu.edu.tr",
+   "queried_at": "2026-09-11T16:06:59.255751+00:00",
+   "rcode": "NXDOMAIN",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "nxdomain"
+  },
+  {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "k2._domainkey.itu.edu.tr",
+   "queried_at": "2026-09-11T16:06:59.256000+00:00",
+   "rcode": "NXDOMAIN",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "nxdomain"
+  },
+  {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "s1._domainkey.itu.edu.tr",
+   "queried_at": "2026-09-11T16:06:59.393785+00:00",
+   "rcode": "NXDOMAIN",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "nxdomain"
+  },
+  {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "s2._domainkey.itu.edu.tr",
+   "queried_at": "2026-09-11T16:06:59.494765+00:00",
+   "rcode": "NXDOMAIN",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "nxdomain"
+  },
+  {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "zoho._domainkey.itu.edu.tr",
+   "queried_at": "2026-09-11T16:06:59.593232+00:00",
+   "rcode": "NXDOMAIN",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "nxdomain"
+  },
+  {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "mandrill._domainkey.itu.edu.tr",
+   "queried_at": "2026-09-11T16:06:59.653027+00:00",
+   "rcode": "NXDOMAIN",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "nxdomain"
+  },
+  {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "smtp._domainkey.itu.edu.tr",
+   "queried_at": "2026-09-11T16:06:59.753411+00:00",
+   "rcode": "NXDOMAIN",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "nxdomain"
+  },
+  {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "email._domainkey.itu.edu.tr",
+   "queried_at": "2026-09-11T16:06:59.852872+00:00",
+   "rcode": "NXDOMAIN",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "nxdomain"
+  },
+  {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "mailjet._domainkey.itu.edu.tr",
+   "queried_at": "2026-09-11T16:06:59.959338+00:00",
+   "rcode": "NXDOMAIN",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "nxdomain"
+  },
+  {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "sendgrid._domainkey.itu.edu.tr",
+   "queried_at": "2026-09-11T16:07:00.052480+00:00",
+   "rcode": "NXDOMAIN",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "nxdomain"
+  },
+  {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "_25._tcp.fgw1.itu.edu.tr",
+   "queried_at": "2026-09-11T16:07:00.857479+00:00",
+   "rcode": "NXDOMAIN",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TLSA",
+   "status": "nxdomain"
+  },
+  {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "_25._tcp.fgw2.itu.edu.tr",
+   "queried_at": "2026-09-11T16:07:00.996072+00:00",
+   "rcode": "NXDOMAIN",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TLSA",
+   "status": "nxdomain"
+  },
+  {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "_mta-sts.itu.edu.tr",
+   "queried_at": "2026-09-11T16:07:01.134698+00:00",
+   "rcode": "NXDOMAIN",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "nxdomain"
+  },
+  {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "_smtp._tls.itu.edu.tr",
+   "queried_at": "2026-09-11T16:07:01.264729+00:00",
+   "rcode": "NXDOMAIN",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "nxdomain"
+  },
+  {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "itu.edu.tr",
+   "queried_at": "2026-09-11T16:07:01.354865+00:00",
+   "rcode": "NOERROR",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "DS",
+   "status": "noanswer"
+  },
+  {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "itu.edu.tr",
+   "queried_at": "2026-09-11T16:07:01.386170+00:00",
+   "rcode": "NOERROR",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "CAA",
+   "status": "noanswer"
+  }
+ ],
+ "resolvers": [
+  "1.1.1.1",
+  "8.8.8.8"
+ ],
+ "spf": {
+  "lookups": {
+   "chain": [
+    {
+     "includes": [],
+     "lookup_terms_here": 1,
+     "name": "<root>",
+     "record": "v=spf1 mx  ip4:160.75.25.115 ip4:160.75.25.116 ip4:160.75.25.117 ip4:160.75.25.118 ip4:160.75.25.119 ip4:160.75.25.93 ip4:160.75.25.111 ip4:160.75.25.112 -all",
+     "redirect": null
+    }
+   ],
+   "exceeds_limit": false,
+   "limit": 10,
+   "loop_detected": false,
+   "method": "rfc7208_terms_recursive_simplified",
+   "total_lookups": 1,
+   "truncated": false
+  },
+  "multiple": false,
+  "parsed": {
+   "exp": null,
+   "includes": [],
+   "lookup_terms_here": 1,
+   "mechanisms": [
+    {
+     "qualifier": "+",
+     "raw": "mx",
+     "type": "mx",
+     "value": null
+    },
+    {
+     "qualifier": "+",
+     "raw": "ip4:160.75.25.115",
+     "type": "ip4",
+     "value": "160.75.25.115"
+    },
+    {
+     "qualifier": "+",
+     "raw": "ip4:160.75.25.116",
+     "type": "ip4",
+     "value": "160.75.25.116"
+    },
+    {
+     "qualifier": "+",
+     "raw": "ip4:160.75.25.117",
+     "type": "ip4",
+     "value": "160.75.25.117"
+    },
+    {
+     "qualifier": "+",
+     "raw": "ip4:160.75.25.118",
+     "type": "ip4",
+     "value": "160.75.25.118"
+    },
+    {
+     "qualifier": "+",
+     "raw": "ip4:160.75.25.119",
+     "type": "ip4",
+     "value": "160.75.25.119"
+    },
+    {
+     "qualifier": "+",
+     "raw": "ip4:160.75.25.93",
+     "type": "ip4",
+     "value": "160.75.25.93"
+    },
+    {
+     "qualifier": "+",
+     "raw": "ip4:160.75.25.111",
+     "type": "ip4",
+     "value": "160.75.25.111"
+    },
+    {
+     "qualifier": "+",
+     "raw": "ip4:160.75.25.112",
+     "type": "ip4",
+     "value": "160.75.25.112"
+    },
+    {
+     "qualifier": "-",
+     "raw": "-all",
+     "type": "all",
+     "value": null
+    }
+   ],
+   "redirect": null,
+   "terminator": {
+    "qualifier": "-",
+    "raw": "-all",
+    "type": "all",
+    "value": null
+   },
+   "unknown_modifiers": [],
+   "version_ok": true
+  },
+  "present": true,
+  "query": {
+   "answers": [
+    "brevo-code:95579070c719ebfbe2ef4683207e1865",
+    "v=spf1 mx  ip4:160.75.25.115 ip4:160.75.25.116 ip4:160.75.25.117 ip4:160.75.25.118 ip4:160.75.25.119 ip4:160.75.25.93 ip4:160.75.25.111 ip4:160.75.25.112 -all",
+    "google-site-verification=Mh45W4oeM0DL3PfI4To-pMwkFc0tJdEybwnDg3P7SaY",
+    "ISTANBUL TECHNICAL UNIVERSITY"
+   ],
+   "authenticated": false,
+   "error_detail": null,
+   "name": "itu.edu.tr",
+   "queried_at": "2026-09-11T16:06:59.054279+00:00",
+   "rcode": "NOERROR",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "ok"
+  },
+  "records": [
+   "v=spf1 mx  ip4:160.75.25.115 ip4:160.75.25.116 ip4:160.75.25.117 ip4:160.75.25.118 ip4:160.75.25.119 ip4:160.75.25.93 ip4:160.75.25.111 ip4:160.75.25.112 -all"
+  ]
+ },
+ "tls_rpt": {
+  "present": false,
+  "query": {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "_smtp._tls.itu.edu.tr",
+   "queried_at": "2026-09-11T16:07:01.264729+00:00",
+   "rcode": "NXDOMAIN",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "nxdomain"
+  },
+  "records": []
+ }
+}

@@ -1,0 +1,1020 @@
+{
+ "caa": {
+  "present": false,
+  "query": {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "turkiye.gov.tr",
+   "queried_at": "2026-09-11T16:07:17.838235+00:00",
+   "rcode": "NOERROR",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "CAA",
+   "status": "noanswer"
+  },
+  "records": []
+ },
+ "collected_at": "2026-09-11T16:06:59.277964+00:00",
+ "collector": "dns_email",
+ "collector_version": "0.3.0",
+ "config_hash": "f1f1eeaa8a3f76c807bcbdb25c0e9299e66f6641060ff05cab2fc2ded8fba814",
+ "dane": {
+  "hosts": [
+   {
+    "mx_host": "mailgw1.turkiye.gov.tr",
+    "present": false,
+    "query": {
+     "answers": [],
+     "authenticated": null,
+     "error_detail": null,
+     "name": "_25._tcp.mailgw1.turkiye.gov.tr",
+     "queried_at": "2026-09-11T16:07:13.642074+00:00",
+     "rcode": "NXDOMAIN",
+     "requeried": false,
+     "resolver": [
+      "1.1.1.1",
+      "8.8.8.8"
+     ],
+     "rtype": "TLSA",
+     "status": "nxdomain"
+    },
+    "records": []
+   },
+   {
+    "mx_host": "mailgw2.turkiye.gov.tr",
+    "present": false,
+    "query": {
+     "answers": [],
+     "authenticated": null,
+     "error_detail": null,
+     "name": "_25._tcp.mailgw2.turkiye.gov.tr",
+     "queried_at": "2026-09-11T16:07:13.927010+00:00",
+     "rcode": "NXDOMAIN",
+     "requeried": false,
+     "resolver": [
+      "1.1.1.1",
+      "8.8.8.8"
+     ],
+     "rtype": "TLSA",
+     "status": "nxdomain"
+    },
+    "records": []
+   }
+  ],
+  "mx_hosts_checked": [
+   "mailgw1.turkiye.gov.tr",
+   "mailgw2.turkiye.gov.tr"
+  ],
+  "note": "DANE requires DNSSEC-signed TLSA records to be trustworthy",
+  "present": false
+ },
+ "dkim": {
+  "attempts": [
+   {
+    "present": false,
+    "query": {
+     "answers": [],
+     "authenticated": null,
+     "error_detail": null,
+     "name": "selector1._domainkey.turkiye.gov.tr",
+     "queried_at": "2026-09-11T16:07:03.350588+00:00",
+     "rcode": "NXDOMAIN",
+     "requeried": false,
+     "resolver": [
+      "1.1.1.1",
+      "8.8.8.8"
+     ],
+     "rtype": "TXT",
+     "status": "nxdomain"
+    },
+    "selector": "selector1"
+   },
+   {
+    "present": false,
+    "query": {
+     "answers": [],
+     "authenticated": null,
+     "error_detail": null,
+     "name": "selector2._domainkey.turkiye.gov.tr",
+     "queried_at": "2026-09-11T16:07:03.351508+00:00",
+     "rcode": "NXDOMAIN",
+     "requeried": false,
+     "resolver": [
+      "1.1.1.1",
+      "8.8.8.8"
+     ],
+     "rtype": "TXT",
+     "status": "nxdomain"
+    },
+    "selector": "selector2"
+   },
+   {
+    "present": false,
+    "query": {
+     "answers": [],
+     "authenticated": null,
+     "error_detail": null,
+     "name": "google._domainkey.turkiye.gov.tr",
+     "queried_at": "2026-09-11T16:07:03.352054+00:00",
+     "rcode": "NXDOMAIN",
+     "requeried": false,
+     "resolver": [
+      "1.1.1.1",
+      "8.8.8.8"
+     ],
+     "rtype": "TXT",
+     "status": "nxdomain"
+    },
+    "selector": "google"
+   },
+   {
+    "present": false,
+    "query": {
+     "answers": [],
+     "authenticated": null,
+     "error_detail": null,
+     "name": "default._domainkey.turkiye.gov.tr",
+     "queried_at": "2026-09-11T16:07:03.352295+00:00",
+     "rcode": "NXDOMAIN",
+     "requeried": false,
+     "resolver": [
+      "1.1.1.1",
+      "8.8.8.8"
+     ],
+     "rtype": "TXT",
+     "status": "nxdomain"
+    },
+    "selector": "default"
+   },
+   {
+    "present": false,
+    "query": {
+     "answers": [],
+     "authenticated": null,
+     "error_detail": null,
+     "name": "dkim._domainkey.turkiye.gov.tr",
+     "queried_at": "2026-09-11T16:07:03.352464+00:00",
+     "rcode": "NXDOMAIN",
+     "requeried": false,
+     "resolver": [
+      "1.1.1.1",
+      "8.8.8.8"
+     ],
+     "rtype": "TXT",
+     "status": "nxdomain"
+    },
+    "selector": "dkim"
+   },
+   {
+    "present": false,
+    "query": {
+     "answers": [],
+     "authenticated": null,
+     "error_detail": null,
+     "name": "mail._domainkey.turkiye.gov.tr",
+     "queried_at": "2026-09-11T16:07:03.352625+00:00",
+     "rcode": "NXDOMAIN",
+     "requeried": false,
+     "resolver": [
+      "1.1.1.1",
+      "8.8.8.8"
+     ],
+     "rtype": "TXT",
+     "status": "nxdomain"
+    },
+    "selector": "mail"
+   },
+   {
+    "present": false,
+    "query": {
+     "answers": [],
+     "authenticated": null,
+     "error_detail": null,
+     "name": "k1._domainkey.turkiye.gov.tr",
+     "queried_at": "2026-09-11T16:07:03.352794+00:00",
+     "rcode": "NXDOMAIN",
+     "requeried": true,
+     "resolver": [
+      "1.1.1.1",
+      "8.8.8.8"
+     ],
+     "rtype": "TXT",
+     "status": "nxdomain"
+    },
+    "selector": "k1"
+   },
+   {
+    "present": false,
+    "query": {
+     "answers": [],
+     "authenticated": null,
+     "error_detail": null,
+     "name": "k2._domainkey.turkiye.gov.tr",
+     "queried_at": "2026-09-11T16:07:03.352947+00:00",
+     "rcode": "NXDOMAIN",
+     "requeried": true,
+     "resolver": [
+      "1.1.1.1",
+      "8.8.8.8"
+     ],
+     "rtype": "TXT",
+     "status": "nxdomain"
+    },
+    "selector": "k2"
+   },
+   {
+    "present": false,
+    "query": {
+     "answers": [],
+     "authenticated": null,
+     "error_detail": null,
+     "name": "s1._domainkey.turkiye.gov.tr",
+     "queried_at": "2026-09-11T16:07:03.999321+00:00",
+     "rcode": "NXDOMAIN",
+     "requeried": false,
+     "resolver": [
+      "1.1.1.1",
+      "8.8.8.8"
+     ],
+     "rtype": "TXT",
+     "status": "nxdomain"
+    },
+    "selector": "s1"
+   },
+   {
+    "present": false,
+    "query": {
+     "answers": [],
+     "authenticated": null,
+     "error_detail": null,
+     "name": "s2._domainkey.turkiye.gov.tr",
+     "queried_at": "2026-09-11T16:07:05.473994+00:00",
+     "rcode": "NXDOMAIN",
+     "requeried": true,
+     "resolver": [
+      "1.1.1.1",
+      "8.8.8.8"
+     ],
+     "rtype": "TXT",
+     "status": "nxdomain"
+    },
+    "selector": "s2"
+   },
+   {
+    "present": false,
+    "query": {
+     "answers": [],
+     "authenticated": null,
+     "error_detail": null,
+     "name": "zoho._domainkey.turkiye.gov.tr",
+     "queried_at": "2026-09-11T16:07:05.810296+00:00",
+     "rcode": "NXDOMAIN",
+     "requeried": false,
+     "resolver": [
+      "1.1.1.1",
+      "8.8.8.8"
+     ],
+     "rtype": "TXT",
+     "status": "nxdomain"
+    },
+    "selector": "zoho"
+   },
+   {
+    "present": false,
+    "query": {
+     "answers": [],
+     "authenticated": null,
+     "error_detail": null,
+     "name": "mandrill._domainkey.turkiye.gov.tr",
+     "queried_at": "2026-09-11T16:07:05.831533+00:00",
+     "rcode": "NXDOMAIN",
+     "requeried": false,
+     "resolver": [
+      "1.1.1.1",
+      "8.8.8.8"
+     ],
+     "rtype": "TXT",
+     "status": "nxdomain"
+    },
+    "selector": "mandrill"
+   },
+   {
+    "present": false,
+    "query": {
+     "answers": [],
+     "authenticated": null,
+     "error_detail": null,
+     "name": "smtp._domainkey.turkiye.gov.tr",
+     "queried_at": "2026-09-11T16:07:06.107938+00:00",
+     "rcode": "NXDOMAIN",
+     "requeried": false,
+     "resolver": [
+      "1.1.1.1",
+      "8.8.8.8"
+     ],
+     "rtype": "TXT",
+     "status": "nxdomain"
+    },
+    "selector": "smtp"
+   },
+   {
+    "present": false,
+    "query": {
+     "answers": [],
+     "authenticated": null,
+     "error_detail": null,
+     "name": "email._domainkey.turkiye.gov.tr",
+     "queried_at": "2026-09-11T16:07:06.187450+00:00",
+     "rcode": "NXDOMAIN",
+     "requeried": false,
+     "resolver": [
+      "1.1.1.1",
+      "8.8.8.8"
+     ],
+     "rtype": "TXT",
+     "status": "nxdomain"
+    },
+    "selector": "email"
+   },
+   {
+    "present": false,
+    "query": {
+     "answers": [],
+     "authenticated": null,
+     "error_detail": null,
+     "name": "mailjet._domainkey.turkiye.gov.tr",
+     "queried_at": "2026-09-11T16:07:06.375840+00:00",
+     "rcode": "NXDOMAIN",
+     "requeried": false,
+     "resolver": [
+      "1.1.1.1",
+      "8.8.8.8"
+     ],
+     "rtype": "TXT",
+     "status": "nxdomain"
+    },
+    "selector": "mailjet"
+   },
+   {
+    "present": false,
+    "query": {
+     "answers": [],
+     "authenticated": null,
+     "error_detail": null,
+     "name": "sendgrid._domainkey.turkiye.gov.tr",
+     "queried_at": "2026-09-11T16:07:06.989129+00:00",
+     "rcode": "NXDOMAIN",
+     "requeried": false,
+     "resolver": [
+      "1.1.1.1",
+      "8.8.8.8"
+     ],
+     "rtype": "TXT",
+     "status": "nxdomain"
+    },
+    "selector": "sendgrid"
+   }
+  ],
+  "found_selectors": [],
+  "method": "selector_guessing",
+  "selectors_tried": [
+   "selector1",
+   "selector2",
+   "google",
+   "default",
+   "dkim",
+   "mail",
+   "k1",
+   "k2",
+   "s1",
+   "s2",
+   "zoho",
+   "mandrill",
+   "smtp",
+   "email",
+   "mailjet",
+   "sendgrid"
+  ]
+ },
+ "dmarc": {
+  "multiple": false,
+  "parsed": {
+   "adkim": null,
+   "aspf": null,
+   "fo": null,
+   "has_aggregate_reporting": true,
+   "issues": [],
+   "p": "reject",
+   "pct": null,
+   "rua": "mailto:dmarc@turkiye.gov.tr",
+   "ruf": "mailto:dmarc@turkiye.gov.tr",
+   "sp": "none",
+   "tags": {
+    "p": "reject",
+    "rua": "mailto:dmarc@turkiye.gov.tr",
+    "ruf": "mailto:dmarc@turkiye.gov.tr",
+    "sp": "none",
+    "v": "DMARC1"
+   },
+   "valid": true
+  },
+  "present": true,
+  "query": {
+   "answers": [
+    "v=DMARC1;p=reject;sp=none;rua=mailto:dmarc@turkiye.gov.tr;ruf=mailto:dmarc@turkiye.gov.tr"
+   ],
+   "authenticated": false,
+   "error_detail": null,
+   "name": "_dmarc.turkiye.gov.tr",
+   "queried_at": "2026-09-11T16:07:01.314331+00:00",
+   "rcode": "NOERROR",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "ok"
+  },
+  "records": [
+   "v=DMARC1;p=reject;sp=none;rua=mailto:dmarc@turkiye.gov.tr;ruf=mailto:dmarc@turkiye.gov.tr"
+  ]
+ },
+ "dnssec": {
+  "ds_present": false,
+  "note": "resolver_authenticated is the resolver's DNSSEC AD flag, not local validation",
+  "query": {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "turkiye.gov.tr",
+   "queried_at": "2026-09-11T16:07:17.826453+00:00",
+   "rcode": "NOERROR",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "DS",
+   "status": "noanswer"
+  },
+  "resolver_authenticated": null
+ },
+ "domain": "turkiye.gov.tr",
+ "input_domain": "turkiye.gov.tr",
+ "mta_sts": {
+  "dns": {
+   "present": false,
+   "query": {
+    "answers": [],
+    "authenticated": null,
+    "error_detail": null,
+    "name": "_mta-sts.turkiye.gov.tr",
+    "queried_at": "2026-09-11T16:07:14.349284+00:00",
+    "rcode": "NXDOMAIN",
+    "requeried": false,
+    "resolver": [
+     "1.1.1.1",
+     "8.8.8.8"
+    ],
+    "rtype": "TXT",
+    "status": "nxdomain"
+   },
+   "records": []
+  },
+  "policy": {
+   "error_detail": "URLError: <urlopen error [Errno 11001] getaddrinfo failed>",
+   "redirected": false,
+   "status": "error",
+   "url": "https://mta-sts.turkiye.gov.tr/.well-known/mta-sts.txt"
+  }
+ },
+ "mx": {
+  "present": true,
+  "providers": [
+   "local"
+  ],
+  "query": {
+   "answers": [
+    "10 mailgw1.turkiye.gov.tr.",
+    "10 mailgw2.turkiye.gov.tr."
+   ],
+   "authenticated": false,
+   "error_detail": null,
+   "name": "turkiye.gov.tr",
+   "queried_at": "2026-09-11T16:06:59.008833+00:00",
+   "rcode": "NOERROR",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "MX",
+   "status": "ok"
+  },
+  "records": [
+   {
+    "exchange": "mailgw1.turkiye.gov.tr.",
+    "preference": 10,
+    "provider": "local"
+   },
+   {
+    "exchange": "mailgw2.turkiye.gov.tr.",
+    "preference": 10,
+    "provider": "local"
+   }
+  ]
+ },
+ "queries": [
+  {
+   "answers": [
+    "10 mailgw1.turkiye.gov.tr.",
+    "10 mailgw2.turkiye.gov.tr."
+   ],
+   "authenticated": false,
+   "error_detail": null,
+   "name": "turkiye.gov.tr",
+   "queried_at": "2026-09-11T16:06:59.008833+00:00",
+   "rcode": "NOERROR",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "MX",
+   "status": "ok"
+  },
+  {
+   "answers": [
+    "v=spf1 a:mailgw1.turkiye.gov.tr a:mailgw2.turkiye.gov.tr ip4:94.55.120.192/27 -all"
+   ],
+   "authenticated": false,
+   "error_detail": null,
+   "name": "turkiye.gov.tr",
+   "queried_at": "2026-09-11T16:06:59.278091+00:00",
+   "rcode": "NOERROR",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "ok"
+  },
+  {
+   "answers": [
+    "v=DMARC1;p=reject;sp=none;rua=mailto:dmarc@turkiye.gov.tr;ruf=mailto:dmarc@turkiye.gov.tr"
+   ],
+   "authenticated": false,
+   "error_detail": null,
+   "name": "_dmarc.turkiye.gov.tr",
+   "queried_at": "2026-09-11T16:07:01.314331+00:00",
+   "rcode": "NOERROR",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "ok"
+  },
+  {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "default._domainkey.turkiye.gov.tr",
+   "queried_at": "2026-09-11T16:07:03.352295+00:00",
+   "rcode": "NXDOMAIN",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "nxdomain"
+  },
+  {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "selector1._domainkey.turkiye.gov.tr",
+   "queried_at": "2026-09-11T16:07:03.350588+00:00",
+   "rcode": "NXDOMAIN",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "nxdomain"
+  },
+  {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "selector2._domainkey.turkiye.gov.tr",
+   "queried_at": "2026-09-11T16:07:03.351508+00:00",
+   "rcode": "NXDOMAIN",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "nxdomain"
+  },
+  {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "mail._domainkey.turkiye.gov.tr",
+   "queried_at": "2026-09-11T16:07:03.352625+00:00",
+   "rcode": "NXDOMAIN",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "nxdomain"
+  },
+  {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "zoho._domainkey.turkiye.gov.tr",
+   "queried_at": "2026-09-11T16:07:05.810296+00:00",
+   "rcode": "NXDOMAIN",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "nxdomain"
+  },
+  {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "mandrill._domainkey.turkiye.gov.tr",
+   "queried_at": "2026-09-11T16:07:05.831533+00:00",
+   "rcode": "NXDOMAIN",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "nxdomain"
+  },
+  {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "smtp._domainkey.turkiye.gov.tr",
+   "queried_at": "2026-09-11T16:07:06.107938+00:00",
+   "rcode": "NXDOMAIN",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "nxdomain"
+  },
+  {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "k1._domainkey.turkiye.gov.tr",
+   "queried_at": "2026-09-11T16:07:03.352794+00:00",
+   "rcode": "NXDOMAIN",
+   "requeried": true,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "nxdomain"
+  },
+  {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "sendgrid._domainkey.turkiye.gov.tr",
+   "queried_at": "2026-09-11T16:07:06.989129+00:00",
+   "rcode": "NXDOMAIN",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "nxdomain"
+  },
+  {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "dkim._domainkey.turkiye.gov.tr",
+   "queried_at": "2026-09-11T16:07:03.352464+00:00",
+   "rcode": "NXDOMAIN",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "nxdomain"
+  },
+  {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "email._domainkey.turkiye.gov.tr",
+   "queried_at": "2026-09-11T16:07:06.187450+00:00",
+   "rcode": "NXDOMAIN",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "nxdomain"
+  },
+  {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "mailjet._domainkey.turkiye.gov.tr",
+   "queried_at": "2026-09-11T16:07:06.375840+00:00",
+   "rcode": "NXDOMAIN",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "nxdomain"
+  },
+  {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "google._domainkey.turkiye.gov.tr",
+   "queried_at": "2026-09-11T16:07:03.352054+00:00",
+   "rcode": "NXDOMAIN",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "nxdomain"
+  },
+  {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "s1._domainkey.turkiye.gov.tr",
+   "queried_at": "2026-09-11T16:07:03.999321+00:00",
+   "rcode": "NXDOMAIN",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "nxdomain"
+  },
+  {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "k2._domainkey.turkiye.gov.tr",
+   "queried_at": "2026-09-11T16:07:03.352947+00:00",
+   "rcode": "NXDOMAIN",
+   "requeried": true,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "nxdomain"
+  },
+  {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "s2._domainkey.turkiye.gov.tr",
+   "queried_at": "2026-09-11T16:07:05.473994+00:00",
+   "rcode": "NXDOMAIN",
+   "requeried": true,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "nxdomain"
+  },
+  {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "_25._tcp.mailgw1.turkiye.gov.tr",
+   "queried_at": "2026-09-11T16:07:13.642074+00:00",
+   "rcode": "NXDOMAIN",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TLSA",
+   "status": "nxdomain"
+  },
+  {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "_25._tcp.mailgw2.turkiye.gov.tr",
+   "queried_at": "2026-09-11T16:07:13.927010+00:00",
+   "rcode": "NXDOMAIN",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TLSA",
+   "status": "nxdomain"
+  },
+  {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "_mta-sts.turkiye.gov.tr",
+   "queried_at": "2026-09-11T16:07:14.349284+00:00",
+   "rcode": "NXDOMAIN",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "nxdomain"
+  },
+  {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "_smtp._tls.turkiye.gov.tr",
+   "queried_at": "2026-09-11T16:07:15.557268+00:00",
+   "rcode": "NXDOMAIN",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "nxdomain"
+  },
+  {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "turkiye.gov.tr",
+   "queried_at": "2026-09-11T16:07:17.826453+00:00",
+   "rcode": "NOERROR",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "DS",
+   "status": "noanswer"
+  },
+  {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "turkiye.gov.tr",
+   "queried_at": "2026-09-11T16:07:17.838235+00:00",
+   "rcode": "NOERROR",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "CAA",
+   "status": "noanswer"
+  }
+ ],
+ "resolvers": [
+  "1.1.1.1",
+  "8.8.8.8"
+ ],
+ "spf": {
+  "lookups": {
+   "chain": [
+    {
+     "includes": [],
+     "lookup_terms_here": 2,
+     "name": "<root>",
+     "record": "v=spf1 a:mailgw1.turkiye.gov.tr a:mailgw2.turkiye.gov.tr ip4:94.55.120.192/27 -all",
+     "redirect": null
+    }
+   ],
+   "exceeds_limit": false,
+   "limit": 10,
+   "loop_detected": false,
+   "method": "rfc7208_terms_recursive_simplified",
+   "total_lookups": 2,
+   "truncated": false
+  },
+  "multiple": false,
+  "parsed": {
+   "exp": null,
+   "includes": [],
+   "lookup_terms_here": 2,
+   "mechanisms": [
+    {
+     "qualifier": "+",
+     "raw": "a:mailgw1.turkiye.gov.tr",
+     "type": "a",
+     "value": "mailgw1.turkiye.gov.tr"
+    },
+    {
+     "qualifier": "+",
+     "raw": "a:mailgw2.turkiye.gov.tr",
+     "type": "a",
+     "value": "mailgw2.turkiye.gov.tr"
+    },
+    {
+     "qualifier": "+",
+     "raw": "ip4:94.55.120.192/27",
+     "type": "ip4",
+     "value": "94.55.120.192/27"
+    },
+    {
+     "qualifier": "-",
+     "raw": "-all",
+     "type": "all",
+     "value": null
+    }
+   ],
+   "redirect": null,
+   "terminator": {
+    "qualifier": "-",
+    "raw": "-all",
+    "type": "all",
+    "value": null
+   },
+   "unknown_modifiers": [],
+   "version_ok": true
+  },
+  "present": true,
+  "query": {
+   "answers": [
+    "v=spf1 a:mailgw1.turkiye.gov.tr a:mailgw2.turkiye.gov.tr ip4:94.55.120.192/27 -all"
+   ],
+   "authenticated": false,
+   "error_detail": null,
+   "name": "turkiye.gov.tr",
+   "queried_at": "2026-09-11T16:06:59.278091+00:00",
+   "rcode": "NOERROR",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "ok"
+  },
+  "records": [
+   "v=spf1 a:mailgw1.turkiye.gov.tr a:mailgw2.turkiye.gov.tr ip4:94.55.120.192/27 -all"
+  ]
+ },
+ "tls_rpt": {
+  "present": false,
+  "query": {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "_smtp._tls.turkiye.gov.tr",
+   "queried_at": "2026-09-11T16:07:15.557268+00:00",
+   "rcode": "NXDOMAIN",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "nxdomain"
+  },
+  "records": []
+ }
+}

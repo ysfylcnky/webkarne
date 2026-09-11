@@ -1,0 +1,1255 @@
+{
+ "caa": {
+  "present": false,
+  "query": {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "garantibbva.com.tr",
+   "queried_at": "2026-09-11T15:24:21.465997+00:00",
+   "rcode": "NOERROR",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "CAA",
+   "status": "noanswer"
+  },
+  "records": []
+ },
+ "collected_at": "2026-09-11T15:24:18.864065+00:00",
+ "collector": "dns_email",
+ "collector_version": "0.3.0",
+ "config_hash": "f1f1eeaa8a3f76c807bcbdb25c0e9299e66f6641060ff05cab2fc2ded8fba814",
+ "dane": {
+  "hosts": [
+   {
+    "mx_host": "smtp4.garanti.com.tr",
+    "present": false,
+    "query": {
+     "answers": [],
+     "authenticated": null,
+     "error_detail": null,
+     "name": "_25._tcp.smtp4.garanti.com.tr",
+     "queried_at": "2026-09-11T15:24:20.666637+00:00",
+     "rcode": "NXDOMAIN",
+     "requeried": false,
+     "resolver": [
+      "1.1.1.1",
+      "8.8.8.8"
+     ],
+     "rtype": "TLSA",
+     "status": "nxdomain"
+    },
+    "records": []
+   },
+   {
+    "mx_host": "smtp6.garanti.com.tr",
+    "present": false,
+    "query": {
+     "answers": [],
+     "authenticated": null,
+     "error_detail": null,
+     "name": "_25._tcp.smtp6.garanti.com.tr",
+     "queried_at": "2026-09-11T15:24:20.774333+00:00",
+     "rcode": "NXDOMAIN",
+     "requeried": false,
+     "resolver": [
+      "1.1.1.1",
+      "8.8.8.8"
+     ],
+     "rtype": "TLSA",
+     "status": "nxdomain"
+    },
+    "records": []
+   },
+   {
+    "mx_host": "smtp5.garanti.com.tr",
+    "present": false,
+    "query": {
+     "answers": [],
+     "authenticated": null,
+     "error_detail": null,
+     "name": "_25._tcp.smtp5.garanti.com.tr",
+     "queried_at": "2026-09-11T15:24:20.874067+00:00",
+     "rcode": "NXDOMAIN",
+     "requeried": false,
+     "resolver": [
+      "1.1.1.1",
+      "8.8.8.8"
+     ],
+     "rtype": "TLSA",
+     "status": "nxdomain"
+    },
+    "records": []
+   },
+   {
+    "mx_host": "smtp7.garanti.com.tr",
+    "present": false,
+    "query": {
+     "answers": [],
+     "authenticated": null,
+     "error_detail": null,
+     "name": "_25._tcp.smtp7.garanti.com.tr",
+     "queried_at": "2026-09-11T15:24:20.970846+00:00",
+     "rcode": "NXDOMAIN",
+     "requeried": false,
+     "resolver": [
+      "1.1.1.1",
+      "8.8.8.8"
+     ],
+     "rtype": "TLSA",
+     "status": "nxdomain"
+    },
+    "records": []
+   },
+   {
+    "mx_host": "smtp8.garanti.com.tr",
+    "present": false,
+    "query": {
+     "answers": [],
+     "authenticated": null,
+     "error_detail": null,
+     "name": "_25._tcp.smtp8.garanti.com.tr",
+     "queried_at": "2026-09-11T15:24:21.071919+00:00",
+     "rcode": "NXDOMAIN",
+     "requeried": false,
+     "resolver": [
+      "1.1.1.1",
+      "8.8.8.8"
+     ],
+     "rtype": "TLSA",
+     "status": "nxdomain"
+    },
+    "records": []
+   }
+  ],
+  "mx_hosts_checked": [
+   "smtp4.garanti.com.tr",
+   "smtp6.garanti.com.tr",
+   "smtp5.garanti.com.tr",
+   "smtp7.garanti.com.tr",
+   "smtp8.garanti.com.tr"
+  ],
+  "note": "DANE requires DNSSEC-signed TLSA records to be trustworthy",
+  "present": false
+ },
+ "dkim": {
+  "attempts": [
+   {
+    "parsed": {
+     "key_bits": 1024,
+     "key_type": "rsa",
+     "p_empty": false,
+     "p_present": true,
+     "tags": {
+      "p": "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQC8PI8xBnESYKCQvi4MMM3j1X+vWkVzCTPSgT+VMTi0yiGWN9r9J9XZl+DKZiDaueRQDKkjz/dzyygReAJzprgcVIIWzdgHt8sS9Hn3hhAUqYpFuM2yNiHgtqCsHR1kF4jnjoFvFwE1G5Pm4kZxrzlpmSFO/eG6trb/ABM4RxP6JQIDAQAB",
+      "v": "DKIM1"
+     },
+     "testing": false
+    },
+    "present": true,
+    "query": {
+     "answers": [
+      "v=DKIM1; p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQC8PI8xBnESYKCQvi4MMM3j1X+vWkVzCTPSgT+VMTi0yiGWN9r9J9XZl+DKZiDaueRQDKkjz/dzyygReAJzprgcVIIWzdgHt8sS9Hn3hhAUqYpFuM2yNiHgtqCsHR1kF4jnjoFvFwE1G5Pm4kZxrzlpmSFO/eG6trb/ABM4RxP6JQIDAQAB;"
+     ],
+     "authenticated": false,
+     "error_detail": null,
+     "name": "selector1._domainkey.garantibbva.com.tr",
+     "queried_at": "2026-09-11T15:24:19.068882+00:00",
+     "rcode": "NOERROR",
+     "requeried": false,
+     "resolver": [
+      "1.1.1.1",
+      "8.8.8.8"
+     ],
+     "rtype": "TXT",
+     "status": "ok"
+    },
+    "selector": "selector1"
+   },
+   {
+    "present": false,
+    "query": {
+     "answers": [],
+     "authenticated": null,
+     "error_detail": null,
+     "name": "selector2._domainkey.garantibbva.com.tr",
+     "queried_at": "2026-09-11T15:24:19.069059+00:00",
+     "rcode": "NXDOMAIN",
+     "requeried": false,
+     "resolver": [
+      "1.1.1.1",
+      "8.8.8.8"
+     ],
+     "rtype": "TXT",
+     "status": "nxdomain"
+    },
+    "selector": "selector2"
+   },
+   {
+    "present": false,
+    "query": {
+     "answers": [],
+     "authenticated": null,
+     "error_detail": null,
+     "name": "google._domainkey.garantibbva.com.tr",
+     "queried_at": "2026-09-11T15:24:19.069255+00:00",
+     "rcode": "NXDOMAIN",
+     "requeried": false,
+     "resolver": [
+      "1.1.1.1",
+      "8.8.8.8"
+     ],
+     "rtype": "TXT",
+     "status": "nxdomain"
+    },
+    "selector": "google"
+   },
+   {
+    "present": false,
+    "query": {
+     "answers": [],
+     "authenticated": null,
+     "error_detail": null,
+     "name": "default._domainkey.garantibbva.com.tr",
+     "queried_at": "2026-09-11T15:24:19.069484+00:00",
+     "rcode": "NXDOMAIN",
+     "requeried": false,
+     "resolver": [
+      "1.1.1.1",
+      "8.8.8.8"
+     ],
+     "rtype": "TXT",
+     "status": "nxdomain"
+    },
+    "selector": "default"
+   },
+   {
+    "present": false,
+    "query": {
+     "answers": [],
+     "authenticated": null,
+     "error_detail": null,
+     "name": "dkim._domainkey.garantibbva.com.tr",
+     "queried_at": "2026-09-11T15:24:19.069641+00:00",
+     "rcode": "NXDOMAIN",
+     "requeried": false,
+     "resolver": [
+      "1.1.1.1",
+      "8.8.8.8"
+     ],
+     "rtype": "TXT",
+     "status": "nxdomain"
+    },
+    "selector": "dkim"
+   },
+   {
+    "present": false,
+    "query": {
+     "answers": [],
+     "authenticated": null,
+     "error_detail": null,
+     "name": "mail._domainkey.garantibbva.com.tr",
+     "queried_at": "2026-09-11T15:24:19.069811+00:00",
+     "rcode": "NXDOMAIN",
+     "requeried": false,
+     "resolver": [
+      "1.1.1.1",
+      "8.8.8.8"
+     ],
+     "rtype": "TXT",
+     "status": "nxdomain"
+    },
+    "selector": "mail"
+   },
+   {
+    "present": false,
+    "query": {
+     "answers": [],
+     "authenticated": null,
+     "error_detail": null,
+     "name": "k1._domainkey.garantibbva.com.tr",
+     "queried_at": "2026-09-11T15:24:19.069970+00:00",
+     "rcode": "NXDOMAIN",
+     "requeried": false,
+     "resolver": [
+      "1.1.1.1",
+      "8.8.8.8"
+     ],
+     "rtype": "TXT",
+     "status": "nxdomain"
+    },
+    "selector": "k1"
+   },
+   {
+    "present": false,
+    "query": {
+     "answers": [],
+     "authenticated": null,
+     "error_detail": null,
+     "name": "k2._domainkey.garantibbva.com.tr",
+     "queried_at": "2026-09-11T15:24:19.070115+00:00",
+     "rcode": "NXDOMAIN",
+     "requeried": false,
+     "resolver": [
+      "1.1.1.1",
+      "8.8.8.8"
+     ],
+     "rtype": "TXT",
+     "status": "nxdomain"
+    },
+    "selector": "k2"
+   },
+   {
+    "present": false,
+    "query": {
+     "answers": [],
+     "authenticated": null,
+     "error_detail": null,
+     "name": "s1._domainkey.garantibbva.com.tr",
+     "queried_at": "2026-09-11T15:24:19.160515+00:00",
+     "rcode": "NXDOMAIN",
+     "requeried": false,
+     "resolver": [
+      "1.1.1.1",
+      "8.8.8.8"
+     ],
+     "rtype": "TXT",
+     "status": "nxdomain"
+    },
+    "selector": "s1"
+   },
+   {
+    "present": false,
+    "query": {
+     "answers": [],
+     "authenticated": null,
+     "error_detail": null,
+     "name": "s2._domainkey.garantibbva.com.tr",
+     "queried_at": "2026-09-11T15:24:19.266373+00:00",
+     "rcode": "NXDOMAIN",
+     "requeried": false,
+     "resolver": [
+      "1.1.1.1",
+      "8.8.8.8"
+     ],
+     "rtype": "TXT",
+     "status": "nxdomain"
+    },
+    "selector": "s2"
+   },
+   {
+    "present": false,
+    "query": {
+     "answers": [],
+     "authenticated": null,
+     "error_detail": null,
+     "name": "zoho._domainkey.garantibbva.com.tr",
+     "queried_at": "2026-09-11T15:24:19.365779+00:00",
+     "rcode": "NXDOMAIN",
+     "requeried": false,
+     "resolver": [
+      "1.1.1.1",
+      "8.8.8.8"
+     ],
+     "rtype": "TXT",
+     "status": "nxdomain"
+    },
+    "selector": "zoho"
+   },
+   {
+    "present": false,
+    "query": {
+     "answers": [],
+     "authenticated": null,
+     "error_detail": null,
+     "name": "mandrill._domainkey.garantibbva.com.tr",
+     "queried_at": "2026-09-11T15:24:19.473779+00:00",
+     "rcode": "NXDOMAIN",
+     "requeried": false,
+     "resolver": [
+      "1.1.1.1",
+      "8.8.8.8"
+     ],
+     "rtype": "TXT",
+     "status": "nxdomain"
+    },
+    "selector": "mandrill"
+   },
+   {
+    "present": false,
+    "query": {
+     "answers": [],
+     "authenticated": null,
+     "error_detail": null,
+     "name": "smtp._domainkey.garantibbva.com.tr",
+     "queried_at": "2026-09-11T15:24:19.565296+00:00",
+     "rcode": "NXDOMAIN",
+     "requeried": false,
+     "resolver": [
+      "1.1.1.1",
+      "8.8.8.8"
+     ],
+     "rtype": "TXT",
+     "status": "nxdomain"
+    },
+    "selector": "smtp"
+   },
+   {
+    "present": false,
+    "query": {
+     "answers": [],
+     "authenticated": null,
+     "error_detail": null,
+     "name": "email._domainkey.garantibbva.com.tr",
+     "queried_at": "2026-09-11T15:24:19.665802+00:00",
+     "rcode": "NXDOMAIN",
+     "requeried": false,
+     "resolver": [
+      "1.1.1.1",
+      "8.8.8.8"
+     ],
+     "rtype": "TXT",
+     "status": "nxdomain"
+    },
+    "selector": "email"
+   },
+   {
+    "present": false,
+    "query": {
+     "answers": [],
+     "authenticated": null,
+     "error_detail": null,
+     "name": "mailjet._domainkey.garantibbva.com.tr",
+     "queried_at": "2026-09-11T15:24:19.766657+00:00",
+     "rcode": "NXDOMAIN",
+     "requeried": false,
+     "resolver": [
+      "1.1.1.1",
+      "8.8.8.8"
+     ],
+     "rtype": "TXT",
+     "status": "nxdomain"
+    },
+    "selector": "mailjet"
+   },
+   {
+    "present": false,
+    "query": {
+     "answers": [],
+     "authenticated": null,
+     "error_detail": null,
+     "name": "sendgrid._domainkey.garantibbva.com.tr",
+     "queried_at": "2026-09-11T15:24:19.865969+00:00",
+     "rcode": "NXDOMAIN",
+     "requeried": false,
+     "resolver": [
+      "1.1.1.1",
+      "8.8.8.8"
+     ],
+     "rtype": "TXT",
+     "status": "nxdomain"
+    },
+    "selector": "sendgrid"
+   }
+  ],
+  "found_selectors": [
+   "selector1"
+  ],
+  "method": "selector_guessing",
+  "selectors_tried": [
+   "selector1",
+   "selector2",
+   "google",
+   "default",
+   "dkim",
+   "mail",
+   "k1",
+   "k2",
+   "s1",
+   "s2",
+   "zoho",
+   "mandrill",
+   "smtp",
+   "email",
+   "mailjet",
+   "sendgrid"
+  ]
+ },
+ "dmarc": {
+  "multiple": false,
+  "parsed": {
+   "adkim": null,
+   "aspf": null,
+   "fo": "1",
+   "has_aggregate_reporting": true,
+   "issues": [],
+   "p": "reject",
+   "pct": null,
+   "rua": "mailto:dmAggre@dmarc.garantibbva.com.tr",
+   "ruf": "mailto:dmForen@dmarc.garantibbva.com.tr",
+   "sp": null,
+   "tags": {
+    "fo": "1",
+    "p": "reject",
+    "ri": "3600",
+    "rua": "mailto:dmAggre@dmarc.garantibbva.com.tr",
+    "ruf": "mailto:dmForen@dmarc.garantibbva.com.tr",
+    "v": "DMARC1"
+   },
+   "valid": true
+  },
+  "present": true,
+  "query": {
+   "answers": [
+    "v=DMARC1;p=reject;fo=1;ri=3600;rua=mailto:dmAggre@dmarc.garantibbva.com.tr;ruf=mailto:dmForen@dmarc.garantibbva.com.tr"
+   ],
+   "authenticated": false,
+   "error_detail": null,
+   "name": "_dmarc.garantibbva.com.tr",
+   "queried_at": "2026-09-11T15:24:18.973831+00:00",
+   "rcode": "NOERROR",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "ok"
+  },
+  "records": [
+   "v=DMARC1;p=reject;fo=1;ri=3600;rua=mailto:dmAggre@dmarc.garantibbva.com.tr;ruf=mailto:dmForen@dmarc.garantibbva.com.tr"
+  ]
+ },
+ "dnssec": {
+  "ds_present": false,
+  "note": "resolver_authenticated is the resolver's DNSSEC AD flag, not local validation",
+  "query": {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "garantibbva.com.tr",
+   "queried_at": "2026-09-11T15:24:21.371545+00:00",
+   "rcode": "NOERROR",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "DS",
+   "status": "noanswer"
+  },
+  "resolver_authenticated": null
+ },
+ "domain": "garantibbva.com.tr",
+ "input_domain": "garantibbva.com.tr",
+ "mta_sts": {
+  "dns": {
+   "present": false,
+   "query": {
+    "answers": [],
+    "authenticated": null,
+    "error_detail": null,
+    "name": "_mta-sts.garantibbva.com.tr",
+    "queried_at": "2026-09-11T15:24:21.195918+00:00",
+    "rcode": "NXDOMAIN",
+    "requeried": false,
+    "resolver": [
+     "1.1.1.1",
+     "8.8.8.8"
+    ],
+    "rtype": "TXT",
+    "status": "nxdomain"
+   },
+   "records": []
+  },
+  "policy": {
+   "error_detail": "URLError: <urlopen error [Errno 11001] getaddrinfo failed>",
+   "redirected": false,
+   "status": "error",
+   "url": "https://mta-sts.garantibbva.com.tr/.well-known/mta-sts.txt"
+  }
+ },
+ "mx": {
+  "present": true,
+  "providers": [
+   "other"
+  ],
+  "query": {
+   "answers": [
+    "10 smtp4.garanti.com.tr.",
+    "20 smtp7.garanti.com.tr.",
+    "20 smtp8.garanti.com.tr.",
+    "10 smtp6.garanti.com.tr.",
+    "10 smtp5.garanti.com.tr."
+   ],
+   "authenticated": false,
+   "error_detail": null,
+   "name": "garantibbva.com.tr",
+   "queried_at": "2026-09-11T15:24:18.854579+00:00",
+   "rcode": "NOERROR",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "MX",
+   "status": "ok"
+  },
+  "records": [
+   {
+    "exchange": "smtp4.garanti.com.tr.",
+    "preference": 10,
+    "provider": "other"
+   },
+   {
+    "exchange": "smtp6.garanti.com.tr.",
+    "preference": 10,
+    "provider": "other"
+   },
+   {
+    "exchange": "smtp5.garanti.com.tr.",
+    "preference": 10,
+    "provider": "other"
+   },
+   {
+    "exchange": "smtp7.garanti.com.tr.",
+    "preference": 20,
+    "provider": "other"
+   },
+   {
+    "exchange": "smtp8.garanti.com.tr.",
+    "preference": 20,
+    "provider": "other"
+   }
+  ]
+ },
+ "queries": [
+  {
+   "answers": [
+    "10 smtp4.garanti.com.tr.",
+    "20 smtp7.garanti.com.tr.",
+    "20 smtp8.garanti.com.tr.",
+    "10 smtp6.garanti.com.tr.",
+    "10 smtp5.garanti.com.tr."
+   ],
+   "authenticated": false,
+   "error_detail": null,
+   "name": "garantibbva.com.tr",
+   "queried_at": "2026-09-11T15:24:18.854579+00:00",
+   "rcode": "NOERROR",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "MX",
+   "status": "ok"
+  },
+  {
+   "answers": [
+    "google-site-verification=wmEFiuWvYlRRUdp1vZ9Oz9KLohFNGjVVQ3SWTVsG9ys",
+    "VISA=555CCFA6ADFE887A220951F34C8A9849",
+    "google-site-verification=ljpvyN3O38g4v0VBd4fRD2GnSHbXW2zKfDzyY2STwEs",
+    "_94podjjerocrjzofu6ch8884ncdb6ma",
+    "VISA=C247C56424BDB381C36987EAB41A5BA2",
+    "jamf-site-verification=tJnw9wNF_gAnU3JRzOA2Aw",
+    "hg1rdyg5xj171fzj26f0xjjj0d7h7szs",
+    "lz6539z5kkypm9d9d6j4vy4v1cn73kdt",
+    "gmdf5thlygd7qdqktk9qpglmdvnyfp2z",
+    "v=spf1 a mx ip4:194.29.208.0/21 ip4:217.68.215.0/24 ip4:217.68.211.0/24 ip4:91.188.195.64/27 ip4:91.188.194.0/26 -all",
+    "google-site-verification=Jp1DYhEdv6yYYyuneTM3upa1vdHqCvwBnqWkExjDAiw",
+    "0cshkxqfg2h03styk3y7ztvp3133l5f6",
+    "1k0msb6c1104q63byt97d95fhxsxbgmy",
+    "ciscocidomainverification=2314c133f3bfa0997607876bdc30c788cd016bf8cd9679419f3ff52bc2ca2d0d",
+    "google-site-verification=vaE9Yi1pL9zbmNkKo25WoX2Zn527o2_P85HjplZ1aok",
+    "webexdomainverification.=01c9149d-3f29-477d-8b5f-db4987c395ee",
+    "i0JxDtWtKhxIty7yIqLf3SXhlNKwWzJg0DcGBEZ4zdU=",
+    "MS=ms73615284",
+    "MS=ms71468722",
+    "google-site-verification=tctbNVh2u1rZYwFFpU2Ict1tCTo7GtPbJE5_y2zT3kk",
+    "apple-domain-verification=OhaKgtrquVpaUARk",
+    "D8W99y9XbqOhqcjIlt5uBZvbqmUf6lWtbeaxnR8DnWI=",
+    "jkr6mfb0jccx03w64x49qtcqgnffh37m",
+    "VISA=40A5FA9019F270A31928AB9D4C716F77",
+    "VISA=40A5FA9019F270A31928AB9D4C716F77",
+    "pexip-ms-tenant-domain-verification=b8dccdb6-c068-45da-bbd2-7d8d519c1a7a",
+    "frmkcj40zs967gl6lyj0kwfl6gmsqt4g",
+    "k64krd65t88mc7xdp6vry2xm8qq8d772",
+    "VISA=06B016D64B0929670D8C6F95ADB1AC9F",
+    "VISA=BFB10E0F98F7951496E2705AC238FC8E",
+    "_1r70349jy7z6cu2j8f79cu2heeojrq7",
+    "google-gws-recovery-domain-verification=59142185",
+    "google-gws-recovery-domain-verification=59534030"
+   ],
+   "authenticated": false,
+   "error_detail": null,
+   "name": "garantibbva.com.tr",
+   "queried_at": "2026-09-11T15:24:18.864109+00:00",
+   "rcode": "NOERROR",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "ok"
+  },
+  {
+   "answers": [
+    "v=DMARC1;p=reject;fo=1;ri=3600;rua=mailto:dmAggre@dmarc.garantibbva.com.tr;ruf=mailto:dmForen@dmarc.garantibbva.com.tr"
+   ],
+   "authenticated": false,
+   "error_detail": null,
+   "name": "_dmarc.garantibbva.com.tr",
+   "queried_at": "2026-09-11T15:24:18.973831+00:00",
+   "rcode": "NOERROR",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "ok"
+  },
+  {
+   "answers": [
+    "v=DKIM1; p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQC8PI8xBnESYKCQvi4MMM3j1X+vWkVzCTPSgT+VMTi0yiGWN9r9J9XZl+DKZiDaueRQDKkjz/dzyygReAJzprgcVIIWzdgHt8sS9Hn3hhAUqYpFuM2yNiHgtqCsHR1kF4jnjoFvFwE1G5Pm4kZxrzlpmSFO/eG6trb/ABM4RxP6JQIDAQAB;"
+   ],
+   "authenticated": false,
+   "error_detail": null,
+   "name": "selector1._domainkey.garantibbva.com.tr",
+   "queried_at": "2026-09-11T15:24:19.068882+00:00",
+   "rcode": "NOERROR",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "ok"
+  },
+  {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "selector2._domainkey.garantibbva.com.tr",
+   "queried_at": "2026-09-11T15:24:19.069059+00:00",
+   "rcode": "NXDOMAIN",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "nxdomain"
+  },
+  {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "google._domainkey.garantibbva.com.tr",
+   "queried_at": "2026-09-11T15:24:19.069255+00:00",
+   "rcode": "NXDOMAIN",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "nxdomain"
+  },
+  {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "default._domainkey.garantibbva.com.tr",
+   "queried_at": "2026-09-11T15:24:19.069484+00:00",
+   "rcode": "NXDOMAIN",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "nxdomain"
+  },
+  {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "dkim._domainkey.garantibbva.com.tr",
+   "queried_at": "2026-09-11T15:24:19.069641+00:00",
+   "rcode": "NXDOMAIN",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "nxdomain"
+  },
+  {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "mail._domainkey.garantibbva.com.tr",
+   "queried_at": "2026-09-11T15:24:19.069811+00:00",
+   "rcode": "NXDOMAIN",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "nxdomain"
+  },
+  {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "k1._domainkey.garantibbva.com.tr",
+   "queried_at": "2026-09-11T15:24:19.069970+00:00",
+   "rcode": "NXDOMAIN",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "nxdomain"
+  },
+  {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "k2._domainkey.garantibbva.com.tr",
+   "queried_at": "2026-09-11T15:24:19.070115+00:00",
+   "rcode": "NXDOMAIN",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "nxdomain"
+  },
+  {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "s1._domainkey.garantibbva.com.tr",
+   "queried_at": "2026-09-11T15:24:19.160515+00:00",
+   "rcode": "NXDOMAIN",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "nxdomain"
+  },
+  {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "s2._domainkey.garantibbva.com.tr",
+   "queried_at": "2026-09-11T15:24:19.266373+00:00",
+   "rcode": "NXDOMAIN",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "nxdomain"
+  },
+  {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "zoho._domainkey.garantibbva.com.tr",
+   "queried_at": "2026-09-11T15:24:19.365779+00:00",
+   "rcode": "NXDOMAIN",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "nxdomain"
+  },
+  {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "mandrill._domainkey.garantibbva.com.tr",
+   "queried_at": "2026-09-11T15:24:19.473779+00:00",
+   "rcode": "NXDOMAIN",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "nxdomain"
+  },
+  {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "smtp._domainkey.garantibbva.com.tr",
+   "queried_at": "2026-09-11T15:24:19.565296+00:00",
+   "rcode": "NXDOMAIN",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "nxdomain"
+  },
+  {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "email._domainkey.garantibbva.com.tr",
+   "queried_at": "2026-09-11T15:24:19.665802+00:00",
+   "rcode": "NXDOMAIN",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "nxdomain"
+  },
+  {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "mailjet._domainkey.garantibbva.com.tr",
+   "queried_at": "2026-09-11T15:24:19.766657+00:00",
+   "rcode": "NXDOMAIN",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "nxdomain"
+  },
+  {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "sendgrid._domainkey.garantibbva.com.tr",
+   "queried_at": "2026-09-11T15:24:19.865969+00:00",
+   "rcode": "NXDOMAIN",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "nxdomain"
+  },
+  {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "_25._tcp.smtp4.garanti.com.tr",
+   "queried_at": "2026-09-11T15:24:20.666637+00:00",
+   "rcode": "NXDOMAIN",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TLSA",
+   "status": "nxdomain"
+  },
+  {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "_25._tcp.smtp6.garanti.com.tr",
+   "queried_at": "2026-09-11T15:24:20.774333+00:00",
+   "rcode": "NXDOMAIN",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TLSA",
+   "status": "nxdomain"
+  },
+  {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "_25._tcp.smtp5.garanti.com.tr",
+   "queried_at": "2026-09-11T15:24:20.874067+00:00",
+   "rcode": "NXDOMAIN",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TLSA",
+   "status": "nxdomain"
+  },
+  {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "_25._tcp.smtp7.garanti.com.tr",
+   "queried_at": "2026-09-11T15:24:20.970846+00:00",
+   "rcode": "NXDOMAIN",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TLSA",
+   "status": "nxdomain"
+  },
+  {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "_25._tcp.smtp8.garanti.com.tr",
+   "queried_at": "2026-09-11T15:24:21.071919+00:00",
+   "rcode": "NXDOMAIN",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TLSA",
+   "status": "nxdomain"
+  },
+  {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "_mta-sts.garantibbva.com.tr",
+   "queried_at": "2026-09-11T15:24:21.195918+00:00",
+   "rcode": "NXDOMAIN",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "nxdomain"
+  },
+  {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "_smtp._tls.garantibbva.com.tr",
+   "queried_at": "2026-09-11T15:24:21.305126+00:00",
+   "rcode": "NXDOMAIN",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "nxdomain"
+  },
+  {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "garantibbva.com.tr",
+   "queried_at": "2026-09-11T15:24:21.371545+00:00",
+   "rcode": "NOERROR",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "DS",
+   "status": "noanswer"
+  },
+  {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "garantibbva.com.tr",
+   "queried_at": "2026-09-11T15:24:21.465997+00:00",
+   "rcode": "NOERROR",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "CAA",
+   "status": "noanswer"
+  }
+ ],
+ "resolvers": [
+  "1.1.1.1",
+  "8.8.8.8"
+ ],
+ "spf": {
+  "lookups": {
+   "chain": [
+    {
+     "includes": [],
+     "lookup_terms_here": 2,
+     "name": "<root>",
+     "record": "v=spf1 a mx ip4:194.29.208.0/21 ip4:217.68.215.0/24 ip4:217.68.211.0/24 ip4:91.188.195.64/27 ip4:91.188.194.0/26 -all",
+     "redirect": null
+    }
+   ],
+   "exceeds_limit": false,
+   "limit": 10,
+   "loop_detected": false,
+   "method": "rfc7208_terms_recursive_simplified",
+   "total_lookups": 2,
+   "truncated": false
+  },
+  "multiple": false,
+  "parsed": {
+   "exp": null,
+   "includes": [],
+   "lookup_terms_here": 2,
+   "mechanisms": [
+    {
+     "qualifier": "+",
+     "raw": "a",
+     "type": "a",
+     "value": null
+    },
+    {
+     "qualifier": "+",
+     "raw": "mx",
+     "type": "mx",
+     "value": null
+    },
+    {
+     "qualifier": "+",
+     "raw": "ip4:194.29.208.0/21",
+     "type": "ip4",
+     "value": "194.29.208.0/21"
+    },
+    {
+     "qualifier": "+",
+     "raw": "ip4:217.68.215.0/24",
+     "type": "ip4",
+     "value": "217.68.215.0/24"
+    },
+    {
+     "qualifier": "+",
+     "raw": "ip4:217.68.211.0/24",
+     "type": "ip4",
+     "value": "217.68.211.0/24"
+    },
+    {
+     "qualifier": "+",
+     "raw": "ip4:91.188.195.64/27",
+     "type": "ip4",
+     "value": "91.188.195.64/27"
+    },
+    {
+     "qualifier": "+",
+     "raw": "ip4:91.188.194.0/26",
+     "type": "ip4",
+     "value": "91.188.194.0/26"
+    },
+    {
+     "qualifier": "-",
+     "raw": "-all",
+     "type": "all",
+     "value": null
+    }
+   ],
+   "redirect": null,
+   "terminator": {
+    "qualifier": "-",
+    "raw": "-all",
+    "type": "all",
+    "value": null
+   },
+   "unknown_modifiers": [],
+   "version_ok": true
+  },
+  "present": true,
+  "query": {
+   "answers": [
+    "google-site-verification=wmEFiuWvYlRRUdp1vZ9Oz9KLohFNGjVVQ3SWTVsG9ys",
+    "VISA=555CCFA6ADFE887A220951F34C8A9849",
+    "google-site-verification=ljpvyN3O38g4v0VBd4fRD2GnSHbXW2zKfDzyY2STwEs",
+    "_94podjjerocrjzofu6ch8884ncdb6ma",
+    "VISA=C247C56424BDB381C36987EAB41A5BA2",
+    "jamf-site-verification=tJnw9wNF_gAnU3JRzOA2Aw",
+    "hg1rdyg5xj171fzj26f0xjjj0d7h7szs",
+    "lz6539z5kkypm9d9d6j4vy4v1cn73kdt",
+    "gmdf5thlygd7qdqktk9qpglmdvnyfp2z",
+    "v=spf1 a mx ip4:194.29.208.0/21 ip4:217.68.215.0/24 ip4:217.68.211.0/24 ip4:91.188.195.64/27 ip4:91.188.194.0/26 -all",
+    "google-site-verification=Jp1DYhEdv6yYYyuneTM3upa1vdHqCvwBnqWkExjDAiw",
+    "0cshkxqfg2h03styk3y7ztvp3133l5f6",
+    "1k0msb6c1104q63byt97d95fhxsxbgmy",
+    "ciscocidomainverification=2314c133f3bfa0997607876bdc30c788cd016bf8cd9679419f3ff52bc2ca2d0d",
+    "google-site-verification=vaE9Yi1pL9zbmNkKo25WoX2Zn527o2_P85HjplZ1aok",
+    "webexdomainverification.=01c9149d-3f29-477d-8b5f-db4987c395ee",
+    "i0JxDtWtKhxIty7yIqLf3SXhlNKwWzJg0DcGBEZ4zdU=",
+    "MS=ms73615284",
+    "MS=ms71468722",
+    "google-site-verification=tctbNVh2u1rZYwFFpU2Ict1tCTo7GtPbJE5_y2zT3kk",
+    "apple-domain-verification=OhaKgtrquVpaUARk",
+    "D8W99y9XbqOhqcjIlt5uBZvbqmUf6lWtbeaxnR8DnWI=",
+    "jkr6mfb0jccx03w64x49qtcqgnffh37m",
+    "VISA=40A5FA9019F270A31928AB9D4C716F77",
+    "VISA=40A5FA9019F270A31928AB9D4C716F77",
+    "pexip-ms-tenant-domain-verification=b8dccdb6-c068-45da-bbd2-7d8d519c1a7a",
+    "frmkcj40zs967gl6lyj0kwfl6gmsqt4g",
+    "k64krd65t88mc7xdp6vry2xm8qq8d772",
+    "VISA=06B016D64B0929670D8C6F95ADB1AC9F",
+    "VISA=BFB10E0F98F7951496E2705AC238FC8E",
+    "_1r70349jy7z6cu2j8f79cu2heeojrq7",
+    "google-gws-recovery-domain-verification=59142185",
+    "google-gws-recovery-domain-verification=59534030"
+   ],
+   "authenticated": false,
+   "error_detail": null,
+   "name": "garantibbva.com.tr",
+   "queried_at": "2026-09-11T15:24:18.864109+00:00",
+   "rcode": "NOERROR",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "ok"
+  },
+  "records": [
+   "v=spf1 a mx ip4:194.29.208.0/21 ip4:217.68.215.0/24 ip4:217.68.211.0/24 ip4:91.188.195.64/27 ip4:91.188.194.0/26 -all"
+  ]
+ },
+ "tls_rpt": {
+  "present": false,
+  "query": {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "_smtp._tls.garantibbva.com.tr",
+   "queried_at": "2026-09-11T15:24:21.305126+00:00",
+   "rcode": "NXDOMAIN",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "nxdomain"
+  },
+  "records": []
+ }
+}

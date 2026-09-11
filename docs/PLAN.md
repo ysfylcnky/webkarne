@@ -146,6 +146,60 @@ bir yeniden-deneme mantığı (dns.retries) zaten var; bu politika ondan bağım
 Tekil `scan` ve toplu `batch` aynı `DnsClient`'ı kullandığından bu karar her iki
 yolda da aynı ham veriyi üretir.
 
+### K-12 · A boyutu puanlama modeli
+
+*(Karar: 2026-09-11, Sprint 3 · Oturum 1. K-02/K-03'ün somutlanması: A boyutu için
+ağırlık, eşik ve harf sınırları. Tümü `config/scoring.toml` sürüm `1.0.0`'da yaşar;
+kodda sabit eşik/ağırlık yoktur.)*
+
+Ham DNS/e-posta verisi 0–100 ham puana ve bir harf notuna çevrilir. Puanlama
+`scan_results`'ı yalnız **okur**; `scores`/`findings` türetilmiştir, `rescore` ile
+güvenle silinip yeniden üretilebilir (aynı ham veri + aynı `ruleset_version` = aynı
+not, hep).
+
+- **Harf skalası (güvenliğe göre kalibre):** A≥85, B≥70, C≥55, D≥40, F<40. Mutlak
+  ve tekrar-üretilebilir. Türkiye örnekleminde e-posta güvenliği genelde zayıf
+  olduğundan (DMARC'ların çoğu `p=none`, DNSSEC neredeyse yok) klasik 90/80/70
+  herkesi F'ye yığardı; bu eşikler örneklemi ayırt eder.
+- **Ağırlıklar (kimlik-doğrulama ağırlıklı, toplam 100):** DMARC 35, SPF 25,
+  DNSSEC 15, DANE 8, CAA 7, MTA-STS 6, TLS-RPT 4. **DKIM ve MX puana katılmaz.**
+  DMARC 35 içinde: politika (`p=`) 25, toplu rapor (`rua`) 5, alt-alan (`sp=`) 5.
+  SPF 25 içinde: sonlandırıcı 18 (`-all`=tam, `~all`=yarı, `?all`=düşük, `+all`=0),
+  10-lookup sınırı 7.
+- **DKIM puanlanmaz (yalnız gözlem).** Seçici adları DNS'ten keşfedilemez, tahmin
+  edilir; 0/16 seçici bulmak "DKIM yok" değildir — akbank.com ve turkiye.gov.tr
+  canlı koşuda 0/16 döndürdü, oysa internet.nl onların DKIM'ini görüyor. Bulunursa
+  `EMAIL_DKIM_FOUND` (+ kısa anahtar için `EMAIL_DKIM_KEY_SHORT`), bulunamazsa
+  `EMAIL_DKIM_NOT_OBSERVED` (info) yazılır; ceza yok.
+- **"Ölçülemedi" (servfail/timeout) cezalandırılmaz (kural 6).** Ölçülemeyen
+  gösterge paydadan düşülür; puan kalan ölçülen ağırlık üzerinden yüzdelenir
+  (`raw_score = 100 × kazanılan / ölçülen_ağırlık`). Ölçülen ağırlık uygulanabilir
+  ağırlığın %50'sinin altındaysa harf notu yerine **"yetersiz veri" (grade `I`)**
+  verilir (raw_score yine kaydedilir). "Kayıt yok" (nxdomain/noanswer) gerçek
+  yokluktur ve puanlanır — ölçülemedi ile ASLA karıştırılmaz.
+- **Uygulanamaz göstergeler payda dışıdır.** MX yoksa posta-aktarım göstergeleri
+  (MTA-STS, TLS-RPT, DANE) uygulanamaz sayılır ve paydadan düşülür — postasız bir
+  alan adı "DANE yok" diye cezalandırılmaz. Üç durum ayrı tutulur: **yokluk ≠
+  uygulanamaz ≠ ölçülemedi.**
+- **Bulgu metinleri kodda değil.** `findings.code` sabit listeden gelir; her kodun
+  `severity` ve `fix_hint_key`'i `scoring.toml`'da, insan-okur açıklama/düzeltme
+  metni çeviri dosyalarında (K-08). Kod yalnız kod + kanıt üretir.
+
+**Ruleset sürüm geçmişi.**
+
+- **1.0.0** — ilk A boyutu modeli (yukarıdaki kararlar).
+- **1.1.0** — **SPF softfail (`~all`) DMARC uygularken telafi edilir.** DMARC
+  `p=reject`/`quarantine` ise hizasız posta zaten DMARC tarafından reddedilir;
+  dolayısıyla `~all` gerçek bir boşluk bırakmaz ve yarım yerine tam-yakını (0.9)
+  puanlanır (kesin `-all` için küçük bir üstünlük korunur). Bulgu yine yazılır
+  (`dmarc_compensated=true` kanıtıyla), böylece düzeltme ipucu hâlâ `-all` önerir.
+  internet.nl karşılaştırmasıyla fark edildi: internet.nl (dış referans aracın kendi
+  alan adı) `~all`+`p=reject` kullanıyor ve kendi aracında %100 alıyor; bizde 1.0.0'da
+  81 (B) idi, 1.1.0'da 88.2 (A). **Bu, o araca kalibrasyon değil**, bir çift-sayımın
+  ilkeli düzeltmesidir (parity gösterge düzeyinde kalır, puan düzeyinde değil). Altı
+  bilinen Türk alan adının notunu **değiştirmez** (hiçbiri `~all`+enforce değil) ve
+  `rescore`'un yeniden-puanlanabilirliğini (K-02) canlı gösterir.
+
 ---
 
 ## 3. Ne ölçüyoruz

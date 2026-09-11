@@ -1,0 +1,1228 @@
+{
+ "caa": {
+  "present": false,
+  "query": {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "istanbul.edu.tr",
+   "queried_at": "2026-09-11T16:07:01.885762+00:00",
+   "rcode": "NOERROR",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "CAA",
+   "status": "noanswer"
+  },
+  "records": []
+ },
+ "collected_at": "2026-09-11T16:06:59.068747+00:00",
+ "collector": "dns_email",
+ "collector_version": "0.3.0",
+ "config_hash": "f1f1eeaa8a3f76c807bcbdb25c0e9299e66f6641060ff05cab2fc2ded8fba814",
+ "dane": {
+  "hosts": [
+   {
+    "mx_host": "aspmx.l.google.com",
+    "present": false,
+    "query": {
+     "answers": [],
+     "authenticated": null,
+     "error_detail": null,
+     "name": "_25._tcp.aspmx.l.google.com",
+     "queried_at": "2026-09-11T16:07:01.057870+00:00",
+     "rcode": "NXDOMAIN",
+     "requeried": false,
+     "resolver": [
+      "1.1.1.1",
+      "8.8.8.8"
+     ],
+     "rtype": "TLSA",
+     "status": "nxdomain"
+    },
+    "records": []
+   },
+   {
+    "mx_host": "alt2.aspmx.l.google.com",
+    "present": false,
+    "query": {
+     "answers": [],
+     "authenticated": null,
+     "error_detail": null,
+     "name": "_25._tcp.alt2.aspmx.l.google.com",
+     "queried_at": "2026-09-11T16:07:01.188945+00:00",
+     "rcode": "NXDOMAIN",
+     "requeried": false,
+     "resolver": [
+      "1.1.1.1",
+      "8.8.8.8"
+     ],
+     "rtype": "TLSA",
+     "status": "nxdomain"
+    },
+    "records": []
+   },
+   {
+    "mx_host": "alt1.aspmx.l.google.com",
+    "present": false,
+    "query": {
+     "answers": [],
+     "authenticated": null,
+     "error_detail": null,
+     "name": "_25._tcp.alt1.aspmx.l.google.com",
+     "queried_at": "2026-09-11T16:07:01.260348+00:00",
+     "rcode": "NXDOMAIN",
+     "requeried": false,
+     "resolver": [
+      "1.1.1.1",
+      "8.8.8.8"
+     ],
+     "rtype": "TLSA",
+     "status": "nxdomain"
+    },
+    "records": []
+   },
+   {
+    "mx_host": "alt4.aspmx.l.google.com",
+    "present": false,
+    "query": {
+     "answers": [],
+     "authenticated": null,
+     "error_detail": null,
+     "name": "_25._tcp.alt4.aspmx.l.google.com",
+     "queried_at": "2026-09-11T16:07:01.354417+00:00",
+     "rcode": "NXDOMAIN",
+     "requeried": false,
+     "resolver": [
+      "1.1.1.1",
+      "8.8.8.8"
+     ],
+     "rtype": "TLSA",
+     "status": "nxdomain"
+    },
+    "records": []
+   },
+   {
+    "mx_host": "alt3.aspmx.l.google.com",
+    "present": false,
+    "query": {
+     "answers": [],
+     "authenticated": null,
+     "error_detail": null,
+     "name": "_25._tcp.alt3.aspmx.l.google.com",
+     "queried_at": "2026-09-11T16:07:01.454179+00:00",
+     "rcode": "NXDOMAIN",
+     "requeried": false,
+     "resolver": [
+      "1.1.1.1",
+      "8.8.8.8"
+     ],
+     "rtype": "TLSA",
+     "status": "nxdomain"
+    },
+    "records": []
+   }
+  ],
+  "mx_hosts_checked": [
+   "aspmx.l.google.com",
+   "alt2.aspmx.l.google.com",
+   "alt1.aspmx.l.google.com",
+   "alt4.aspmx.l.google.com",
+   "alt3.aspmx.l.google.com"
+  ],
+  "note": "DANE requires DNSSEC-signed TLSA records to be trustworthy",
+  "present": false
+ },
+ "dkim": {
+  "attempts": [
+   {
+    "present": false,
+    "query": {
+     "answers": [],
+     "authenticated": null,
+     "error_detail": null,
+     "name": "selector1._domainkey.istanbul.edu.tr",
+     "queried_at": "2026-09-11T16:06:59.457498+00:00",
+     "rcode": "NXDOMAIN",
+     "requeried": false,
+     "resolver": [
+      "1.1.1.1",
+      "8.8.8.8"
+     ],
+     "rtype": "TXT",
+     "status": "nxdomain"
+    },
+    "selector": "selector1"
+   },
+   {
+    "present": false,
+    "query": {
+     "answers": [],
+     "authenticated": null,
+     "error_detail": null,
+     "name": "selector2._domainkey.istanbul.edu.tr",
+     "queried_at": "2026-09-11T16:06:59.457689+00:00",
+     "rcode": "NXDOMAIN",
+     "requeried": false,
+     "resolver": [
+      "1.1.1.1",
+      "8.8.8.8"
+     ],
+     "rtype": "TXT",
+     "status": "nxdomain"
+    },
+    "selector": "selector2"
+   },
+   {
+    "present": false,
+    "query": {
+     "answers": [],
+     "authenticated": null,
+     "error_detail": null,
+     "name": "google._domainkey.istanbul.edu.tr",
+     "queried_at": "2026-09-11T16:06:59.457871+00:00",
+     "rcode": "NXDOMAIN",
+     "requeried": false,
+     "resolver": [
+      "1.1.1.1",
+      "8.8.8.8"
+     ],
+     "rtype": "TXT",
+     "status": "nxdomain"
+    },
+    "selector": "google"
+   },
+   {
+    "present": false,
+    "query": {
+     "answers": [],
+     "authenticated": null,
+     "error_detail": null,
+     "name": "default._domainkey.istanbul.edu.tr",
+     "queried_at": "2026-09-11T16:06:59.458028+00:00",
+     "rcode": "NXDOMAIN",
+     "requeried": false,
+     "resolver": [
+      "1.1.1.1",
+      "8.8.8.8"
+     ],
+     "rtype": "TXT",
+     "status": "nxdomain"
+    },
+    "selector": "default"
+   },
+   {
+    "present": false,
+    "query": {
+     "answers": [],
+     "authenticated": null,
+     "error_detail": null,
+     "name": "dkim._domainkey.istanbul.edu.tr",
+     "queried_at": "2026-09-11T16:06:59.458248+00:00",
+     "rcode": "NXDOMAIN",
+     "requeried": false,
+     "resolver": [
+      "1.1.1.1",
+      "8.8.8.8"
+     ],
+     "rtype": "TXT",
+     "status": "nxdomain"
+    },
+    "selector": "dkim"
+   },
+   {
+    "present": false,
+    "query": {
+     "answers": [],
+     "authenticated": null,
+     "error_detail": null,
+     "name": "mail._domainkey.istanbul.edu.tr",
+     "queried_at": "2026-09-11T16:06:59.458464+00:00",
+     "rcode": "NXDOMAIN",
+     "requeried": false,
+     "resolver": [
+      "1.1.1.1",
+      "8.8.8.8"
+     ],
+     "rtype": "TXT",
+     "status": "nxdomain"
+    },
+    "selector": "mail"
+   },
+   {
+    "present": false,
+    "query": {
+     "answers": [],
+     "authenticated": null,
+     "error_detail": null,
+     "name": "k1._domainkey.istanbul.edu.tr",
+     "queried_at": "2026-09-11T16:06:59.458646+00:00",
+     "rcode": "NXDOMAIN",
+     "requeried": false,
+     "resolver": [
+      "1.1.1.1",
+      "8.8.8.8"
+     ],
+     "rtype": "TXT",
+     "status": "nxdomain"
+    },
+    "selector": "k1"
+   },
+   {
+    "present": false,
+    "query": {
+     "answers": [],
+     "authenticated": null,
+     "error_detail": null,
+     "name": "k2._domainkey.istanbul.edu.tr",
+     "queried_at": "2026-09-11T16:06:59.458815+00:00",
+     "rcode": "NXDOMAIN",
+     "requeried": false,
+     "resolver": [
+      "1.1.1.1",
+      "8.8.8.8"
+     ],
+     "rtype": "TXT",
+     "status": "nxdomain"
+    },
+    "selector": "k2"
+   },
+   {
+    "present": false,
+    "query": {
+     "answers": [],
+     "authenticated": null,
+     "error_detail": null,
+     "name": "s1._domainkey.istanbul.edu.tr",
+     "queried_at": "2026-09-11T16:06:59.599813+00:00",
+     "rcode": "NXDOMAIN",
+     "requeried": false,
+     "resolver": [
+      "1.1.1.1",
+      "8.8.8.8"
+     ],
+     "rtype": "TXT",
+     "status": "nxdomain"
+    },
+    "selector": "s1"
+   },
+   {
+    "present": false,
+    "query": {
+     "answers": [],
+     "authenticated": null,
+     "error_detail": null,
+     "name": "s2._domainkey.istanbul.edu.tr",
+     "queried_at": "2026-09-11T16:06:59.658831+00:00",
+     "rcode": "NXDOMAIN",
+     "requeried": false,
+     "resolver": [
+      "1.1.1.1",
+      "8.8.8.8"
+     ],
+     "rtype": "TXT",
+     "status": "nxdomain"
+    },
+    "selector": "s2"
+   },
+   {
+    "present": false,
+    "query": {
+     "answers": [],
+     "authenticated": null,
+     "error_detail": null,
+     "name": "zoho._domainkey.istanbul.edu.tr",
+     "queried_at": "2026-09-11T16:06:59.798753+00:00",
+     "rcode": "NXDOMAIN",
+     "requeried": false,
+     "resolver": [
+      "1.1.1.1",
+      "8.8.8.8"
+     ],
+     "rtype": "TXT",
+     "status": "nxdomain"
+    },
+    "selector": "zoho"
+   },
+   {
+    "present": false,
+    "query": {
+     "answers": [],
+     "authenticated": null,
+     "error_detail": null,
+     "name": "mandrill._domainkey.istanbul.edu.tr",
+     "queried_at": "2026-09-11T16:06:59.857953+00:00",
+     "rcode": "NXDOMAIN",
+     "requeried": false,
+     "resolver": [
+      "1.1.1.1",
+      "8.8.8.8"
+     ],
+     "rtype": "TXT",
+     "status": "nxdomain"
+    },
+    "selector": "mandrill"
+   },
+   {
+    "present": false,
+    "query": {
+     "answers": [],
+     "authenticated": null,
+     "error_detail": null,
+     "name": "smtp._domainkey.istanbul.edu.tr",
+     "queried_at": "2026-09-11T16:06:59.998563+00:00",
+     "rcode": "NXDOMAIN",
+     "requeried": false,
+     "resolver": [
+      "1.1.1.1",
+      "8.8.8.8"
+     ],
+     "rtype": "TXT",
+     "status": "nxdomain"
+    },
+    "selector": "smtp"
+   },
+   {
+    "present": false,
+    "query": {
+     "answers": [],
+     "authenticated": null,
+     "error_detail": null,
+     "name": "email._domainkey.istanbul.edu.tr",
+     "queried_at": "2026-09-11T16:07:00.098374+00:00",
+     "rcode": "NXDOMAIN",
+     "requeried": false,
+     "resolver": [
+      "1.1.1.1",
+      "8.8.8.8"
+     ],
+     "rtype": "TXT",
+     "status": "nxdomain"
+    },
+    "selector": "email"
+   },
+   {
+    "parsed": {
+     "key_bits": 1024,
+     "key_type": "rsa",
+     "p_empty": false,
+     "p_present": true,
+     "tags": {
+      "k": "rsa",
+      "p": "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDRpBOoVTDUZ9ZeM5ppRSW70jSBfwzk5z4ZXLH5vCu6SCBXvNPnfEWhcBbSTpBQzaIO7uZUr5ukzP0JT4qr53aG5qXN+QQRTPdcUKEc8dlbfK/amTKj6zlh5aqACxGRDXqwCnD8rRLk6R5Jw0hGVksEwgMBS3Zs2lRaBJ51m5qerQIDAQAB"
+     },
+     "testing": false
+    },
+    "present": true,
+    "query": {
+     "answers": [
+      "k=rsa; p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDRpBOoVTDUZ9ZeM5ppRSW70jSBfwzk5z4ZXLH5vCu6SCBXvNPnfEWhcBbSTpBQzaIO7uZUr5ukzP0JT4qr53aG5qXN+QQRTPdcUKEc8dlbfK/amTKj6zlh5aqACxGRDXqwCnD8rRLk6R5Jw0hGVksEwgMBS3Zs2lRaBJ51m5qerQIDAQAB"
+     ],
+     "authenticated": false,
+     "error_detail": null,
+     "name": "mailjet._domainkey.istanbul.edu.tr",
+     "queried_at": "2026-09-11T16:07:00.158188+00:00",
+     "rcode": "NOERROR",
+     "requeried": false,
+     "resolver": [
+      "1.1.1.1",
+      "8.8.8.8"
+     ],
+     "rtype": "TXT",
+     "status": "ok"
+    },
+    "selector": "mailjet"
+   },
+   {
+    "present": false,
+    "query": {
+     "answers": [],
+     "authenticated": null,
+     "error_detail": null,
+     "name": "sendgrid._domainkey.istanbul.edu.tr",
+     "queried_at": "2026-09-11T16:07:00.256812+00:00",
+     "rcode": "NXDOMAIN",
+     "requeried": false,
+     "resolver": [
+      "1.1.1.1",
+      "8.8.8.8"
+     ],
+     "rtype": "TXT",
+     "status": "nxdomain"
+    },
+    "selector": "sendgrid"
+   }
+  ],
+  "found_selectors": [
+   "mailjet"
+  ],
+  "method": "selector_guessing",
+  "selectors_tried": [
+   "selector1",
+   "selector2",
+   "google",
+   "default",
+   "dkim",
+   "mail",
+   "k1",
+   "k2",
+   "s1",
+   "s2",
+   "zoho",
+   "mandrill",
+   "smtp",
+   "email",
+   "mailjet",
+   "sendgrid"
+  ]
+ },
+ "dmarc": {
+  "multiple": false,
+  "parsed": {
+   "adkim": null,
+   "aspf": null,
+   "fo": null,
+   "has_aggregate_reporting": true,
+   "issues": [],
+   "p": "none",
+   "pct": "100",
+   "rua": "mailto:gezginci@istanbul.edu.tr",
+   "ruf": null,
+   "sp": "none",
+   "tags": {
+    "p": "none",
+    "pct": "100",
+    "rf": "afrf",
+    "ri": "86400",
+    "rua": "mailto:gezginci@istanbul.edu.tr",
+    "sp": "none",
+    "v": "DMARC1"
+   },
+   "valid": true
+  },
+  "present": true,
+  "query": {
+   "answers": [
+    "v=DMARC1; p=none; sp=none; rua=mailto:gezginci@istanbul.edu.tr; rf=afrf; pct=100; ri=86400"
+   ],
+   "authenticated": false,
+   "error_detail": null,
+   "name": "_dmarc.istanbul.edu.tr",
+   "queried_at": "2026-09-11T16:06:59.316298+00:00",
+   "rcode": "NOERROR",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "ok"
+  },
+  "records": [
+   "v=DMARC1; p=none; sp=none; rua=mailto:gezginci@istanbul.edu.tr; rf=afrf; pct=100; ri=86400"
+  ]
+ },
+ "dnssec": {
+  "ds_present": false,
+  "note": "resolver_authenticated is the resolver's DNSSEC AD flag, not local validation",
+  "query": {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "istanbul.edu.tr",
+   "queried_at": "2026-09-11T16:07:01.859751+00:00",
+   "rcode": "NOERROR",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "DS",
+   "status": "noanswer"
+  },
+  "resolver_authenticated": null
+ },
+ "domain": "istanbul.edu.tr",
+ "input_domain": "istanbul.edu.tr",
+ "mta_sts": {
+  "dns": {
+   "present": false,
+   "query": {
+    "answers": [],
+    "authenticated": null,
+    "error_detail": null,
+    "name": "_mta-sts.istanbul.edu.tr",
+    "queried_at": "2026-09-11T16:07:01.537589+00:00",
+    "rcode": "NXDOMAIN",
+    "requeried": false,
+    "resolver": [
+     "1.1.1.1",
+     "8.8.8.8"
+    ],
+    "rtype": "TXT",
+    "status": "nxdomain"
+   },
+   "records": []
+  },
+  "policy": {
+   "error_detail": "URLError: <urlopen error [Errno 11001] getaddrinfo failed>",
+   "redirected": false,
+   "status": "error",
+   "url": "https://mta-sts.istanbul.edu.tr/.well-known/mta-sts.txt"
+  }
+ },
+ "mx": {
+  "present": true,
+  "providers": [
+   "google"
+  ],
+  "query": {
+   "answers": [
+    "10 alt4.aspmx.l.google.com.",
+    "1 aspmx.l.google.com.",
+    "5 alt2.aspmx.l.google.com.",
+    "5 alt1.aspmx.l.google.com.",
+    "10 alt3.aspmx.l.google.com."
+   ],
+   "authenticated": false,
+   "error_detail": null,
+   "name": "istanbul.edu.tr",
+   "queried_at": "2026-09-11T16:06:59.010516+00:00",
+   "rcode": "NOERROR",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "MX",
+   "status": "ok"
+  },
+  "records": [
+   {
+    "exchange": "aspmx.l.google.com.",
+    "preference": 1,
+    "provider": "google"
+   },
+   {
+    "exchange": "alt2.aspmx.l.google.com.",
+    "preference": 5,
+    "provider": "google"
+   },
+   {
+    "exchange": "alt1.aspmx.l.google.com.",
+    "preference": 5,
+    "provider": "google"
+   },
+   {
+    "exchange": "alt4.aspmx.l.google.com.",
+    "preference": 10,
+    "provider": "google"
+   },
+   {
+    "exchange": "alt3.aspmx.l.google.com.",
+    "preference": 10,
+    "provider": "google"
+   }
+  ]
+ },
+ "queries": [
+  {
+   "answers": [
+    "10 alt4.aspmx.l.google.com.",
+    "1 aspmx.l.google.com.",
+    "5 alt2.aspmx.l.google.com.",
+    "5 alt1.aspmx.l.google.com.",
+    "10 alt3.aspmx.l.google.com."
+   ],
+   "authenticated": false,
+   "error_detail": null,
+   "name": "istanbul.edu.tr",
+   "queried_at": "2026-09-11T16:06:59.010516+00:00",
+   "rcode": "NOERROR",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "MX",
+   "status": "ok"
+  },
+  {
+   "answers": [
+    "v=spf1 include:spf.mailjet.com  ip4:194.27.128.0/24 include:_spf.google.com ~all",
+    "google-site-verification=Xz1VZDUx6RyqYVlVcxWwk2W0PdruEcq1TUsrYFPRO18",
+    "MS=CF582613315205117F99BD01013DFAB5970C1575",
+    "adobe-idp-site-verification=498beef36b3f33b77b9d1fb24ceb1c6c3da7d59fe244670cd83eef3dcebae488"
+   ],
+   "authenticated": false,
+   "error_detail": null,
+   "name": "istanbul.edu.tr",
+   "queried_at": "2026-09-11T16:06:59.068810+00:00",
+   "rcode": "NOERROR",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "ok"
+  },
+  {
+   "answers": [
+    "v=spf1 ip4:87.253.232.0/21 ip4:185.189.236.0/22 ip4:185.211.120.0/22 ip4:185.250.236.0/22 ip4:45.14.148.0/22 ~all"
+   ],
+   "authenticated": false,
+   "error_detail": null,
+   "name": "spf.mailjet.com",
+   "queried_at": "2026-09-11T16:06:59.158869+00:00",
+   "rcode": "NOERROR",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "ok"
+  },
+  {
+   "answers": [
+    "v=spf1 ip4:74.125.0.0/16 ip4:209.85.128.0/17 ip6:2001:4860:4864::/56 ip6:2404:6800:4864::/56 ip6:2607:f8b0:4864::/56 ip6:2800:3f0:4864::/56 ip6:2a00:1450:4864::/56 ip6:2c0f:fb50:4864::/56 ~all"
+   ],
+   "authenticated": false,
+   "error_detail": null,
+   "name": "_spf.google.com",
+   "queried_at": "2026-09-11T16:06:59.215401+00:00",
+   "rcode": "NOERROR",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "ok"
+  },
+  {
+   "answers": [
+    "v=DMARC1; p=none; sp=none; rua=mailto:gezginci@istanbul.edu.tr; rf=afrf; pct=100; ri=86400"
+   ],
+   "authenticated": false,
+   "error_detail": null,
+   "name": "_dmarc.istanbul.edu.tr",
+   "queried_at": "2026-09-11T16:06:59.316298+00:00",
+   "rcode": "NOERROR",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "ok"
+  },
+  {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "selector1._domainkey.istanbul.edu.tr",
+   "queried_at": "2026-09-11T16:06:59.457498+00:00",
+   "rcode": "NXDOMAIN",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "nxdomain"
+  },
+  {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "selector2._domainkey.istanbul.edu.tr",
+   "queried_at": "2026-09-11T16:06:59.457689+00:00",
+   "rcode": "NXDOMAIN",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "nxdomain"
+  },
+  {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "google._domainkey.istanbul.edu.tr",
+   "queried_at": "2026-09-11T16:06:59.457871+00:00",
+   "rcode": "NXDOMAIN",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "nxdomain"
+  },
+  {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "default._domainkey.istanbul.edu.tr",
+   "queried_at": "2026-09-11T16:06:59.458028+00:00",
+   "rcode": "NXDOMAIN",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "nxdomain"
+  },
+  {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "dkim._domainkey.istanbul.edu.tr",
+   "queried_at": "2026-09-11T16:06:59.458248+00:00",
+   "rcode": "NXDOMAIN",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "nxdomain"
+  },
+  {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "mail._domainkey.istanbul.edu.tr",
+   "queried_at": "2026-09-11T16:06:59.458464+00:00",
+   "rcode": "NXDOMAIN",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "nxdomain"
+  },
+  {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "k1._domainkey.istanbul.edu.tr",
+   "queried_at": "2026-09-11T16:06:59.458646+00:00",
+   "rcode": "NXDOMAIN",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "nxdomain"
+  },
+  {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "k2._domainkey.istanbul.edu.tr",
+   "queried_at": "2026-09-11T16:06:59.458815+00:00",
+   "rcode": "NXDOMAIN",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "nxdomain"
+  },
+  {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "s1._domainkey.istanbul.edu.tr",
+   "queried_at": "2026-09-11T16:06:59.599813+00:00",
+   "rcode": "NXDOMAIN",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "nxdomain"
+  },
+  {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "s2._domainkey.istanbul.edu.tr",
+   "queried_at": "2026-09-11T16:06:59.658831+00:00",
+   "rcode": "NXDOMAIN",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "nxdomain"
+  },
+  {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "zoho._domainkey.istanbul.edu.tr",
+   "queried_at": "2026-09-11T16:06:59.798753+00:00",
+   "rcode": "NXDOMAIN",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "nxdomain"
+  },
+  {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "mandrill._domainkey.istanbul.edu.tr",
+   "queried_at": "2026-09-11T16:06:59.857953+00:00",
+   "rcode": "NXDOMAIN",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "nxdomain"
+  },
+  {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "smtp._domainkey.istanbul.edu.tr",
+   "queried_at": "2026-09-11T16:06:59.998563+00:00",
+   "rcode": "NXDOMAIN",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "nxdomain"
+  },
+  {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "email._domainkey.istanbul.edu.tr",
+   "queried_at": "2026-09-11T16:07:00.098374+00:00",
+   "rcode": "NXDOMAIN",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "nxdomain"
+  },
+  {
+   "answers": [
+    "k=rsa; p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDRpBOoVTDUZ9ZeM5ppRSW70jSBfwzk5z4ZXLH5vCu6SCBXvNPnfEWhcBbSTpBQzaIO7uZUr5ukzP0JT4qr53aG5qXN+QQRTPdcUKEc8dlbfK/amTKj6zlh5aqACxGRDXqwCnD8rRLk6R5Jw0hGVksEwgMBS3Zs2lRaBJ51m5qerQIDAQAB"
+   ],
+   "authenticated": false,
+   "error_detail": null,
+   "name": "mailjet._domainkey.istanbul.edu.tr",
+   "queried_at": "2026-09-11T16:07:00.158188+00:00",
+   "rcode": "NOERROR",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "ok"
+  },
+  {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "sendgrid._domainkey.istanbul.edu.tr",
+   "queried_at": "2026-09-11T16:07:00.256812+00:00",
+   "rcode": "NXDOMAIN",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "nxdomain"
+  },
+  {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "_25._tcp.aspmx.l.google.com",
+   "queried_at": "2026-09-11T16:07:01.057870+00:00",
+   "rcode": "NXDOMAIN",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TLSA",
+   "status": "nxdomain"
+  },
+  {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "_25._tcp.alt2.aspmx.l.google.com",
+   "queried_at": "2026-09-11T16:07:01.188945+00:00",
+   "rcode": "NXDOMAIN",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TLSA",
+   "status": "nxdomain"
+  },
+  {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "_25._tcp.alt1.aspmx.l.google.com",
+   "queried_at": "2026-09-11T16:07:01.260348+00:00",
+   "rcode": "NXDOMAIN",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TLSA",
+   "status": "nxdomain"
+  },
+  {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "_25._tcp.alt4.aspmx.l.google.com",
+   "queried_at": "2026-09-11T16:07:01.354417+00:00",
+   "rcode": "NXDOMAIN",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TLSA",
+   "status": "nxdomain"
+  },
+  {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "_25._tcp.alt3.aspmx.l.google.com",
+   "queried_at": "2026-09-11T16:07:01.454179+00:00",
+   "rcode": "NXDOMAIN",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TLSA",
+   "status": "nxdomain"
+  },
+  {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "_mta-sts.istanbul.edu.tr",
+   "queried_at": "2026-09-11T16:07:01.537589+00:00",
+   "rcode": "NXDOMAIN",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "nxdomain"
+  },
+  {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "_smtp._tls.istanbul.edu.tr",
+   "queried_at": "2026-09-11T16:07:01.770092+00:00",
+   "rcode": "NXDOMAIN",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "nxdomain"
+  },
+  {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "istanbul.edu.tr",
+   "queried_at": "2026-09-11T16:07:01.859751+00:00",
+   "rcode": "NOERROR",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "DS",
+   "status": "noanswer"
+  },
+  {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "istanbul.edu.tr",
+   "queried_at": "2026-09-11T16:07:01.885762+00:00",
+   "rcode": "NOERROR",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "CAA",
+   "status": "noanswer"
+  }
+ ],
+ "resolvers": [
+  "1.1.1.1",
+  "8.8.8.8"
+ ],
+ "spf": {
+  "lookups": {
+   "chain": [
+    {
+     "includes": [
+      "spf.mailjet.com",
+      "_spf.google.com"
+     ],
+     "lookup_terms_here": 2,
+     "name": "<root>",
+     "record": "v=spf1 include:spf.mailjet.com  ip4:194.27.128.0/24 include:_spf.google.com ~all",
+     "redirect": null
+    },
+    {
+     "includes": [],
+     "lookup_terms_here": 0,
+     "name": "spf.mailjet.com",
+     "record": "v=spf1 ip4:87.253.232.0/21 ip4:185.189.236.0/22 ip4:185.211.120.0/22 ip4:185.250.236.0/22 ip4:45.14.148.0/22 ~all",
+     "redirect": null
+    },
+    {
+     "includes": [],
+     "lookup_terms_here": 0,
+     "name": "_spf.google.com",
+     "record": "v=spf1 ip4:74.125.0.0/16 ip4:209.85.128.0/17 ip6:2001:4860:4864::/56 ip6:2404:6800:4864::/56 ip6:2607:f8b0:4864::/56 ip6:2800:3f0:4864::/56 ip6:2a00:1450:4864::/56 ip6:2c0f:fb50:4864::/56 ~all",
+     "redirect": null
+    }
+   ],
+   "exceeds_limit": false,
+   "limit": 10,
+   "loop_detected": false,
+   "method": "rfc7208_terms_recursive_simplified",
+   "total_lookups": 2,
+   "truncated": false
+  },
+  "multiple": false,
+  "parsed": {
+   "exp": null,
+   "includes": [
+    "spf.mailjet.com",
+    "_spf.google.com"
+   ],
+   "lookup_terms_here": 2,
+   "mechanisms": [
+    {
+     "qualifier": "+",
+     "raw": "include:spf.mailjet.com",
+     "type": "include",
+     "value": "spf.mailjet.com"
+    },
+    {
+     "qualifier": "+",
+     "raw": "ip4:194.27.128.0/24",
+     "type": "ip4",
+     "value": "194.27.128.0/24"
+    },
+    {
+     "qualifier": "+",
+     "raw": "include:_spf.google.com",
+     "type": "include",
+     "value": "_spf.google.com"
+    },
+    {
+     "qualifier": "~",
+     "raw": "~all",
+     "type": "all",
+     "value": null
+    }
+   ],
+   "redirect": null,
+   "terminator": {
+    "qualifier": "~",
+    "raw": "~all",
+    "type": "all",
+    "value": null
+   },
+   "unknown_modifiers": [],
+   "version_ok": true
+  },
+  "present": true,
+  "query": {
+   "answers": [
+    "v=spf1 include:spf.mailjet.com  ip4:194.27.128.0/24 include:_spf.google.com ~all",
+    "google-site-verification=Xz1VZDUx6RyqYVlVcxWwk2W0PdruEcq1TUsrYFPRO18",
+    "MS=CF582613315205117F99BD01013DFAB5970C1575",
+    "adobe-idp-site-verification=498beef36b3f33b77b9d1fb24ceb1c6c3da7d59fe244670cd83eef3dcebae488"
+   ],
+   "authenticated": false,
+   "error_detail": null,
+   "name": "istanbul.edu.tr",
+   "queried_at": "2026-09-11T16:06:59.068810+00:00",
+   "rcode": "NOERROR",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "ok"
+  },
+  "records": [
+   "v=spf1 include:spf.mailjet.com  ip4:194.27.128.0/24 include:_spf.google.com ~all"
+  ]
+ },
+ "tls_rpt": {
+  "present": false,
+  "query": {
+   "answers": [],
+   "authenticated": null,
+   "error_detail": null,
+   "name": "_smtp._tls.istanbul.edu.tr",
+   "queried_at": "2026-09-11T16:07:01.770092+00:00",
+   "rcode": "NXDOMAIN",
+   "requeried": false,
+   "resolver": [
+    "1.1.1.1",
+    "8.8.8.8"
+   ],
+   "rtype": "TXT",
+   "status": "nxdomain"
+  },
+  "records": []
+ }
+}

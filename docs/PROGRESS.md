@@ -351,3 +351,124 @@ Engine is done and validated. Options for next session: (1) kick off the **full
 14,766 run** (resumable) and then (2) build the **first analysis notebook**
 (Bulgu #1); (3) set up the **monthly cron** (needs a go/no-go discussion);
 (4) optionally add **IPv6/AAAA** parity to dimension A.
+
+---
+
+## Sprint 3 · Session 1 — A-dimension scoring engine (COMPLETE)
+
+**Correction to the Sprint 2 record above:** the full country-wide run has since
+been completed. `karne batch --dry-run` reports run label **`2026-09` with
+14,767 / 14,767 domains done, all `ok`** (DB now ~299 MB). So dimension-A raw data
+for the whole frame is present in `scans` + `scan_results` + `dns_records`, ready to
+score. (Sprint 2 was validated on 18 bank domains and its work is **still
+uncommitted** in the working tree — `karne/batch.py`, `tests/test_batch.py`, plus
+modified storage/cli/dns_email/models/settings — to be committed with this sprint's
+work.)
+
+**Sprint goal (this session):** the **dimension-A scoring engine** — a versioned,
+re-runnable layer that turns the stored `dns_email` raw payload into a 0–100 score,
+a letter grade, and coded findings. Reads `scan_results`, never writes them (K-02).
+
+### Step 1 — scoring decisions (asked & confirmed, then recorded) — DONE
+
+Four method decisions were put to the user and confirmed, then written into
+**PLAN.md as K-12** and into **`config/scoring.toml` (version `1.0.0`)** before any
+scoring code:
+
+- **Grade scale — security-calibrated:** A≥85, B≥70, C≥55, D≥40, F<40. Absolute and
+  reproducible; chosen over the classic 90/80/70 so the (generally weak) Turkish
+  sample is discriminated rather than collapsed into F.
+- **Weights (authentication-weighted, sum 100):** DMARC 35 (policy 25 / rua 5 /
+  sp 5), SPF 25 (terminator 18 / lookup 7), DNSSEC 15, DANE 8, CAA 7, MTA-STS 6,
+  TLS-RPT 4. **DKIM and MX are NOT scored.**
+- **DKIM — observation only (weight 0).** Selector guessing means 0/16 ≠ "no DKIM"
+  (verified live: akbank.com and turkiye.gov.tr both returned 0/16, yet internet.nl
+  sees their DKIM). Emits `EMAIL_DKIM_FOUND` / `EMAIL_DKIM_NOT_OBSERVED` /
+  `EMAIL_DKIM_KEY_SHORT`; never a penalty.
+- **"Could not measure" (servfail/timeout) is never penalised (rule 6).** The
+  unmeasured indicator is dropped from the denominator; the score is normalised over
+  the measured applicable weight. If measured/applicable < 0.5 the letter becomes
+  **`I` (insufficient data)**. NXDOMAIN/noanswer = a real absence and IS scored —
+  kept distinct. Also: indicators that need MX (MTA-STS/TLS-RPT/DANE) are
+  **not-applicable** when there is no MX and are likewise excluded (distinct from
+  unmeasured; does not trigger the `I` ratio).
+
+Run-wide reality that shaped (c): across the core indicators the `2026-09` run has
+**2,582 servfail + 363 timeout** ("could not measure"), and turkiye.gov.tr's Sprint-0
+SERVFAIL is **gone** here (the fixed 1.1.1.1/8.8.8.8 resolvers cleared it — K-11).
+
+### Extra decision this session — ruleset 1.1.0 (SPF softfail compensation)
+
+The user compared Karne against internet.nl (internet.nl scores itself 100%,
+webkarne.com 93%) and asked whether the model is too harsh. Analysis: mostly no —
+we intentionally score policy *strength* (`p=none`, `~all`) where internet.nl checks
+existence/validity, which is exactly Karne's stated value-add (PLAN dim-A rationale);
+and scope differs (IPv6/STARTTLS excluded per K-07, CAA is internet.nl's website
+test). Indicator-level we agree: internet.nl has DNSSEC+DANE+CAA, the Turkish
+institutions do not. One genuine issue surfaced: SPF `~all` was penalised even when
+DMARC enforces, which is a double-count (DMARC reject already rejects unaligned
+mail). **Decision (confirmed): ruleset 1.1.0** — when DMARC `p=reject/quarantine`,
+`~all` scores near-full (0.9) instead of 0.5; the finding still fires flagged
+`dmarc_compensated`. Does not change the six Turkish grades; lifts internet.nl 81→88.2
+(B→A). Recorded in PLAN.md K-12 changelog. (Also folded into 1.1.0: multiple-DMARC
+records now score 0 with `EMAIL_DMARC_MULTIPLE`, found while running the full set.)
+
+### What was done (Steps 2–5)
+
+- **Step 2 — expected output first.** `tests/fixtures/dns_email/*.json` = 7 real
+  frozen payloads (the 6 known domains + internet.nl). `tests/test_scoring.py`
+  asserts hand-computed grade + finding set for each, plus synthetic-payload tests
+  for the branches the fixtures don't hit (multiple records, no-MX → N/A,
+  servfail → unmeasured, insufficient-data → grade `I`).
+- **Step 3 — `karne/analyze/scoring.py`** (pure, offline): `load_ruleset()` +
+  `score(payload, ruleset) -> ScoreResult(raw_score, grade, findings, applicable/
+  measured weight)`. Reads only the payload; no DB, no network. Three states kept
+  distinct: absent (0) / not-applicable (dropped) / could-not-measure (dropped, feeds
+  `I`).
+- **Step 4 — `karne rescore` CLI + `karne/analyze/rescore.py`** (orchestrator, mirrors
+  `batch.py`). Modes: `--scan-id` / `--run-label` / all-unscored (`--only-unscored`),
+  `--dry-run`, `--scoring`. Writes `scores`+`findings` with `ruleset_version`, deletes
+  a scan's prior derived rows for the dimension first (reproducible; never appends).
+  Two storage helpers: `select_scans_for_scoring`, `delete_scoring_for_dimension`
+  (dimension-scoped by the `EMAIL_` code prefix). **Never touches `scan_results`.**
+- **Step 5 — live validation.** Rescored the full **2026-09 run: 14,767/14,767 in
+  ~21 s**. Stored grades of all known domains match the hand-computed values exactly
+  (internet.nl A/88.2, akbank/itu/garanti/turkiye C, istanbul/mumifashion F). Running
+  rescore twice is idempotent (14,767 scores + 107,772 findings, replaced not
+  appended). internet.nl parity holds at the indicator level.
+
+### Türkiye-wide dimension-A grade distribution (run 2026-09, ruleset 1.1.0)
+
+**A=2 · B=71 · C=754 · D=2,825 · F=10,529 · I=586** (of 14,767). Headline (Bulgu #1
+material): ~71% score F — most Turkish domains have no meaningful email-authentication
+posture; DNSSEC is near-absent (only 60 domains had a DS record in the run). `I` = 586
+(~4%) could not be adequately measured (servfail/timeout-heavy) and were correctly left
+ungraded rather than mislabelled as absent (rule 6). The top of the table (2 A, 71 B)
+is thin — strong postures are rare.
+
+### Tests / lint
+
+**152 offline pass** (was 119; +21 scoring, +9 rescore, +3 CLI), 3 network deselected,
+ruff clean.
+
+### Known gaps / next steps
+
+- **Ad-hoc scans (run_label NULL) not scored by the run rescore.** webkarne.com and the
+  Sprint-0 ad-hoc scans are unscored under 2026-09 (they are not in that round). Score
+  them with `karne rescore` (default all-unscored) or by `--scan-id` when needed;
+  webkarne.com scores C/55.5 (good infra, `p=none` + `~all`).
+- **This is dimension A only.** Grades are the email dimension; the report card's other
+  columns (B transport, C privacy, D tech) come in later sprints. No composite grade yet.
+- **Fix-hint / finding text not written.** `fix_hint_key`s are emitted but the tr/en
+  translation files do not exist yet (UI sprint). Codes + keys are stable now.
+- **Analysis notebook (Bulgu #1) NOT built** — deliberately a separate job (PLAN §8.4).
+  The engine + full scored data are ready to feed it.
+
+### Next session starting point
+
+Scoring engine (dimension A) is done, versioned (1.1.0), and applied to the whole frame.
+Options: (1) build the **Bulgu #1 analysis notebook** turning scored data into "Türkiye's
+email-security report card" (skeleton in `notebooks/`); (2) start **dimension B (TLS/HTTP)
+collector** — the next Sprint 3 module; (3) begin **FastAPI + bilingual UI** and the
+translation files that back the finding `fix_hint_key`s. Sprint 2's batch work and this
+scoring work are still **uncommitted** in the working tree — commit before starting.
