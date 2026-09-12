@@ -468,6 +468,73 @@ def _observe_dkim(payload: dict, cfg: dict, ruleset: dict) -> list[ScoreFinding]
 # ---------------------------------------------------------------------------
 
 
+def _aggregate(
+    dimension: str,
+    named_parts: list[tuple[str, _Part]],
+    extra_findings: list[ScoreFinding],
+    ruleset: dict[str, Any],
+    *,
+    unmeasured_code: str,
+    insufficient_code: str,
+) -> ScoreResult:
+    """Combine scored indicator parts into a ScoreResult (shared across dimensions).
+
+    Handles the applicable / measured / earned bookkeeping, the normalised score,
+    the grade cut-offs, and the "insufficient data" rule (rule 6). ``named_parts``
+    pairs each part with a short name (for the unmeasured-indicator evidence);
+    ``extra_findings`` are non-scored observations (e.g. DKIM)."""
+    grades = ruleset["grades"]
+    version = ruleset["version"]
+    findings: list[ScoreFinding] = []
+    applicable_weight = measured_weight = earned = 0.0
+    unmeasured: list[str] = []
+
+    for name, part in named_parts:
+        findings.extend(part.findings)
+        if not part.applicable:
+            continue
+        applicable_weight += part.weight
+        if not part.measured:
+            unmeasured.append(name)
+            continue
+        measured_weight += part.weight
+        earned += part.earned
+
+    findings.extend(extra_findings)
+    if unmeasured:
+        findings.append(_finding(unmeasured_code, ruleset, {"indicators": unmeasured}))
+
+    ratio = float(ruleset["scoring"]["insufficient_data_ratio"])
+    if measured_weight <= 0.0:
+        findings.append(
+            _finding(
+                insufficient_code,
+                ruleset,
+                {"measured_weight": 0.0, "applicable_weight": applicable_weight},
+            )
+        )
+        return ScoreResult(
+            dimension, version, None, GRADE_INSUFFICIENT, findings, applicable_weight, 0.0, 0.0
+        )
+
+    raw_score = round(100.0 * earned / measured_weight, 2)
+    if applicable_weight > 0 and (measured_weight / applicable_weight) < ratio:
+        findings.append(
+            _finding(
+                insufficient_code,
+                ruleset,
+                {"measured_weight": measured_weight, "applicable_weight": applicable_weight},
+            )
+        )
+        grade = GRADE_INSUFFICIENT
+    else:
+        grade = _grade_for(raw_score, grades)
+
+    return ScoreResult(
+        dimension, version, raw_score, grade, findings, applicable_weight, measured_weight, earned
+    )
+
+
 def score(payload: dict[str, Any], ruleset: dict[str, Any]) -> ScoreResult:
     """Score one raw ``dns_email`` payload against ``ruleset`` (parsed toml).
 
@@ -475,8 +542,6 @@ def score(payload: dict[str, Any], ruleset: dict[str, Any]) -> ScoreResult:
     """
     email = ruleset["dimensions"]["email"]
     weights = email["weights"]
-    grades = ruleset["grades"]
-    version = ruleset["version"]
 
     has_mx = _has_mx(payload)
 
@@ -492,94 +557,173 @@ def score(payload: dict[str, Any], ruleset: dict[str, Any]) -> ScoreResult:
         and _dm_parsed.get("p") in ("reject", "quarantine")
     )
 
-    parts = [
-        _score_dmarc(payload, email["dmarc"], weights, ruleset),
-        _score_spf(payload, email["spf"], weights, ruleset, dmarc_enforced),
-        _score_dnssec(payload, email["dnssec"], weights, ruleset),
-        _score_dane(payload, email["dane"], weights, ruleset, has_mx),
-        _score_caa(payload, weights, ruleset),
-        _score_mta_sts(payload, email["mta_sts"], weights, ruleset, has_mx),
-        _score_tls_rpt(payload, email["tls_rpt"], weights, ruleset, has_mx),
+    named_parts = [
+        ("dmarc", _score_dmarc(payload, email["dmarc"], weights, ruleset)),
+        ("spf", _score_spf(payload, email["spf"], weights, ruleset, dmarc_enforced)),
+        ("dnssec", _score_dnssec(payload, email["dnssec"], weights, ruleset)),
+        ("dane", _score_dane(payload, email["dane"], weights, ruleset, has_mx)),
+        ("caa", _score_caa(payload, weights, ruleset)),
+        ("mta_sts", _score_mta_sts(payload, email["mta_sts"], weights, ruleset, has_mx)),
+        ("tls_rpt", _score_tls_rpt(payload, email["tls_rpt"], weights, ruleset, has_mx)),
     ]
+    extra = [
+        *_observe_mx(payload, ruleset, has_mx),
+        *_observe_dkim(payload, email["dkim"], ruleset),
+    ]
+    return _aggregate(
+        "email",
+        named_parts,
+        extra,
+        ruleset,
+        unmeasured_code="EMAIL_INDICATORS_UNMEASURED",
+        insufficient_code="EMAIL_INSUFFICIENT_DATA",
+    )
 
+
+# ---------------------------------------------------------------------------
+# Dimension B (transport & server security) scorers
+# ---------------------------------------------------------------------------
+
+_MODERN_TLS = {"TLSv1.2", "TLSv1.3"}
+_LEGACY_TLS = {"TLSv1", "TLSv1.1"}
+
+
+def _score_https_enforcement(payload: dict, cfg: dict, weights: dict, ruleset: dict) -> _Part:
+    weight = float(weights["https_enforcement"])
+    http = payload.get("http") or {}
     findings: list[ScoreFinding] = []
-    applicable_weight = 0.0
-    measured_weight = 0.0
-    earned = 0.0
-    unmeasured_indicators: list[str] = []
-
-    # Named alignment for the unmeasured-indicator evidence.
-    part_names = ["dmarc", "spf", "dnssec", "dane", "caa", "mta_sts", "tls_rpt"]
-    for name, part in zip(part_names, parts, strict=True):
-        findings.extend(part.findings)
-        if not part.applicable:
-            continue
-        applicable_weight += part.weight
-        if not part.measured:
-            unmeasured_indicators.append(name)
-            continue
-        measured_weight += part.weight
-        earned += part.earned
-
-    # Non-scored observations.
-    findings.extend(_observe_mx(payload, ruleset, has_mx))
-    findings.extend(_observe_dkim(payload, email["dkim"], ruleset))
-
-    if unmeasured_indicators:
+    hops = http.get("chain") or []
+    got_response = any(h.get("status") is not None for h in hops)
+    if not got_response:  # never got an HTTP response -> could not measure
+        return _Part(weight, 0.0, measured=False, applicable=True, findings=findings)
+    if not http.get("reached_https"):
         findings.append(
-            _finding(
-                "EMAIL_INDICATORS_UNMEASURED",
-                ruleset,
-                {"indicators": unmeasured_indicators},
-            )
+            _finding("TRANSPORT_NO_HTTPS", ruleset, {"final_url": http.get("final_url")})
         )
+        return _Part(weight, 0.0, True, True, findings)
+    if http.get("cleartext_after_https"):
+        findings.append(_finding("TRANSPORT_CLEARTEXT_REDIRECT", ruleset))
+        return _Part(weight, float(cfg["cleartext_fraction"]) * weight, True, True, findings)
+    return _Part(weight, weight, True, True, findings)
 
-    ratio = float(ruleset["scoring"]["insufficient_data_ratio"])
 
-    if measured_weight <= 0.0:
-        # Nothing could be scored at all.
+def _score_tls(payload: dict, cfg: dict, weights: dict, ruleset: dict) -> _Part:
+    weight = float(weights["tls"])
+    tv = payload.get("tls_versions") or {}
+    findings: list[ScoreFinding] = []
+    probed = tv.get("probed") or {}
+    statuses = [v.get("status") for v in probed.values()]
+    if statuses and all(s == "error" for s in statuses):  # all probes errored
+        return _Part(weight, 0.0, measured=False, applicable=True, findings=findings)
+    supported = set(tv.get("supported") or [])
+    modern = bool(supported & _MODERN_TLS)
+    legacy = sorted(supported & _LEGACY_TLS)
+    if not modern:
         findings.append(
-            _finding(
-                "EMAIL_INSUFFICIENT_DATA",
-                ruleset,
-                {"measured_weight": 0.0, "applicable_weight": applicable_weight},
-            )
+            _finding("TRANSPORT_TLS_OUTDATED", ruleset, {"supported": sorted(supported)})
         )
-        return ScoreResult(
-            dimension="email",
-            ruleset_version=version,
-            raw_score=None,
-            grade=GRADE_INSUFFICIENT,
-            findings=findings,
-            applicable_weight=applicable_weight,
-            measured_weight=0.0,
-            earned=0.0,
-        )
+        return _Part(weight, 0.0, True, True, findings)
+    if legacy:
+        findings.append(_finding("TRANSPORT_TLS_LEGACY", ruleset, {"legacy": legacy}))
+        return _Part(weight, float(cfg["legacy_fraction"]) * weight, True, True, findings)
+    return _Part(weight, weight, True, True, findings)
 
-    raw_score = round(100.0 * earned / measured_weight, 2)
 
-    if applicable_weight > 0 and (measured_weight / applicable_weight) < ratio:
+def _score_certificate(payload: dict, cfg: dict, weights: dict, ruleset: dict) -> _Part:
+    weight = float(weights["certificate"])
+    cert = payload.get("certificate") or {}
+    findings: list[ScoreFinding] = []
+    verified = cert.get("verified")
+    if verified is None:  # could not obtain the certificate (connection error)
+        return _Part(weight, 0.0, measured=False, applicable=True, findings=findings)
+    if verified is False:
         findings.append(
-            _finding(
-                "EMAIL_INSUFFICIENT_DATA",
-                ruleset,
-                {
-                    "measured_weight": measured_weight,
-                    "applicable_weight": applicable_weight,
-                },
-            )
+            _finding("TRANSPORT_CERT_INVALID", ruleset, {"reason": cert.get("verify_error")})
         )
-        grade = GRADE_INSUFFICIENT
+        return _Part(weight, 0.0, True, True, findings)
+    days = cert.get("days_remaining")
+    if isinstance(days, int) and days < int(cfg["expiry_warn_days"]):
+        findings.append(_finding("TRANSPORT_CERT_EXPIRING", ruleset, {"days_remaining": days}))
+    return _Part(weight, weight, True, True, findings)
+
+
+def _score_hsts(payload: dict, cfg: dict, weights: dict, ruleset: dict, reachable: bool) -> _Part:
+    weight = float(weights["hsts"])
+    findings: list[ScoreFinding] = []
+    if not reachable:
+        return _Part(weight, 0.0, measured=False, applicable=True, findings=findings)
+    hsts = (payload.get("homepage") or {}).get("hsts") or {}
+    if not hsts.get("present"):
+        findings.append(_finding("TRANSPORT_NO_HSTS", ruleset))
+        return _Part(weight, 0.0, True, True, findings)
+    max_age = hsts.get("max_age") or 0
+    if max_age >= int(cfg["min_max_age"]):
+        frac = float(cfg["base"])
     else:
-        grade = _grade_for(raw_score, grades)
+        frac = float(cfg["short"])
+        findings.append(_finding("TRANSPORT_HSTS_SHORT", ruleset, {"max_age": max_age}))
+    if hsts.get("include_subdomains"):
+        frac += float(cfg["include_subdomains"])
+    else:
+        findings.append(_finding("TRANSPORT_HSTS_NO_INCLUDESUBDOMAINS", ruleset))
+    if hsts.get("preload"):
+        frac += float(cfg["preload"])
+    return _Part(weight, min(frac, 1.0) * weight, True, True, findings)
 
-    return ScoreResult(
-        dimension="email",
-        ruleset_version=version,
-        raw_score=raw_score,
-        grade=grade,
-        findings=findings,
-        applicable_weight=applicable_weight,
-        measured_weight=measured_weight,
-        earned=earned,
+
+def _score_security_headers(
+    payload: dict, cfg: dict, weights: dict, ruleset: dict, reachable: bool
+) -> _Part:
+    weight = float(weights["security_headers"])
+    findings: list[ScoreFinding] = []
+    if not reachable:
+        return _Part(weight, 0.0, measured=False, applicable=True, findings=findings)
+    present_headers = (payload.get("homepage") or {}).get("security_headers") or {}
+    core = list(cfg["core"])
+    present = [h for h in core if h in present_headers]
+    missing = [h for h in core if h not in present_headers]
+    if missing:
+        findings.append(
+            _finding(
+                "TRANSPORT_MISSING_SECURITY_HEADERS",
+                ruleset,
+                {"missing": missing, "present": present},
+            )
+        )
+    frac = len(present) / len(core) if core else 0.0
+    return _Part(weight, frac * weight, True, True, findings)
+
+
+def _score_security_txt(payload: dict, cfg: dict, weights: dict, ruleset: dict) -> _Part:
+    weight = float(weights["security_txt"])
+    findings: list[ScoreFinding] = []
+    if (payload.get("security_txt") or {}).get("present"):
+        return _Part(weight, float(cfg["present"]) * weight, True, True, findings)
+    findings.append(_finding("TRANSPORT_NO_SECURITY_TXT", ruleset))
+    return _Part(weight, 0.0, True, True, findings)
+
+
+def score_transport(payload: dict[str, Any], ruleset: dict[str, Any]) -> ScoreResult:
+    """Score one raw ``tls_http`` payload (dimension B). Pure and offline."""
+    t = ruleset["dimensions"]["transport"]
+    weights = t["weights"]
+    reachable = bool((payload.get("homepage") or {}).get("reachable"))
+    named_parts = [
+        ("https_enforcement", _score_https_enforcement(payload, t["https"], weights, ruleset)),
+        ("tls", _score_tls(payload, t["tls"], weights, ruleset)),
+        ("certificate", _score_certificate(payload, t["certificate"], weights, ruleset)),
+        ("hsts", _score_hsts(payload, t["hsts"], weights, ruleset, reachable)),
+        (
+            "security_headers",
+            _score_security_headers(payload, t["security_headers"], weights, ruleset, reachable),
+        ),
+        ("security_txt", _score_security_txt(payload, t["security_txt"], weights, ruleset)),
+    ]
+    return _aggregate(
+        "transport",
+        named_parts,
+        [],
+        ruleset,
+        unmeasured_code="TRANSPORT_INDICATORS_UNMEASURED",
+        insufficient_code="TRANSPORT_INSUFFICIENT_DATA",
     )

@@ -38,7 +38,7 @@ from datetime import UTC, datetime
 from typing import Any
 
 from karne import __version__, storage
-from karne.collectors import dns_email
+from karne.collectors import dns_email, tls_http
 from karne.models import (
     STATUS_ERROR,
     STATUS_OK,
@@ -74,6 +74,63 @@ def scan_status(payload: dict[str, Any]) -> tuple[str, str | None]:
         return STATUS_OK, None
     detail = "; ".join(f"{name}: {payload[name]['error']}" for name in errored)
     return STATUS_PARTIAL, detail
+
+
+def transport_status(payload: dict[str, Any]) -> tuple[str, str | None]:
+    """Dimension B has no partial state: the collector records network failures as
+    normal outcomes inside each section (like a DNS servfail). A payload therefore
+    means the collector completed; a whole-collector crash is caught in the worker
+    and produces a scan-level error instead."""
+    return STATUS_OK, None
+
+
+# ---------------------------------------------------------------------------
+# Collector registry — dimension key -> how to collect, judge, and project it.
+# Lets one scan carry several collectors' raw results (scan_results is keyed by
+# UNIQUE(scan_id, collector)); the CLI selects the set (default: all).
+# ---------------------------------------------------------------------------
+
+
+@dataclass(frozen=True)
+class CollectorSpec:
+    dimension: str  # CLI key, e.g. "email"
+    collector: str  # scan_results.collector value, e.g. "dns_email"
+    collect: Callable[[str, dict[str, Any]], dict[str, Any]]
+    status: Callable[[dict[str, Any]], tuple[str, str | None]]
+    project: Callable[[dict[str, Any]], list[dict[str, Any]]] | None  # dns_records rows
+
+
+# Collect is wrapped in a lambda so it resolves the module attribute at call time
+# (keeps monkeypatching in tests working, like the legacy collect_fn default).
+REGISTRY: dict[str, CollectorSpec] = {
+    "email": CollectorSpec(
+        "email",
+        dns_email.COLLECTOR_NAME,
+        lambda d, s: dns_email.collect(d, s),
+        scan_status,
+        dns_email.dns_records_from_payload,
+    ),
+    "transport": CollectorSpec(
+        "transport",
+        tls_http.COLLECTOR,
+        lambda d, s: tls_http.collect(d, s),
+        transport_status,
+        None,
+    ),
+}
+DEFAULT_COLLECTORS = ["email", "transport"]
+
+
+def resolve_specs(dimensions: Iterable[str]) -> list[CollectorSpec]:
+    """Map CLI dimension keys to specs, preserving order and rejecting unknowns."""
+    specs: list[CollectorSpec] = []
+    for name in dimensions:
+        spec = REGISTRY.get(name)
+        if spec is None:
+            known = ", ".join(REGISTRY)
+            raise ValueError(f"unknown collector/dimension {name!r} (known: {known})")
+        specs.append(spec)
+    return specs
 
 
 # ---------------------------------------------------------------------------
@@ -141,6 +198,98 @@ def store_error_scan(
     )
     storage.finish_scan(conn, scan_id, status=STATUS_ERROR, error=error)
     return scan_id
+
+
+# ---------------------------------------------------------------------------
+# Multi-collector bundle: one scan, several collectors' raw results
+# ---------------------------------------------------------------------------
+
+
+@dataclass
+class CollectorOutcome:
+    """Result of running one collector on one domain within a scan bundle."""
+
+    spec: CollectorSpec
+    payload: dict[str, Any] | None  # None only if the collector code crashed
+    status: str
+    error: str | None
+
+
+def collect_bundle(
+    domain: str, settings: dict[str, Any], specs: list[CollectorSpec]
+) -> list[CollectorOutcome]:
+    """Run each collector for one domain; a crash in one does not abort the others
+    (rule 3). Runs in a worker thread — no DB access here."""
+    outcomes: list[CollectorOutcome] = []
+    for spec in specs:
+        try:
+            payload = spec.collect(domain, settings)
+        except Exception as exc:  # whole-collector crash -> recorded, others continue
+            outcomes.append(
+                CollectorOutcome(spec, None, STATUS_ERROR, f"{type(exc).__name__}: {exc}")
+            )
+            continue
+        status, error = spec.status(payload)
+        outcomes.append(CollectorOutcome(spec, payload, status, error))
+    return outcomes
+
+
+def combine_status(outcomes: list[CollectorOutcome]) -> tuple[str, str | None]:
+    """Scan-level status across collectors (matches models.py definitions):
+    ok = all succeeded; error = all failed; partial = a mix (rule 6 preserved)."""
+    any_ok = any(o.payload is not None and o.status == STATUS_OK for o in outcomes)
+    any_bad = any(o.payload is None or o.status != STATUS_OK for o in outcomes)
+    detail = "; ".join(f"{o.spec.collector}: {o.error}" for o in outcomes if o.error) or None
+    if not any_bad:
+        return STATUS_OK, None
+    if not any_ok:
+        return STATUS_ERROR, detail
+    return STATUS_PARTIAL, detail
+
+
+def store_bundle(
+    conn,
+    domain_name: str,
+    outcomes: list[CollectorOutcome],
+    *,
+    run_label: str | None = None,
+    source: str = "manual",
+) -> tuple[int, str, str | None]:
+    """Persist one scan carrying several collectors' results (rule 5: append-only).
+
+    One ``scans`` row; one ``scan_results`` row per collector that produced a
+    payload, plus that collector's projection (dns_records for dimension A). The
+    scan-level status combines the collectors'. Collectors that crashed contribute
+    to the status/error but write no ``scan_results`` (rule 6)."""
+    status, error = combine_status(outcomes)
+    dom_norm = next(
+        (o.payload["domain"] for o in outcomes if o.payload and o.payload.get("domain")),
+        dns_email.normalize_domain(domain_name),
+    )
+    config_hash = next((o.payload.get("config_hash") for o in outcomes if o.payload), None)
+    domain = storage.get_or_create_domain(conn, dom_norm, source=source)
+    scan_id = storage.insert_scan(
+        conn,
+        Scan(
+            domain_id=domain.id,
+            scanner_version=__version__,
+            config_hash=config_hash,
+            run_label=run_label,
+        ),
+    )
+    for o in outcomes:
+        if o.payload is None:
+            continue
+        storage.insert_scan_result(
+            conn, ScanResult(scan_id=scan_id, collector=o.spec.collector, payload=o.payload)
+        )
+        if o.spec.project is not None:
+            storage.insert_dns_records(
+                conn,
+                [DnsRecord(scan_id=scan_id, **row) for row in o.spec.project(o.payload)],
+            )
+    storage.finish_scan(conn, scan_id, status=status, error=error)
+    return scan_id, status, error
 
 
 # ---------------------------------------------------------------------------
@@ -228,14 +377,21 @@ def run_batch(
     progress_cb: ProgressCb | None = None,
     progress_every: int = 50,
     source: str = "frame",
+    collectors: list[str] | None = None,
 ) -> BatchProgress:
     """Scan the pending frame domains for ``run_label`` in parallel; persist each.
 
-    Pure orchestration: ``collect_fn`` (defaults to the real dns_email collector),
-    ``concurrency`` and the domain selection are all injectable/observable so the
-    engine is unit-testable with no network. Returns the final :class:`BatchProgress`.
+    Pure orchestration: ``concurrency`` and the domain selection are injectable/
+    observable so the engine is unit-testable with no network.
+
+    Two modes: pass ``collectors`` (dimension keys, e.g. ``["email", "transport"]``)
+    to run a multi-collector bundle per domain (one scan, several ``scan_results``);
+    otherwise the legacy single-collector path runs, using ``collect_fn`` (default:
+    the real dns_email collector). Returns the final :class:`BatchProgress`.
     """
-    if collect_fn is None:
+    use_multi = collectors is not None and collect_fn is None
+    specs = resolve_specs(collectors) if use_multi else None
+    if collect_fn is None and not use_multi:
         collect_fn = lambda d: dns_email.collect(d, settings)  # noqa: E731
     if concurrency is None:
         concurrency = int(settings.get("dns", {}).get("concurrency", 4))
@@ -252,26 +408,47 @@ def run_batch(
             progress_cb(progress)
         return progress
 
+    def _record(domain: str, status: str, error: str | None) -> None:
+        progress.record(status)
+        if status == STATUS_ERROR and len(progress.failures) < _MAX_TRACKED_FAILURES:
+            progress.failures.append(f"{domain}: {error}")
+        if progress_cb is not None and progress.scanned % progress_every == 0:
+            progress_cb(progress)
+
     # Workers only do network I/O; all DB writes happen here on the main thread.
     with ThreadPoolExecutor(max_workers=concurrency) as pool:
-        futures = {
-            pool.submit(_scan_one, d.domain, collect_fn): d for d in pending
-        }
-        for future in as_completed(futures):
-            d = futures[future]
-            payload, status, error = future.result()
-            if payload is not None:
-                store_scan(
-                    conn, payload, status=status, error=error, run_label=run_label, source=source
+        if use_multi:
+            futures = {pool.submit(collect_bundle, d.domain, settings, specs): d for d in pending}
+            for future in as_completed(futures):
+                d = futures[future]
+                outcomes = future.result()
+                _, status, error = store_bundle(
+                    conn, d.domain, outcomes, run_label=run_label, source=source
                 )
-            else:
-                store_error_scan(conn, d.domain, error=error or "collector error",
-                                 run_label=run_label, source=source)
-            progress.record(status)
-            if status == STATUS_ERROR and len(progress.failures) < _MAX_TRACKED_FAILURES:
-                progress.failures.append(f"{d.domain}: {error}")
-            if progress_cb is not None and progress.scanned % progress_every == 0:
-                progress_cb(progress)
+                _record(d.domain, status, error)
+        else:
+            futures = {pool.submit(_scan_one, d.domain, collect_fn): d for d in pending}
+            for future in as_completed(futures):
+                d = futures[future]
+                payload, status, error = future.result()
+                if payload is not None:
+                    store_scan(
+                        conn,
+                        payload,
+                        status=status,
+                        error=error,
+                        run_label=run_label,
+                        source=source,
+                    )
+                else:
+                    store_error_scan(
+                        conn,
+                        d.domain,
+                        error=error or "collector error",
+                        run_label=run_label,
+                        source=source,
+                    )
+                _record(d.domain, status, error)
 
     if progress_cb is not None:
         progress_cb(progress)

@@ -14,9 +14,9 @@ Design (PLAN.md K-02 / K-03, and the Sprint 3 brief):
   grade against the same raw data (the November scan can be re-graded with May's
   rules).
 * Each written ``scores`` row records the ``ruleset_version`` that produced it.
-* One dimension at a time (here: ``email``, dimension A). Finding codes are
-  dimension-prefixed (``EMAIL_``), so a re-score of one dimension leaves other
-  dimensions' derived rows untouched.
+* One dimension at a time (``email`` = dimension A, ``transport`` = dimension B).
+  Finding codes are dimension-prefixed (``EMAIL_`` / ``TRANSPORT_``), so a
+  re-score of one dimension leaves other dimensions' derived rows untouched.
 """
 
 from __future__ import annotations
@@ -27,13 +27,26 @@ from collections.abc import Callable
 from dataclasses import dataclass, field
 
 from karne import storage
-from karne.analyze.scoring import ScoreResult, score
+from karne.analyze.scoring import ScoreResult, score, score_transport
 from karne.models import Finding, Score
 
 # Dimension -> the finding-code prefix its scorer emits (for scoped deletion).
-_CODE_PREFIX = {"email": "EMAIL_"}
+_CODE_PREFIX = {"email": "EMAIL_", "transport": "TRANSPORT_"}
 # Dimension -> the collector whose raw payload feeds it.
-_COLLECTOR = {"email": "dns_email"}
+_COLLECTOR = {"email": "dns_email", "transport": "tls_http"}
+# Dimension -> the pure scorer that turns its raw payload into a ScoreResult.
+_SCORER: dict[str, Callable[[dict, dict], ScoreResult]] = {
+    "email": score,
+    "transport": score_transport,
+}
+# Dimensions this orchestrator can rescore (a scorer + collector + prefix each).
+SUPPORTED_DIMENSIONS = frozenset(_SCORER)
+
+
+def collector_for(dimension: str) -> str:
+    """The collector whose raw payload feeds ``dimension`` (e.g. transport ->
+    tls_http). Used to select the right scans to (re)score."""
+    return _COLLECTOR[dimension]
 
 
 @dataclass
@@ -79,7 +92,7 @@ def rescore_scan(
     if raw is None:
         return None
 
-    result = score(raw.payload, ruleset)
+    result = _SCORER[dimension](raw.payload, ruleset)
 
     # Reproducibility: drop this dimension's prior derived rows, then rewrite.
     storage.delete_scoring_for_dimension(conn, scan_id, dimension, _CODE_PREFIX[dimension])

@@ -281,3 +281,103 @@ def test_rate_limiter_zero_is_unlimited(monkeypatch):
     for _ in range(5):
         limiter.acquire()
     assert clock.slept == 0.0
+
+
+# ---------------------------------------------------------------------------
+# Multi-collector bundle (Sprint 3 — dimension B wiring)
+# ---------------------------------------------------------------------------
+
+
+def fake_b_payload(domain: str) -> dict:
+    """Minimal structurally valid tls_http payload."""
+    return {
+        "collector": "tls_http",
+        "collector_version": "test",
+        "input_domain": domain,
+        "domain": domain.lower(),
+        "collected_at": "2026-11-01T00:00:00+00:00",
+        "config_hash": "testhash",
+        "http": {"hops": 1, "reached_https": True, "cleartext_after_https": False},
+        "tls_versions": {"probed": {}, "supported": ["TLSv1.3"], "note": ""},
+        "certificate": {"obtained": True, "verified": True},
+        "homepage": {
+            "reachable": True,
+            "status": 200,
+            "security_headers": {},
+            "hsts": {"present": False},
+        },
+        "security_txt": {"present": False},
+    }
+
+
+def test_resolve_specs_rejects_unknown():
+    with pytest.raises(ValueError, match="unknown collector"):
+        batch.resolve_specs(["email", "bogus"])
+    specs = batch.resolve_specs(["transport", "email"])
+    assert [s.dimension for s in specs] == ["transport", "email"]  # order preserved
+
+
+def test_combine_status_rules():
+    email = batch.REGISTRY["email"]
+    transport = batch.REGISTRY["transport"]
+    ok = [
+        batch.CollectorOutcome(email, {}, "ok", None),
+        batch.CollectorOutcome(transport, {}, "ok", None),
+    ]
+    mixed = [
+        batch.CollectorOutcome(email, {}, "ok", None),
+        batch.CollectorOutcome(transport, None, "error", "boom"),
+    ]
+    allbad = [
+        batch.CollectorOutcome(email, None, "error", "x"),
+        batch.CollectorOutcome(transport, None, "error", "y"),
+    ]
+    assert batch.combine_status(ok)[0] == "ok"
+    assert batch.combine_status(mixed)[0] == "partial"
+    assert batch.combine_status(allbad)[0] == "error"
+
+
+def test_collect_bundle_isolates_a_crash():
+    good = batch.CollectorSpec(
+        "email", "dns_email", lambda d, s: fake_payload(d), batch.scan_status, None
+    )
+    bad = batch.CollectorSpec(
+        "transport",
+        "tls_http",
+        lambda d, s: (_ for _ in ()).throw(RuntimeError("boom")),
+        batch.transport_status,
+        None,
+    )
+    outcomes = batch.collect_bundle("a.tr", {}, [good, bad])
+    assert outcomes[0].payload is not None and outcomes[0].status == "ok"
+    assert outcomes[1].payload is None and outcomes[1].status == "error"
+    assert "boom" in outcomes[1].error
+
+
+def test_store_bundle_writes_one_scan_two_results(conn):
+    email = batch.REGISTRY["email"]  # has a dns_records projection
+    transport = batch.REGISTRY["transport"]  # no projection
+    outcomes = [
+        batch.CollectorOutcome(email, fake_payload("a.tr"), "ok", None),
+        batch.CollectorOutcome(transport, fake_b_payload("a.tr"), "ok", None),
+    ]
+    scan_id, status, error = batch.store_bundle(conn, "a.tr", outcomes, run_label="2026-11")
+    assert status == "ok" and error is None
+    assert storage.get_scan_result(conn, scan_id, "dns_email") is not None
+    assert storage.get_scan_result(conn, scan_id, "tls_http") is not None
+    # exactly one scan row for the domain
+    assert conn.execute("SELECT COUNT(*) FROM scans").fetchone()[0] == 1
+
+
+def test_store_bundle_partial_writes_only_successful(conn):
+    email = batch.REGISTRY["email"]
+    transport = batch.REGISTRY["transport"]
+    outcomes = [
+        batch.CollectorOutcome(email, fake_payload("a.tr"), "ok", None),
+        batch.CollectorOutcome(transport, None, "error", "connect failed"),
+    ]
+    scan_id, status, error = batch.store_bundle(conn, "a.tr", outcomes, run_label="2026-11")
+    assert status == "partial"
+    assert "connect failed" in error
+    assert storage.get_scan_result(conn, scan_id, "dns_email") is not None
+    assert storage.get_scan_result(conn, scan_id, "tls_http") is None  # crashed -> no raw row

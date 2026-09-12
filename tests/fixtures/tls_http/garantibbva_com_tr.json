@@ -1,0 +1,140 @@
+{
+ "certificate": {
+  "days_remaining": 86,
+  "hostname_in_san": true,
+  "issuer": "DigiCert Inc, DigiCert Global G2 TLS RSA SHA256 2020 CA1",
+  "not_after": "Dec  6 23:59:59 2026 GMT",
+  "not_before": "May 22 00:00:00 2026 GMT",
+  "obtained": true,
+  "san": [
+   "www.garantibbva.com.tr",
+   "www.garantibbva.com",
+   "garantibbva.com.tr",
+   "garantibbva.com"
+  ],
+  "subject": "Turkiye Garanti Bankasi A.S., www.garantibbva.com.tr",
+  "verified": true,
+  "verify_error": null
+ },
+ "collected_at": "2026-09-11T20:28:21.002855+00:00",
+ "collector": "tls_http",
+ "collector_version": "0.1.0",
+ "config_hash": "d818967941ec0aa032ba94a42f4353f626f26c2b4e5624d236c7117fda91f9ae",
+ "domain": "garantibbva.com.tr",
+ "homepage": {
+  "cookies": [],
+  "csp": {
+   "present": false
+  },
+  "hsts": {
+   "present": false
+  },
+  "info_headers": {
+   "server": "Apache/2.4.57 (Red Hat)"
+  },
+  "reachable": true,
+  "security_headers": {},
+  "status": 301,
+  "url": "https://garantibbva.com.tr/"
+ },
+ "http": {
+  "chain": [
+   {
+    "host": "garantibbva.com.tr",
+    "location": "https://www.garantibbva.com.tr/",
+    "scheme": "http",
+    "status": 301,
+    "url": "http://garantibbva.com.tr/"
+   },
+   {
+    "host": "www.garantibbva.com.tr",
+    "location": null,
+    "scheme": "https",
+    "status": 200,
+    "url": "https://www.garantibbva.com.tr/"
+   }
+  ],
+  "cleartext_after_https": false,
+  "final_scheme": "https",
+  "final_url": "https://www.garantibbva.com.tr/",
+  "hops": 2,
+  "host_changed": true,
+  "reached_https": true
+ },
+ "input_domain": "garantibbva.com.tr",
+ "security_txt": {
+  "fields": {
+   "<a class=\"button primary \" href=\"https": [
+    "//sube.garantibbva.com.tr/isube/login/login/passwordentrypersonal-tr\" target=\"_blank\" rel=\"noopener nofollow\">Giriş Yap</a>"
+   ],
+   "<a class=\"language-navigation\" href=\"https": [
+    "//www.garantibbva.com.tr/en\" hreflang=\"en\" lang=\"en\" rel=\"alternate\" aria-label=\"İngilizce Sayfa Gider\">EN</a>"
+   ],
+   "<a class=\"tool-link \" href=\"https": [
+    "//subeform.garantibbva.com.tr/isubeform/application/channelapplicationwithcardget/pinReceive-tr\" target=\"_blank\" rel=\"noopener\" role=\"menuitem\" tabindex=\"-1\">Parola Al</a>",
+    "//subeform.garantibbva.com.tr/isubeform/application/channelapplicationwithcardget/pinReceive-tr\" target=\"_blank\" rel=\"noopener\" role=\"menuitem\" tabindex=\"-1\">Parola Al</a>",
+    "//subeform.garantibbva.com.tr/isubeform/application/channelapplicationwithcardget/pinReceive-tr\" target=\"_blank\" rel=\"noopener\" role=\"menuitem\" tabindex=\"-1\">Parola Al</a>",
+    "//subeform.garantibbva.com.tr/isubeform/application/channelapplicationwithcardget/pinReceive-tr\" target=\"_blank\" rel=\"noopener\" role=\"menuitem\" tabindex=\"-1\">Parola Al</a>",
+    "//subeform.garantibbva.com.tr/isubeform/application/channelapplicationwithcardget/pinReceive-tr\" target=\"_blank\" rel=\"noopener\" role=\"menuitem\" tabindex=\"-1\">Parola Al</a>",
+    "//subeform.garantibbva.com.tr/isubeform/application/channelapplicationwithcardget/pinReceive-tr\" target=\"_blank\" rel=\"noopener\" role=\"menuitem\" tabindex=\"-1\">Parola Al</a>",
+    "//subeform.garantibbva.com.tr/isubeform/application/channelapplicationwithcardget/pinReceive-tr\" target=\"_blank\" rel=\"noopener\" role=\"menuitem\" tabindex=\"-1\">Parola Al</a>"
+   ],
+   "<div class=\"ins-notification-item\" data-link=\"https": [
+    "//app.tr.adjust.com/rn8qt8k_3d68kfs?deep_link=https%3A%2F%2Fm.garantibbva.com.tr%2Fcs%2Fdashboard&amp;campaign=DO&amp;adgroup=notification-center&amp;fallback=https%3A%2F%2Fwww.garantibbva.com.tr%2Fdijital-bankacilik%2Fmusterimiz-olun?utm_source=notif\" id=\"Mobil&#39;den müşterimiz olun, birçok ayrıcalıktan hemen yararlanın!\" role=\"link\" tabindex=\"0\" aria-label=\"Mobil&#39;den müşterimiz olun, birçok ayrıcalıktan hemen yararlanın!\">",
+    "//app.tr.adjust.com/rn8qt8k_3d68kfs?deep_link=https%3A%2F%2Fm.garantibbva.com.tr%2Fcs%2Fdashboard&amp;campaign=kredi-kocum&amp;adgroup=notification-center&amp;fallback=https%3A%2F%2Fwww.garantibbva.com.tr%2Fdijital-bankacilik%2Fmobil-bankacilik?utm_source=notif\" id=\"Size özel finansal rehberiniz Kredi Koçum, Garanti BBVA Mobil’de!\" role=\"link\" tabindex=\"0\" aria-label=\"Size özel finansal rehberiniz Kredi Koçum, Garanti BBVA Mobil’de!\">",
+    "//www.garantibbva.com.tr/krediler/hizli-kredi?utm_source=notification-center&amp;utm_medium=kredi&amp;utm_campaign=&amp;utm_content=hizli-kredi\" id=\"Hızlı Limit&#39;le kredi limitinizi hemen öğrenin, harcamalarınızı uzun vadelerle rahat rahat ödeyin!\" role=\"link\" tabindex=\"0\" aria-label=\"Hızlı Limit&#39;le kredi limitinizi hemen öğrenin, harcamalarınızı uzun vadelerle rahat rahat ödeyin!\">"
+   ],
+   "<div data-title=\"ana sayfa&#39;ya dön ikonu\" class=\"cmp-image\" itemscope itemtype=\"http": [
+    "//schema.org/ImageObject\">"
+   ],
+   "<div data-title=\"garanti bbva logosu\" class=\"cmp-image\" itemscope itemtype=\"http": [
+    "//schema.org/ImageObject\">"
+   ],
+   "<iframe title=\"gtm\" src=\"https": [
+    "//www.googletagmanager.com/ns.html?id=GTM-WXJFJ3D\" height=\"0\" width=\"0\" style=\"display:none;visibility:hidden\"></iframe>"
+   ],
+   "<link rel=\"canonical\" href=\"https": [
+    "//www.garantibbva.com.tr\"/>"
+   ],
+   "<nav itemscope=\"true\" itemtype=\"http": [
+    "//schema.org/SiteNavigationElement\" class=\"mainbar__navbar\" aria-label=\"secondary\"><nav aria-label=\"Ana menü\">"
+   ],
+   "<script src=\"https": [
+    "//bundles.efilli.com/garantibbva.com.tr.prod.js\">"
+   ],
+   "<script type=\"text/javascript\" src=\"/ruxitagentjs_ica7nvfgqrux_10335260518104739.js\" data-dtconfig=\"rid=rid_2418|rpid=-139126852|domain=garantibbva.com.tr|reporturl=/rb_4d4a1b99-123b-457f-ac83-57a07754aaeb|app=f257a4f77568aef4|agentid=50f0d21e8e52c1fb|cce=1|owasp=1|featurehash=ica7nvfgqrux|xb=https": [
+    "//garantibbva.api.dataroid.com^phttps://analytic.efilli.com/v1/consent-activity|rdnt=1|uxrgce=1|cuc=zbo6gsfl|mel=100000|dpvc=1|lastModification=1789068293423|tp=500,50,0|srbbv=2|agentUri=/ruxitagentjs_ICA7NVfgqrux_10335260518104739.js\"></script><link rel=\"shortcut icon\" type=\"image/x-icon\" href=\"/favicon.ico\"/>"
+   ]
+  },
+  "present": true,
+  "status": 200,
+  "url": "https://garantibbva.com.tr/.well-known/security.txt"
+ },
+ "tls_versions": {
+  "note": "Each version is a separate standard handshake on 443 (browser-equivalent, K-07). 'not_supported' vs 'unprobeable_local' for TLS 1.0/1.1 may reflect the local OpenSSL build rather than the server; detail is recorded.",
+  "probed": {
+   "TLSv1": {
+    "detail": "SSLError: [SSL: NO_CIPHERS_AVAILABLE] no ciphers available (_ssl.c:1077)",
+    "status": "not_supported"
+   },
+   "TLSv1.1": {
+    "detail": "SSLError: [SSL: NO_CIPHERS_AVAILABLE] no ciphers available (_ssl.c:1077)",
+    "status": "not_supported"
+   },
+   "TLSv1.2": {
+    "cipher": "ECDHE-RSA-AES256-GCM-SHA384",
+    "negotiated_version": "TLSv1.2",
+    "status": "supported"
+   },
+   "TLSv1.3": {
+    "cipher": "TLS_AES_256_GCM_SHA384",
+    "negotiated_version": "TLSv1.3",
+    "status": "supported"
+   }
+  },
+  "supported": [
+   "TLSv1.2",
+   "TLSv1.3"
+  ]
+ }
+}

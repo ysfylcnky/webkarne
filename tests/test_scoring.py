@@ -8,9 +8,11 @@ reproduces the hand-derived interpretation of real data.
 
 Scoring is a pure, offline layer (karne.analyze.scoring). It only READS the raw
 payload; it never touches scan_results (K-02). Rules come from config/scoring.toml
-version 1.1.0 (K-03); see PLAN.md K-12 for the model and the decisions behind it.
+(K-03); the dimension-A model is unchanged since ruleset 1.1.0 (1.2.0 only adds
+dimension B), so these grades are stable. See PLAN.md K-12 for the model and the
+decisions behind it.
 
-Hand computation (ruleset 1.1.0), for reference:
+Hand computation (dimension-A model as of ruleset 1.1.0), for reference:
 
   All six domains have MX -> transport indicators (MTA-STS/TLS-RPT/DANE) apply,
   and no scored indicator is servfail/timeout -> measured_weight = 100, no "I".
@@ -136,7 +138,7 @@ def test_known_domain_score(fixture: str, ruleset: dict) -> None:
 @pytest.mark.parametrize("fixture", sorted(EXPECTED))
 def test_ruleset_version_is_stamped(fixture: str, ruleset: dict) -> None:
     result = score(_load(fixture), ruleset)
-    assert result.ruleset_version == "1.1.0"
+    assert result.ruleset_version == "1.2.0"
     assert result.dimension == "email"
 
 

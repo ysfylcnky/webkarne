@@ -1,0 +1,171 @@
+{
+ "certificate": {
+  "days_remaining": 76,
+  "hostname_in_san": true,
+  "issuer": "DigiCert Inc, GeoTrust TLS RSA CA G1",
+  "not_after": "Nov 26 23:59:59 2026 GMT",
+  "not_before": "May 12 00:00:00 2026 GMT",
+  "obtained": true,
+  "san": [
+   "*.istanbul.edu.tr",
+   "www.istanbul.edu.tr",
+   "istanbul.edu.tr"
+  ],
+  "subject": "İstanbul Üniversitesi, *.istanbul.edu.tr",
+  "verified": true,
+  "verify_error": null
+ },
+ "collected_at": "2026-09-11T20:28:26.773430+00:00",
+ "collector": "tls_http",
+ "collector_version": "0.1.0",
+ "config_hash": "d818967941ec0aa032ba94a42f4353f626f26c2b4e5624d236c7117fda91f9ae",
+ "domain": "istanbul.edu.tr",
+ "homepage": {
+  "cookies": [],
+  "csp": {
+   "present": false
+  },
+  "hsts": {
+   "include_subdomains": false,
+   "max_age": 31536000,
+   "preload": false,
+   "present": true,
+   "raw": "max-age=31536000"
+  },
+  "info_headers": {
+   "server": "Microsoft-IIS/10.0",
+   "x-powered-by": "ASP.NET"
+  },
+  "reachable": true,
+  "security_headers": {
+   "strict-transport-security": "max-age=31536000",
+   "x-content-type-options": "nosniff"
+  },
+  "status": 301,
+  "url": "https://istanbul.edu.tr/"
+ },
+ "http": {
+  "chain": [
+   {
+    "host": "istanbul.edu.tr",
+    "location": "https://istanbul.edu.tr/",
+    "scheme": "http",
+    "status": 301,
+    "url": "http://istanbul.edu.tr/"
+   },
+   {
+    "host": "istanbul.edu.tr",
+    "location": "https://www.istanbul.edu.tr/",
+    "scheme": "https",
+    "status": 301,
+    "url": "https://istanbul.edu.tr/"
+   },
+   {
+    "host": "www.istanbul.edu.tr",
+    "location": "//www.istanbul.edu.tr/tr",
+    "scheme": "https",
+    "status": 302,
+    "url": "https://www.istanbul.edu.tr/"
+   },
+   {
+    "host": "www.istanbul.edu.tr",
+    "location": null,
+    "scheme": "https",
+    "status": 200,
+    "url": "https://www.istanbul.edu.tr/tr"
+   }
+  ],
+  "cleartext_after_https": false,
+  "final_scheme": "https",
+  "final_url": "https://www.istanbul.edu.tr/tr",
+  "hops": 4,
+  "host_changed": true,
+  "reached_https": true
+ },
+ "input_domain": "istanbul.edu.tr",
+ "security_txt": {
+  "fields": {
+   "<div class=\"app\" id=\"app\" ng-class=\"{'test'": [
+    "app.settings.headerFixed}\" ui-view></div>"
+   ],
+   "<html xmlns=\"http": [
+    "//www.w3.org/1999/xhtml\" ng-app=\"app\" ng-controller=\"AppCtrl\" lang=\"tr\">"
+   ],
+   "<link href=\"https": [
+    "//service-cms.istanbul.edu.tr/api/webclient/style?site=0DF4F0F9B7154458AB3ADCEDFFB6B396\" rel=\"stylesheet\" />",
+    "//service-cms.istanbul.edu.tr/api/webclient/style?site=0DF4F0F9B7154458AB3ADCEDFFB6B396\" rel=\"stylesheet\" />"
+   ],
+   "<link rel=\"canonical\" href=\"https": [
+    "//www.istanbul.edu.tr/Default.aspx\" />"
+   ],
+   "<link rel=\"icon\" href=\"https": [
+    "//www.istanbul.edu.tr/favicon.ico\" sizes=\"any\">"
+   ],
+   "<link rel=\"shortcut icon\" href=\"https": [
+    "//www.istanbul.edu.tr/favicon.ico\" type=\"image/x-icon\">"
+   ],
+   "<link rel=\"stylesheet\" href=\"https": [
+    "//fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200\" />",
+    "//cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css\" integrity=\"sha512-5Hs3dF2AEPkpNAR7UiOHba+lRSJNeM2ECkwxUIxC1Q/FLycGTbNapWXB4tP889k5T5Ju8fs4b1P5z/iB4nMfSQ==\" crossorigin=\"anonymous\" referrerpolicy=\"no-referrer\" />"
+   ],
+   "<meta name=\"robots\" content=\"index, follow, max-snippet": [
+    "-1, max-image-preview:large, max-video-preview:-1\" />"
+   ],
+   "<meta property=\"og": [
+    "title\" content=\"İstanbul Üniversitesi\" />",
+    "description\" content=\"İstanbul Üniversitesi | Açık Kapı, Açık Bilim\" />",
+    "url\" content=\"https://www.istanbul.edu.tr/Default.aspx\" />",
+    "site_name\" content=\"İstanbul Üniversitesi\" />",
+    "locale\" content=\"tr\" />",
+    "type\" content=\"website\" />"
+   ],
+   "<script async src=\"https": [
+    "//www.googletagmanager.com/gtag/js?id=G-6QTLWY3ZDJ\"></script>"
+   ],
+   "<script src=\"https": [
+    "//cdnjs.cloudflare.com/ajax/libs/es6-shim/0.35.6/es6-shim.min.js\"></script>",
+    "//cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js\"></script>",
+    "//service-cms.istanbul.edu.tr/api/webclient/js?site=0DF4F0F9B7154458AB3ADCEDFFB6B396\"></script>"
+   ],
+   "<script src='https": [
+    "//ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js'></script>"
+   ],
+   "<script type=\"application/ld+json\">{\"context\"": [
+    "\"https://schema.org\",\"type\":null,\"name\":null,\"url\":null,\"logo\":null,\"sameAs\":[],\"address\":{\"type\":null,\"addressLocality\":null,\"addressCountry\":null},\"contactPoint\":{\"type\":null,\"contactType\":null,\"telephone\":null}}</script>"
+   ],
+   "display": [
+    "none !important;"
+   ]
+  },
+  "present": true,
+  "status": 200,
+  "url": "https://istanbul.edu.tr/.well-known/security.txt"
+ },
+ "tls_versions": {
+  "note": "Each version is a separate standard handshake on 443 (browser-equivalent, K-07). 'not_supported' vs 'unprobeable_local' for TLS 1.0/1.1 may reflect the local OpenSSL build rather than the server; detail is recorded.",
+  "probed": {
+   "TLSv1": {
+    "detail": "SSLError: [SSL: NO_CIPHERS_AVAILABLE] no ciphers available (_ssl.c:1077)",
+    "status": "not_supported"
+   },
+   "TLSv1.1": {
+    "detail": "SSLError: [SSL: NO_CIPHERS_AVAILABLE] no ciphers available (_ssl.c:1077)",
+    "status": "not_supported"
+   },
+   "TLSv1.2": {
+    "cipher": "ECDHE-RSA-AES256-GCM-SHA384",
+    "negotiated_version": "TLSv1.2",
+    "status": "supported"
+   },
+   "TLSv1.3": {
+    "cipher": "TLS_AES_256_GCM_SHA384",
+    "negotiated_version": "TLSv1.3",
+    "status": "supported"
+   }
+  },
+  "supported": [
+   "TLSv1.2",
+   "TLSv1.3"
+  ]
+ }
+}

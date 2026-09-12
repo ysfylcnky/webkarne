@@ -1,0 +1,328 @@
+{
+ "certificate": {
+  "days_remaining": 183,
+  "hostname_in_san": true,
+  "issuer": "GlobalSign nv-sa, GlobalSign RSA OV SSL CA 2018",
+  "not_after": "Mar 14 13:44:32 2027 GMT",
+  "not_before": "Feb 10 13:44:33 2026 GMT",
+  "obtained": true,
+  "san": [
+   "*.turkiye.gov.tr",
+   "turkiye.gov.tr"
+  ],
+  "subject": "Siber Güvenlik Başkanlığı, *.turkiye.gov.tr",
+  "verified": true,
+  "verify_error": null
+ },
+ "collected_at": "2026-09-11T20:28:25.961354+00:00",
+ "collector": "tls_http",
+ "collector_version": "0.1.0",
+ "config_hash": "d818967941ec0aa032ba94a42f4353f626f26c2b4e5624d236c7117fda91f9ae",
+ "domain": "turkiye.gov.tr",
+ "homepage": {
+  "cookies": [
+   {
+    "http_only": true,
+    "name": "TURKIYESESSIONID",
+    "samesite": "none",
+    "secure": true
+   },
+   {
+    "http_only": true,
+    "name": "language",
+    "samesite": "None",
+    "secure": true
+   },
+   {
+    "http_only": true,
+    "name": "TS01c2accc",
+    "samesite": "None",
+    "secure": true
+   }
+  ],
+  "csp": {
+   "directives": {
+    "default-src": [
+     "'self'",
+     "blob:",
+     "wss:",
+     "data:",
+     "https:"
+    ],
+    "img-src": [
+     "'self'",
+     "data:",
+     "https:"
+    ],
+    "script-src": [
+     "'self'",
+     "'unsafe-eval'",
+     "'unsafe-inline'",
+     "blob:",
+     "data:",
+     "https:"
+    ],
+    "style-src": [
+     "'self'",
+     "'unsafe-inline'",
+     "data:",
+     "https:"
+    ]
+   },
+   "present": true,
+   "raw": "default-src 'self' blob: wss: data: https:; img-src 'self' data: https:; script-src 'self' 'unsafe-eval' 'unsafe-inline' blob: data: https:; style-src 'self' 'unsafe-inline' data: https:;"
+  },
+  "hsts": {
+   "present": false
+  },
+  "info_headers": {},
+  "reachable": true,
+  "security_headers": {
+   "content-security-policy": "default-src 'self' blob: wss: data: https:; img-src 'self' data: https:; script-src 'self' 'unsafe-eval' 'unsafe-inline' blob: data: https:; style-src 'self' 'unsafe-inline' data: https:;",
+   "referrer-policy": "unsafe-url",
+   "x-content-type-options": "nosniff"
+  },
+  "status": 200,
+  "url": "https://turkiye.gov.tr/"
+ },
+ "http": {
+  "chain": [
+   {
+    "host": "turkiye.gov.tr",
+    "location": "https://www.turkiye.gov.tr/",
+    "scheme": "http",
+    "status": 302,
+    "url": "http://turkiye.gov.tr/"
+   },
+   {
+    "host": "www.turkiye.gov.tr",
+    "location": null,
+    "scheme": "https",
+    "status": 200,
+    "url": "https://www.turkiye.gov.tr/"
+   }
+  ],
+  "cleartext_after_https": false,
+  "final_scheme": "https",
+  "final_url": "https://www.turkiye.gov.tr/",
+  "hops": 2,
+  "host_changed": true,
+  "reached_https": true
+ },
+ "input_domain": "turkiye.gov.tr",
+ "security_txt": {
+  "fields": {
+   ".btn": [
+    "hover {"
+   ],
+   ".footer a": [
+    "hover {"
+   ],
+   "<link href=\"https": [
+    "//fonts.googleapis.com/css?family=Open+Sans:400,700&amp;subset=latin-ext\" rel=\"stylesheet\">"
+   ],
+   "@media only screen and (max-width": [
+    "480px) {"
+   ],
+   "_cn(\"confirmcontainer\")[0].style.display !== 'none' ? 'confirm'": [
+    "null;"
+   ],
+   "_cn(\"disclaimercontainer\")[0].style.display !== 'none' ? 'disclaimer'": [
+    "null;"
+   ],
+   "_cn(\"errorcontainer\")[0].style.display !== 'none' ? 'error'": [
+    "null;"
+   ],
+   "_cn(\"progresscontainer\")[0].style.display !== 'none' ? 'progress'": [
+    "null;"
+   ],
+   "_cn(\"remindercontainer\")[0].style.display !== 'none' ? 'reminder'": [
+    "null;"
+   ],
+   "_cn(\"warningcontainer\")[0].style.display !== 'none' ? 'warning'": [
+    "null;"
+   ],
+   "_pap.push(['settrackerurl', \"https": [
+    "//analitik.turkiye.gov.tr\"]);"
+   ],
+   "align-items": [
+    "center;"
+   ],
+   "background": [
+    "#FFF;",
+    "#FFF;",
+    "rgba(0, 0, 0, 0.2);"
+   ],
+   "background-color": [
+    "#4284be;"
+   ],
+   "border": [
+    "none;",
+    "1px solid #FFF;"
+   ],
+   "border-radius": [
+    "40px;"
+   ],
+   "color": [
+    "#fff;",
+    "#EEE;",
+    "#FFF;",
+    "#FFF;",
+    "#4284be;",
+    "#4284be;",
+    "#CCC;",
+    "#EEE;",
+    "#FFF;"
+   ],
+   "display": [
+    "flex;",
+    "flex;",
+    "inline-block;"
+   ],
+   "document.queryselector('.code').innerhtml = '": [
+    "(';"
+   ],
+   "document.queryselector('.icon').style = \"width": [
+    "100%; height: auto; right: initial; opacity: .1; padding: 0 20px; box-sizing: border-box;\";"
+   ],
+   "flex": [
+    "1 0 auto;"
+   ],
+   "flex-direction": [
+    "column;"
+   ],
+   "float": [
+    "left;"
+   ],
+   "font-family": [
+    "\"Open Sans\", sans-serif, Arial;",
+    "\"Open Sans\", sans-serif, Arial;"
+   ],
+   "font-size": [
+    "160px;",
+    "30px;",
+    "13px;",
+    "120px;"
+   ],
+   "font-weight": [
+    "700;"
+   ],
+   "height": [
+    "100%;",
+    "100%;",
+    "100%;",
+    "auto;",
+    "360px;"
+   ],
+   "left": [
+    "0;"
+   ],
+   "line-height": [
+    "50px;"
+   ],
+   "margin": [
+    "0;",
+    "0;",
+    "0 auto;",
+    "0;",
+    "0 auto;"
+   ],
+   "margin-bottom": [
+    "0;",
+    "10px;"
+   ],
+   "margin-right": [
+    "15px;"
+   ],
+   "margin-top": [
+    "0;",
+    "0;",
+    "-150px;"
+   ],
+   "max-width": [
+    "700px;",
+    "800px;",
+    "210px;"
+   ],
+   "min-width": [
+    "210px;"
+   ],
+   "opacity": [
+    "0.18;"
+   ],
+   "padding": [
+    "0;",
+    "10px 30px;",
+    "0;",
+    "15px 0;",
+    "0 15px;"
+   ],
+   "padding-bottom": [
+    "32px;"
+   ],
+   "position": [
+    "absolute;",
+    "absolute;"
+   ],
+   "right": [
+    "15%;",
+    "auto;"
+   ],
+   "text-align": [
+    "left;",
+    "center;"
+   ],
+   "text-decoration": [
+    "none;"
+   ],
+   "top": [
+    "0;",
+    "50%;"
+   ],
+   "width": [
+    "100%;",
+    "90%;",
+    "80%;",
+    "auto;",
+    "80%;",
+    "80%;"
+   ],
+   "window.jsonobj = json.stringify({content": [
+    "false, type: 'loading'});"
+   ],
+   "z-index": [
+    "-1;"
+   ]
+  },
+  "present": true,
+  "status": 200,
+  "url": "https://turkiye.gov.tr/.well-known/security.txt"
+ },
+ "tls_versions": {
+  "note": "Each version is a separate standard handshake on 443 (browser-equivalent, K-07). 'not_supported' vs 'unprobeable_local' for TLS 1.0/1.1 may reflect the local OpenSSL build rather than the server; detail is recorded.",
+  "probed": {
+   "TLSv1": {
+    "detail": "SSLError: [SSL: NO_CIPHERS_AVAILABLE] no ciphers available (_ssl.c:1077)",
+    "status": "not_supported"
+   },
+   "TLSv1.1": {
+    "detail": "SSLError: [SSL: NO_CIPHERS_AVAILABLE] no ciphers available (_ssl.c:1077)",
+    "status": "not_supported"
+   },
+   "TLSv1.2": {
+    "cipher": "ECDHE-RSA-AES256-GCM-SHA384",
+    "negotiated_version": "TLSv1.2",
+    "status": "supported"
+   },
+   "TLSv1.3": {
+    "cipher": "TLS_AES_256_GCM_SHA384",
+    "negotiated_version": "TLSv1.3",
+    "status": "supported"
+   }
+  },
+  "supported": [
+   "TLSv1.2",
+   "TLSv1.3"
+  ]
+ }
+}

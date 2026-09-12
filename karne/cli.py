@@ -166,8 +166,49 @@ def _dnssec_line(dnssec: dict[str, Any]) -> str:
     return f"no DS record (query status={dnssec.get('query', {}).get('status')})"
 
 
+def _tls_http_summary(payload: dict[str, Any]) -> str:
+    """Compact, factual summary of a dimension-B (TLS/HTTP) payload (ASCII-only)."""
+    http = payload.get("http", {})
+    tv = payload.get("tls_versions", {})
+    cert = payload.get("certificate", {})
+    hp = payload.get("homepage", {})
+    hsts = hp.get("hsts", {}) if hp else {}
+    if cert.get("verified"):
+        cert_line = f"verified, {cert.get('issuer')}, {cert.get('days_remaining')} days left"
+    elif cert.get("verified") is False:
+        cert_line = f"NOT verified ({cert.get('verify_error')})"
+    else:
+        cert_line = f"not obtained ({cert.get('error')})"
+    if hsts.get("present"):
+        hsts_line = f"max-age={hsts.get('max_age')}"
+        if hsts.get("include_subdomains"):
+            hsts_line += " +includeSubDomains"
+        if hsts.get("preload"):
+            hsts_line += " +preload"
+    else:
+        hsts_line = "absent"
+    headers = ", ".join((hp.get("security_headers") or {}).keys()) if hp else ""
+    return "\n".join(
+        [
+            "  [transport - TLS/HTTP]",
+            f"  HTTPS    : reached_https={http.get('reached_https')} hops={http.get('hops')}"
+            f" cleartext_after_https={http.get('cleartext_after_https')}",
+            f"  TLS      : supported={', '.join(tv.get('supported', [])) or 'none'}",
+            f"  Cert     : {cert_line}",
+            f"  HSTS     : {hsts_line}",
+            f"  Headers  : {headers or 'none'}",
+            f"  sec.txt  : {'present' if payload.get('security_txt', {}).get('present') else 'no'}",
+        ]
+    )
+
+
 def format_summary(
-    payload: dict[str, Any], *, stored: bool, scan_id: int | None, status: str
+    payload: dict[str, Any],
+    *,
+    stored: bool,
+    scan_id: int | None,
+    status: str,
+    show_stored: bool = True,
 ) -> str:
     resolvers = ", ".join(payload.get("resolvers") or []) or "system default"
     lines = [
@@ -186,10 +227,11 @@ def format_summary(
         f"  CAA      : {_caa_line(payload.get('caa', {}))}",
         "",
     ]
-    if stored:
-        lines.append(f"Stored    : scan #{scan_id} (status={status})")
-    else:
-        lines.append("Stored    : no (--no-store)")
+    if show_stored:
+        if stored:
+            lines.append(f"Stored    : scan #{scan_id} (status={status})")
+        else:
+            lines.append("Stored    : no (--no-store)")
     return "\n".join(lines)
 
 
@@ -216,6 +258,11 @@ def scan(
     no_store: bool = typer.Option(
         False, "--no-store", help="Measure only; do not write to the database."
     ),
+    collectors: str = typer.Option(
+        ",".join(batch.DEFAULT_COLLECTORS),
+        "--collectors",
+        help="Comma-separated dimensions to run: email, transport (default: both).",
+    ),
     db: Path = typer.Option(
         storage.DEFAULT_DB_PATH, "--db", help="SQLite database path.", show_default=True
     ),
@@ -223,21 +270,56 @@ def scan(
         "", "--settings", help="Path to a settings.toml (defaults to config/settings.toml)."
     ),
 ) -> None:
-    """Scan a domain's DNS/email hygiene (dimension A) and store the raw result."""
+    """Scan a domain (dimension A email, and/or B transport) and store the raw results."""
     settings = (
         dns_email.load_settings(settings_file) if settings_file else dns_email.load_settings()
     )
-    payload = dns_email.collect(domain, settings)
-    status, error = _scan_status(payload)
+    names = [c.strip() for c in collectors.split(",") if c.strip()]
+    try:
+        specs = batch.resolve_specs(names)
+    except ValueError as exc:
+        typer.echo(str(exc), err=True)
+        raise typer.Exit(code=2) from exc
+
+    outcomes = batch.collect_bundle(domain, settings, specs)
+    by_dim = {o.spec.dimension: o for o in outcomes}
 
     scan_id: int | None = None
+    status = batch.combine_status(outcomes)[0]
     if not no_store:
-        scan_id = _store(db, payload, status, error)
+        conn = storage.connect(db)
+        try:
+            storage.init_db(conn)
+            scan_id, status, _ = batch.store_bundle(conn, domain, outcomes)
+        finally:
+            conn.close()
 
     if json_output:
-        typer.echo(json.dumps(payload, indent=2, ensure_ascii=False))
+        payloads = {o.spec.collector: o.payload for o in outcomes if o.payload is not None}
+        typer.echo(json.dumps(payloads, indent=2, ensure_ascii=False))
+        return
+
+    blocks: list[str] = []
+    if "email" in by_dim and by_dim["email"].payload is not None:
+        blocks.append(
+            format_summary(
+                by_dim["email"].payload,
+                stored=False,
+                scan_id=scan_id,
+                status=status,
+                show_stored=False,
+            )
+        )
+    if "transport" in by_dim and by_dim["transport"].payload is not None:
+        blocks.append(_tls_http_summary(by_dim["transport"].payload))
+    for o in outcomes:
+        if o.payload is None:
+            blocks.append(f"  [{o.spec.dimension}] collector error: {o.error}")
+    if not no_store:
+        blocks.append(f"Stored    : scan #{scan_id} (status={status})")
     else:
-        typer.echo(format_summary(payload, stored=not no_store, scan_id=scan_id, status=status))
+        blocks.append("Stored    : no (--no-store)")
+    typer.echo("\n\n".join(blocks))
 
 
 # ---------------------------------------------------------------------------
@@ -268,14 +350,26 @@ def batch_scan(
     settings_file: str = typer.Option(
         "", "--settings", help="Path to a settings.toml (defaults to config/settings.toml)."
     ),
+    collectors: str = typer.Option(
+        ",".join(batch.DEFAULT_COLLECTORS),
+        "--collectors",
+        help="Comma-separated dimensions to run: email, transport (default: both).",
+    ),
 ) -> None:
-    """Scan the frame (dimension A) in parallel, resumably, into a monthly round.
+    """Scan the frame (dimensions A email and/or B transport) in parallel, resumably.
 
-    Applies the existing dns_email collector to every pending domain in the
-    ``domains`` table. Re-running the same ``--run-label`` resumes: already-completed
-    domains (ok/partial) are skipped. This never scores or judges (rule 1); it only
-    stores raw measurements, exactly like ``karne scan``.
+    Applies the selected collectors to every pending domain in the ``domains`` table,
+    storing one ``scan_results`` row per collector. Re-running the same ``--run-label``
+    resumes: already-completed domains (ok/partial) are skipped — so adding a collector
+    to an existing round needs a NEW round label. Never scores or judges (rule 1); it
+    only stores raw measurements, exactly like ``karne scan``.
     """
+    collector_names = [c.strip() for c in collectors.split(",") if c.strip()]
+    try:
+        batch.resolve_specs(collector_names)  # validate before touching the DB
+    except ValueError as exc:
+        typer.echo(str(exc), err=True)
+        raise typer.Exit(code=2) from exc
     settings = (
         dns_email.load_settings(settings_file) if settings_file else dns_email.load_settings()
     )
@@ -323,6 +417,7 @@ def batch_scan(
             concurrency=conc,
             progress_cb=_report,
             progress_every=every,
+            collectors=collector_names,
         )
         typer.echo("")
         typer.echo(progress.summary())
@@ -347,7 +442,7 @@ def rescore_cmd(
         help="Only scans with no score yet for the dimension (incremental).",
     ),
     dimension: str = typer.Option(
-        "email", "--dimension", help="Scoring dimension (only 'email' exists in Sprint 3)."
+        "email", "--dimension", help="Scoring dimension: 'email' (A) or 'transport' (B)."
     ),
     scoring_file: str = typer.Option(
         "", "--scoring", help="Path to a scoring.toml (defaults to config/scoring.toml)."
@@ -368,9 +463,10 @@ def rescore_cmd(
     re-graded with May's rules). Target one ``--scan-id``, one ``--run-label``, or
     (default) all not-yet-scored scans.
     """
-    if dimension != "email":
+    if dimension not in rescore.SUPPORTED_DIMENSIONS:
         typer.echo(
-            f"Unknown dimension '{dimension}'. Only 'email' (dimension A) exists in Sprint 3.",
+            f"Unknown dimension '{dimension}'. Supported: "
+            f"{', '.join(sorted(rescore.SUPPORTED_DIMENSIONS))}.",
             err=True,
         )
         raise typer.Exit(code=2)
@@ -387,7 +483,11 @@ def rescore_cmd(
             ids = [sid]
         else:
             ids = storage.select_scans_for_scoring(
-                conn, run_label=label, only_unscored=only_unscored, dimension=dimension
+                conn,
+                run_label=label,
+                only_unscored=only_unscored,
+                dimension=dimension,
+                collector=rescore.collector_for(dimension),
             )
 
         selectors = []

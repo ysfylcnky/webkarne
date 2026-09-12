@@ -1,0 +1,171 @@
+{
+ "certificate": {
+  "days_remaining": 65,
+  "hostname_in_san": true,
+  "issuer": "Let's Encrypt, YE2",
+  "not_after": "Nov 16 13:23:39 2026 GMT",
+  "not_before": "Aug 18 13:23:40 2026 GMT",
+  "obtained": true,
+  "san": [
+   "conn.internet.nl",
+   "en.conn.internet.nl",
+   "en.conn.ipv6.internet.nl",
+   "en.internet.nl",
+   "en.ipv6.internet.nl",
+   "internet.nl",
+   "ipv6.internet.nl",
+   "nl.conn.internet.nl",
+   "nl.conn.ipv6.internet.nl",
+   "nl.internet.nl",
+   "nl.ipv6.internet.nl",
+   "platforminternet.nl",
+   "platforminternetstandaarden.nl",
+   "www.internet.nl"
+  ],
+  "subject": "internet.nl",
+  "verified": true,
+  "verify_error": null
+ },
+ "collected_at": "2026-09-11T20:28:17.843812+00:00",
+ "collector": "tls_http",
+ "collector_version": "0.1.0",
+ "config_hash": "d818967941ec0aa032ba94a42f4353f626f26c2b4e5624d236c7117fda91f9ae",
+ "domain": "internet.nl",
+ "homepage": {
+  "cookies": [],
+  "csp": {
+   "directives": {
+    "base-uri": [
+     "'self'",
+     "https://*.internet.nl"
+    ],
+    "default-src": [
+     "'self'",
+     "https://*.internet.nl"
+    ],
+    "form-action": [
+     "'self'",
+     "https://*.internet.nl"
+    ],
+    "frame-ancestors": [
+     "'none'"
+    ]
+   },
+   "present": true,
+   "raw": "base-uri 'self' https://*.internet.nl; form-action 'self' https://*.internet.nl; frame-ancestors 'none'; default-src 'self' https://*.internet.nl"
+  },
+  "hsts": {
+   "include_subdomains": false,
+   "max_age": 31536000,
+   "preload": false,
+   "present": true,
+   "raw": "max-age=31536000"
+  },
+  "info_headers": {
+   "server": "nginx"
+  },
+  "reachable": true,
+  "security_headers": {
+   "content-security-policy": "base-uri 'self' https://*.internet.nl; form-action 'self' https://*.internet.nl; frame-ancestors 'none'; default-src 'self' https://*.internet.nl",
+   "referrer-policy": "same-origin",
+   "strict-transport-security": "max-age=31536000",
+   "x-content-type-options": "nosniff",
+   "x-frame-options": "SAMEORIGIN"
+  },
+  "status": 200,
+  "url": "https://internet.nl/"
+ },
+ "http": {
+  "chain": [
+   {
+    "host": "internet.nl",
+    "location": "https://internet.nl/",
+    "scheme": "http",
+    "status": 301,
+    "url": "http://internet.nl/"
+   },
+   {
+    "host": "internet.nl",
+    "location": null,
+    "scheme": "https",
+    "status": 200,
+    "url": "https://internet.nl/"
+   }
+  ],
+  "cleartext_after_https": false,
+  "final_scheme": "https",
+  "final_url": "https://internet.nl/",
+  "hops": 2,
+  "host_changed": false,
+  "reached_https": true
+ },
+ "input_domain": "internet.nl",
+ "security_txt": {
+  "fields": {
+   "canonical": [
+    "https://internet.nl/.well-known/security.txt",
+    "https://www.internet.nl/.well-known/security.txt",
+    "https://nl.internet.nl/.well-known/security.txt",
+    "https://en.internet.nl/.well-known/security.txt",
+    "https://ipv6.internet.nl/.well-known/security.txt",
+    "https://nl.ipv6.internet.nl/.well-known/security.txt",
+    "https://en.ipv6.internet.nl/.well-known/security.txt",
+    "https://batch.internet.nl/.well-known/security.txt",
+    "https://en.batch.internet.nl/.well-known/security.txt",
+    "https://nl.batch.internet.nl/.well-known/security.txt",
+    "https://dashboard.internet.nl/.well-known/security.txt",
+    "https://ipv6.dashboard.internet.nl/.well-known/security.txt",
+    "https://toolbox.internet.nl/.well-known/security.txt",
+    "https://emailveilig.internet.nl/.well-known/security.txt",
+    "https://ipv6kaart.internet.nl/.well-known/security.txt",
+    "https://matomo.internet.nl/.well-known/security.txt"
+   ],
+   "contact": [
+    "mailto:question@internet.nl"
+   ],
+   "encryption": [
+    "https://internet.nl/static/question@internet.nl_0x45028563.asc"
+   ],
+   "expires": [
+    "2027-04-10T00:00:00Z"
+   ],
+   "hash": [
+    "SHA512",
+    "SHA512"
+   ],
+   "policy": [
+    "https://internet.nl/disclosure/"
+   ]
+  },
+  "present": true,
+  "status": 200,
+  "url": "https://internet.nl/.well-known/security.txt"
+ },
+ "tls_versions": {
+  "note": "Each version is a separate standard handshake on 443 (browser-equivalent, K-07). 'not_supported' vs 'unprobeable_local' for TLS 1.0/1.1 may reflect the local OpenSSL build rather than the server; detail is recorded.",
+  "probed": {
+   "TLSv1": {
+    "detail": "SSLError: [SSL: NO_CIPHERS_AVAILABLE] no ciphers available (_ssl.c:1077)",
+    "status": "not_supported"
+   },
+   "TLSv1.1": {
+    "detail": "SSLError: [SSL: NO_CIPHERS_AVAILABLE] no ciphers available (_ssl.c:1077)",
+    "status": "not_supported"
+   },
+   "TLSv1.2": {
+    "cipher": "ECDHE-ECDSA-AES256-GCM-SHA384",
+    "negotiated_version": "TLSv1.2",
+    "status": "supported"
+   },
+   "TLSv1.3": {
+    "cipher": "TLS_AES_256_GCM_SHA384",
+    "negotiated_version": "TLSv1.3",
+    "status": "supported"
+   }
+  },
+  "supported": [
+   "TLSv1.2",
+   "TLSv1.3"
+  ]
+ }
+}

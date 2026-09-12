@@ -19,12 +19,16 @@
 #           is scored near-full instead of half. Surfaced by the internet.nl
 #           comparison; a principled fix for a double-count, not a calibration to
 #           that tool. Does not change the six known-domain grades. (PLAN.md K-12.)
+#   1.2.0 - dimension B (transport & server security, collector tls_http) added:
+#           weights, thresholds and the TRANSPORT_ finding catalogue. Purely
+#           additive; the dimension-A model and its grades are unchanged. The B
+#           model and its decisions are recorded in PLAN.md K-13.
 #
 # No threshold or weight is hard-coded in scoring.py; the code reads every number
 # from this file. The code decides WHICH condition maps to WHICH finding code
 # (logic); the severity and translation key of each code live here.
 
-version = "1.1.0"
+version = "1.2.0"
 
 # ---------------------------------------------------------------------------
 # Letter-grade cut-offs (0-100 raw_score -> letter). Security-calibrated
@@ -115,6 +119,48 @@ present = 1.0
 # --- DKIM: NOT scored (weight 0). Observation-only threshold for the finding. ---
 [dimensions.email.dkim]
 min_key_bits = 2048      # RSA key below this -> EMAIL_DKIM_KEY_SHORT (low)
+
+# ===========================================================================
+# Dimension B - transport & server security (collector: tls_http). Scored
+# weights sum to 100; same grade scale as email. Records reflect a normal
+# browser visit (PLAN.md K-07 / K-13). "Could not measure" (connection error)
+# is dropped from the denominator, never scored 0 (rule 6).
+# ===========================================================================
+[dimensions.transport.weights]
+https_enforcement = 25   # http:// -> https, no cleartext step in the chain
+tls = 20                 # modern TLS supported, no legacy 1.0/1.1
+certificate = 20         # chain verifies, hostname matches, not expiring
+hsts = 15                # Strict-Transport-Security strength
+security_headers = 15    # the core response security headers
+security_txt = 5         # a security contact channel (maturity signal)
+
+# --- HTTPS enforcement (25) ---
+[dimensions.transport.https]
+cleartext_fraction = 0.4   # reaches https BUT a cleartext hop appears after https
+
+# --- TLS versions (20): modern = TLSv1.2/1.3; legacy = TLSv1/1.1 ---
+[dimensions.transport.tls]
+legacy_fraction = 0.4      # modern offered but 1.0/1.1 also accepted
+
+# --- Certificate (20) ---
+[dimensions.transport.certificate]
+expiry_warn_days = 15      # days remaining below this -> TRANSPORT_CERT_EXPIRING
+
+# --- HSTS (15): base for an adequate max-age, plus scope/preload bonuses ---
+[dimensions.transport.hsts]
+min_max_age = 15552000     # 180 days; below this -> TRANSPORT_HSTS_SHORT
+base = 0.6                 # present with an adequate max-age
+short = 0.3                # present but max-age below the minimum
+include_subdomains = 0.25  # bonus fraction
+preload = 0.15             # bonus fraction
+
+# --- Security headers (15): each core header present earns an equal share ---
+[dimensions.transport.security_headers]
+core = ["content-security-policy", "x-frame-options", "x-content-type-options", "referrer-policy"]
+
+# --- security.txt (5): presence only ---
+[dimensions.transport.security_txt]
+present = 1.0
 
 # ---------------------------------------------------------------------------
 # Finding catalogue. Codes come from this fixed list; scoring.py emits a code +
@@ -224,3 +270,60 @@ fix_hint_key = "email.indicators_unmeasured"
 [findings.EMAIL_INSUFFICIENT_DATA]
 severity = "info"
 fix_hint_key = "email.insufficient_data"
+
+# ===========================================================================
+# Dimension B - transport & server security (collector: tls_http, PLAN.md K-13).
+# ===========================================================================
+
+# -- HTTPS enforcement --
+[findings.TRANSPORT_NO_HTTPS]
+severity = "high"
+fix_hint_key = "transport.no_https"
+[findings.TRANSPORT_CLEARTEXT_REDIRECT]
+severity = "high"
+fix_hint_key = "transport.cleartext_redirect"
+
+# -- TLS versions --
+[findings.TRANSPORT_TLS_OUTDATED]
+severity = "high"
+fix_hint_key = "transport.tls_outdated"
+[findings.TRANSPORT_TLS_LEGACY]
+severity = "medium"
+fix_hint_key = "transport.tls_legacy"
+
+# -- Certificate --
+[findings.TRANSPORT_CERT_INVALID]
+severity = "high"
+fix_hint_key = "transport.cert_invalid"
+[findings.TRANSPORT_CERT_EXPIRING]
+severity = "medium"
+fix_hint_key = "transport.cert_expiring"
+
+# -- HSTS --
+[findings.TRANSPORT_NO_HSTS]
+severity = "medium"
+fix_hint_key = "transport.no_hsts"
+[findings.TRANSPORT_HSTS_SHORT]
+severity = "low"
+fix_hint_key = "transport.hsts_short"
+[findings.TRANSPORT_HSTS_NO_INCLUDESUBDOMAINS]
+severity = "low"
+fix_hint_key = "transport.hsts_no_includesubdomains"
+
+# -- Security headers --
+[findings.TRANSPORT_MISSING_SECURITY_HEADERS]
+severity = "medium"
+fix_hint_key = "transport.missing_security_headers"
+
+# -- security.txt --
+[findings.TRANSPORT_NO_SECURITY_TXT]
+severity = "info"
+fix_hint_key = "transport.no_security_txt"
+
+# -- Measurement quality (rule 6 / K-13) --
+[findings.TRANSPORT_INDICATORS_UNMEASURED]
+severity = "info"
+fix_hint_key = "transport.indicators_unmeasured"
+[findings.TRANSPORT_INSUFFICIENT_DATA]
+severity = "info"
+fix_hint_key = "transport.insufficient_data"

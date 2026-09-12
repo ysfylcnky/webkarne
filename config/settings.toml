@@ -32,6 +32,19 @@ max_bytes = 65536            # cap the policy download size
 # URL with the real project page once published.
 user_agent = "karne/0.1 (+https://github.com/ysfylcnky/karne; passive email-hygiene measurement)"
 
+[tls_http]
+# Dimension B (Sprint 3). Passive, browser-equivalent: homepage HTTP GET + TLS
+# handshakes on 443 only (PLAN.md K-07 and the §4 TLS-version-probing decision).
+# No STARTTLS, no port scan, no directory/vuln probing.
+timeout_seconds = 7.0        # per TCP/TLS connect + per HTTP request
+max_redirects = 10           # http:// enforcement chain hop cap
+max_bytes = 65536            # cap any body we read (headers are the point)
+rate_per_second = 5.0        # polite throughput cap for this collector
+# TLS versions to probe with a separate handshake each (supported? + negotiated
+# cipher). A version the local OpenSSL cannot configure is recorded as
+# "unprobeable_local" (could not measure), kept distinct from a server refusal.
+probe_tls_versions = ["TLSv1", "TLSv1.1", "TLSv1.2", "TLSv1.3"]
+
 [dkim]
 # DKIM selectors CANNOT be discovered from DNS; they are guessed. This is a
 # documented method limitation — the collector marks DKIM output with

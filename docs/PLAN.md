@@ -202,6 +202,59 @@ not, hep).
 
 ---
 
+### K-13 · B boyutu puanlama modeli
+
+*(Karar: 2026-09-12, Sprint 3. K-12'nin B boyutu (aktarım & sunucu güvenliği,
+toplayıcı `tls_http`) için karşılığı. Ağırlık/eşik/bulgu kataloğu tümüyle
+`config/scoring.toml` sürüm `1.2.0`'da yaşar; kodda sabit sayı yoktur. Aynı harf
+skalası (A≥85…F<40), aynı üç-durum mantığı (yokluk ≠ uygulanamaz ≠ ölçülemedi) ve
+aynı `_aggregate` çekirdeği A ile paylaşılır.)*
+
+Ham `tls_http` verisi (normal bir tarayıcı ziyaretinin gördüğü kadarı, K-07)
+0–100 ham puana ve harf notuna çevrilir. Aktif prob yok: STARTTLS zorlaması,
+port taraması, dizin/dosya denemesi, zafiyet probu **yapılmaz** — TLS sürümleri
+443'te sürüm başına ayrı, standart el sıkışmayla ölçülür (§4).
+
+- **Ağırlıklar (toplam 100):** HTTPS zorlaması 25, TLS sürümleri 20, sertifika 20,
+  HSTS 15, çekirdek güvenlik başlıkları 15, `security.txt` 5.
+- **HTTPS zorlaması (25):** `http://` isteği tam zincir boyunca `https`'e çıkıyor
+  mu. HTTPS'e hiç ulaşılmıyorsa 0 (`TRANSPORT_NO_HTTPS`, high); ulaşıyor ama zincirde
+  `https`'ten sonra bir cleartext adım varsa kısmi puan (`cleartext_fraction`=0.4,
+  `TRANSPORT_CLEARTEXT_REDIRECT`, high).
+- **TLS sürümleri (20):** modern = TLS 1.2/1.3, legacy = TLS 1.0/1.1. Modern hiç
+  yoksa 0 (`TRANSPORT_TLS_OUTDATED`, high); modern var ama legacy da kabul ediliyorsa
+  kısmi (`legacy_fraction`=0.4, `TRANSPORT_TLS_LEGACY`, medium).
+- **Sertifika (20):** zincir doğruluyor + hostname eşleşiyor mu, süresi doluyor mu.
+  Doğrulamıyorsa 0 (`TRANSPORT_CERT_INVALID`, high); `expiry_warn_days`=15 günden az
+  kaldıysa tam puan ama bulgu (`TRANSPORT_CERT_EXPIRING`, medium).
+- **HSTS (15):** yeterli `max-age` (≥180 gün) için taban 0.6; `includeSubDomains`
+  +0.25, `preload` +0.15 (üst sınır 1.0). Yoksa 0 (`TRANSPORT_NO_HSTS`, medium);
+  `max-age` kısaysa 0.3 (`TRANSPORT_HSTS_SHORT`, low); `includeSubDomains` yoksa
+  bulgu (`TRANSPORT_HSTS_NO_INCLUDESUBDOMAINS`, low).
+- **Güvenlik başlıkları (15):** dört çekirdek başlık (`content-security-policy`,
+  `x-frame-options`, `x-content-type-options`, `referrer-policy`) eşit paylı; eksik
+  varsa `TRANSPORT_MISSING_SECURITY_HEADERS` (medium, kanıtta hangileri eksik).
+- **`security.txt` (5):** olgunluk sinyali, varlık yeterli; yoksa
+  `TRANSPORT_NO_SECURITY_TXT` (info).
+- **"Ölçülemedi" (bağlantı hatası) cezalandırılmaz (kural 6).** Ana sayfaya hiç
+  yanıt gelmemesi, TLS problarının tümünün hata vermesi ya da sertifikanın hiç
+  alınamaması ilgili göstergeyi paydadan düşürür (0 yazılmaz). Ölçülen ağırlık
+  uygulanabilir ağırlığın %50'sinin altındaysa harf yerine `I` (yetersiz veri).
+
+**Doğrulama.** Yedi gerçek alan adı için notlar elle hesaplanıp teste donduruldu
+(`tests/test_scoring_transport.py`): internet.nl 94.0 (A), akbank.com 91.25 (A),
+itu.edu.tr 89.0 (A), istanbul.edu.tr 82.75 (B), turkiye.gov.tr 81.25 (B),
+garantibbva.com.tr 70.0 (B), mumifashion.com 68.75 (C). Yediside HTTPS + modern TLS
++ geçerli sertifikayı (65 puan) sağlıyor; onları ayıran HSTS, güvenlik başlıkları
+ve `security.txt`.
+
+**Ruleset sürüm geçmişi (devam).**
+
+- **1.2.0** — B boyutu (aktarım) eklendi: ağırlıklar, eşikler ve `TRANSPORT_` bulgu
+  kataloğu. Salt ekleme; A modeli ve altı bilinen alan adının notu değişmez.
+
+---
+
 ## 3. Ne ölçüyoruz
 
 Dört boyut, dört bağımsız toplayıcı. İlk ikisi tamamen pasif ve saniyeler
@@ -348,6 +401,25 @@ korunur; posta-aktarım güvenliği yalnız DNS-tarafı sinyallerle (MTA-STS, TL
 DANE) ölçülür. Konu, aktarım katmanının ele alındığı **Sprint 3'te**, gerekirse
 etik kurul bağlamıyla yeniden değerlendirilebilir; o zamana dek kapsam dışıdır ve
 bu paragraf güncellenmeden STARTTLS kodu yazılmaz.
+
+### Sınır kararı: TLS sürüm keşfi — çoklu el sıkışma kabul edilir
+
+*(Karar: 2026-09-11, Sprint 3 · B boyutu.)* B boyutu, bir sitenin desteklediği TLS
+sürümlerini (1.0/1.1/1.2/1.3) ölçmek için **her sürüme standart 443 portu üzerinden
+ayrı bir TLS el sıkışması** dener. Bu, tarayıcının pazarlıkla seçtiği tek sürümün
+ötesine geçer ama **port taraması, zafiyet denemesi veya sömürü değildir**: yalnız
+herkese açık HTTPS portunda sıradan el sıkışmalardır (bir tarayıcı da 1.3 başarısız
+olursa 1.2 dener). K-07'nin "sıradan bir ziyaretçinin gördüğünden fazlası yok"
+sınırı içinde kabul edilir; STARTTLS'ten (port 25'e canlı SMTP) farkı budur.
+Sınırlar korunur: **cipher takımlarının tam taraması YAPILMAZ** (her sürümde yalnız
+pazarlıkla seçilen cipher kaydedilir); dizin/dosya denemesi, form gönderimi yok;
+her istekte timeout + hız sınırı zorunlu. Sertifika: önce doğrulayan el sıkışma
+(verified + neden), başarısızsa doğrulamasız ikinci el sıkışma ile sertifika
+detayı yine de kaydedilir (süresi dolmuş/self-signed'i görebilmek için). HTTP
+zorunluluğu: `http://` kökünden en çok 10 hop yönlendirme zinciri izlenir; her
+hop'un şeması/host'u/durumu kaydedilir, ara şifresiz adım ve host değişimi
+işaretlenir. Toplayıcı yine yorum yapmaz (rule 1); "1.0 açık = kötü", "max-age
+kısa" gibi yargılar puanlama katmanındadır (K-02).
 
 ---
 

@@ -1,0 +1,108 @@
+{
+ "certificate": {
+  "days_remaining": 169,
+  "hostname_in_san": true,
+  "issuer": "DigiCert Inc, GeoTrust TLS RSA CA G1",
+  "not_after": "Feb 27 23:59:59 2027 GMT",
+  "not_before": "Aug 13 00:00:00 2026 GMT",
+  "obtained": true,
+  "san": [
+   "itu.edu.tr",
+   "*.itu.edu.tr",
+   "*.cc.itu.edu.tr",
+   "*.idari.itu.edu.tr"
+  ],
+  "subject": "İstanbul Teknik Üniversitesi, itu.edu.tr",
+  "verified": true,
+  "verify_error": null
+ },
+ "collected_at": "2026-09-11T20:28:20.153325+00:00",
+ "collector": "tls_http",
+ "collector_version": "0.1.0",
+ "config_hash": "d818967941ec0aa032ba94a42f4353f626f26c2b4e5624d236c7117fda91f9ae",
+ "domain": "itu.edu.tr",
+ "homepage": {
+  "cookies": [],
+  "csp": {
+   "present": false
+  },
+  "hsts": {
+   "include_subdomains": true,
+   "max_age": 31536000,
+   "preload": false,
+   "present": true,
+   "raw": "max-age=31536000; includeSubDomains"
+  },
+  "info_headers": {
+   "server": "Microsoft-IIS/10.0",
+   "x-aspnet-version": "4.0.30319",
+   "x-powered-by": "ITU-BIDB"
+  },
+  "reachable": true,
+  "security_headers": {
+   "referrer-policy": "no-referrer-when-downgrade",
+   "strict-transport-security": "max-age=31536000; includeSubDomains",
+   "x-content-type-options": "nosniff",
+   "x-frame-options": "itu.edu.tr,*.itu.tr"
+  },
+  "status": 200,
+  "url": "https://itu.edu.tr/"
+ },
+ "http": {
+  "chain": [
+   {
+    "host": "itu.edu.tr",
+    "location": "https://www.itu.edu.tr/",
+    "scheme": "http",
+    "status": 301,
+    "url": "http://itu.edu.tr/"
+   },
+   {
+    "host": "www.itu.edu.tr",
+    "location": null,
+    "scheme": "https",
+    "status": 200,
+    "url": "https://www.itu.edu.tr/"
+   }
+  ],
+  "cleartext_after_https": false,
+  "final_scheme": "https",
+  "final_url": "https://www.itu.edu.tr/",
+  "hops": 2,
+  "host_changed": true,
+  "reached_https": true
+ },
+ "input_domain": "itu.edu.tr",
+ "security_txt": {
+  "present": false,
+  "status": 404,
+  "url": "https://itu.edu.tr/.well-known/security.txt"
+ },
+ "tls_versions": {
+  "note": "Each version is a separate standard handshake on 443 (browser-equivalent, K-07). 'not_supported' vs 'unprobeable_local' for TLS 1.0/1.1 may reflect the local OpenSSL build rather than the server; detail is recorded.",
+  "probed": {
+   "TLSv1": {
+    "detail": "SSLError: [SSL: NO_CIPHERS_AVAILABLE] no ciphers available (_ssl.c:1077)",
+    "status": "not_supported"
+   },
+   "TLSv1.1": {
+    "detail": "SSLError: [SSL: NO_CIPHERS_AVAILABLE] no ciphers available (_ssl.c:1077)",
+    "status": "not_supported"
+   },
+   "TLSv1.2": {
+    "cipher": "ECDHE-RSA-AES256-GCM-SHA384",
+    "negotiated_version": "TLSv1.2",
+    "status": "supported"
+   },
+   "TLSv1.3": {
+    "cipher": "TLS_AES_256_GCM_SHA384",
+    "negotiated_version": "TLSv1.3",
+    "status": "supported"
+   }
+  },
+  "supported": [
+   "TLSv1.2",
+   "TLSv1.3"
+  ]
+ }
+}

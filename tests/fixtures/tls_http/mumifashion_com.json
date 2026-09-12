@@ -1,0 +1,102 @@
+{
+ "certificate": {
+  "days_remaining": 77,
+  "hostname_in_san": true,
+  "issuer": "Let's Encrypt, YE2",
+  "not_after": "Nov 27 21:17:41 2026 GMT",
+  "not_before": "Aug 29 21:17:42 2026 GMT",
+  "obtained": true,
+  "san": [
+   "*.mumifashion.com",
+   "mumifashion.com"
+  ],
+  "subject": "mumifashion.com",
+  "verified": true,
+  "verify_error": null
+ },
+ "collected_at": "2026-09-11T20:28:21.750795+00:00",
+ "collector": "tls_http",
+ "collector_version": "0.1.0",
+ "config_hash": "d818967941ec0aa032ba94a42f4353f626f26c2b4e5624d236c7117fda91f9ae",
+ "domain": "mumifashion.com",
+ "homepage": {
+  "cookies": [],
+  "csp": {
+   "directives": {
+    "upgrade-insecure-requests": []
+   },
+   "present": true,
+   "raw": "upgrade-insecure-requests"
+  },
+  "hsts": {
+   "present": false
+  },
+  "info_headers": {
+   "server": "cloudflare",
+   "x-powered-by": "PHP/8.3.33"
+  },
+  "reachable": true,
+  "security_headers": {
+   "content-security-policy": "upgrade-insecure-requests"
+  },
+  "status": 200,
+  "url": "https://mumifashion.com/"
+ },
+ "http": {
+  "chain": [
+   {
+    "host": "mumifashion.com",
+    "location": "https://mumifashion.com/",
+    "scheme": "http",
+    "status": 301,
+    "url": "http://mumifashion.com/"
+   },
+   {
+    "host": "mumifashion.com",
+    "location": null,
+    "scheme": "https",
+    "status": 200,
+    "url": "https://mumifashion.com/"
+   }
+  ],
+  "cleartext_after_https": false,
+  "final_scheme": "https",
+  "final_url": "https://mumifashion.com/",
+  "hops": 2,
+  "host_changed": false,
+  "reached_https": true
+ },
+ "input_domain": "mumifashion.com",
+ "security_txt": {
+  "present": false,
+  "status": 404,
+  "url": "https://mumifashion.com/.well-known/security.txt"
+ },
+ "tls_versions": {
+  "note": "Each version is a separate standard handshake on 443 (browser-equivalent, K-07). 'not_supported' vs 'unprobeable_local' for TLS 1.0/1.1 may reflect the local OpenSSL build rather than the server; detail is recorded.",
+  "probed": {
+   "TLSv1": {
+    "detail": "SSLError: [SSL: NO_CIPHERS_AVAILABLE] no ciphers available (_ssl.c:1077)",
+    "status": "not_supported"
+   },
+   "TLSv1.1": {
+    "detail": "SSLError: [SSL: NO_CIPHERS_AVAILABLE] no ciphers available (_ssl.c:1077)",
+    "status": "not_supported"
+   },
+   "TLSv1.2": {
+    "cipher": "ECDHE-ECDSA-AES128-GCM-SHA256",
+    "negotiated_version": "TLSv1.2",
+    "status": "supported"
+   },
+   "TLSv1.3": {
+    "cipher": "TLS_AES_256_GCM_SHA384",
+    "negotiated_version": "TLSv1.3",
+    "status": "supported"
+   }
+  },
+  "supported": [
+   "TLSv1.2",
+   "TLSv1.3"
+  ]
+ }
+}

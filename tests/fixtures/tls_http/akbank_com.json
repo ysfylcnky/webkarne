@@ -1,0 +1,132 @@
+{
+ "certificate": {
+  "days_remaining": 167,
+  "hostname_in_san": true,
+  "issuer": "DigiCert Inc, DigiCert EV RSA CA G2",
+  "not_after": "Feb 25 23:59:59 2027 GMT",
+  "not_before": "Aug 11 00:00:00 2026 GMT",
+  "obtained": true,
+  "san": [
+   "www.akbank.com",
+   "akbank.com",
+   "www.akbank.com.tr",
+   "akbank.com.tr"
+  ],
+  "subject": "AKBANK TURK A.S., www.akbank.com",
+  "verified": true,
+  "verify_error": null
+ },
+ "collected_at": "2026-09-11T20:28:19.259390+00:00",
+ "collector": "tls_http",
+ "collector_version": "0.1.0",
+ "config_hash": "d818967941ec0aa032ba94a42f4353f626f26c2b4e5624d236c7117fda91f9ae",
+ "domain": "akbank.com",
+ "homepage": {
+  "cookies": [
+   {
+    "http_only": true,
+    "name": "1911c900fef30582e3dd70d555dd29077572f63c75714072e554e91bde57e117",
+    "samesite": null,
+    "secure": true
+   },
+   {
+    "http_only": false,
+    "name": "TS0106302a",
+    "samesite": null,
+    "secure": false
+   }
+  ],
+  "csp": {
+   "directives": {
+    "frame-ancestors": [
+     "'self'",
+     "*.akbank.com",
+     "*.akbankpreprod.com"
+    ]
+   },
+   "present": true,
+   "raw": "frame-ancestors 'self' *.akbank.com *.akbankpreprod.com"
+  },
+  "hsts": {
+   "include_subdomains": true,
+   "max_age": 31536000,
+   "preload": true,
+   "present": true,
+   "raw": "max-age=31536000; includeSubDomains; preload"
+  },
+  "info_headers": {},
+  "reachable": true,
+  "security_headers": {
+   "content-security-policy": "frame-ancestors 'self' *.akbank.com *.akbankpreprod.com",
+   "strict-transport-security": "max-age=31536000; includeSubDomains; preload",
+   "x-content-type-options": "nosniff",
+   "x-frame-options": "SAMEORIGIN"
+  },
+  "status": 301,
+  "url": "https://akbank.com/"
+ },
+ "http": {
+  "chain": [
+   {
+    "host": "akbank.com",
+    "location": "https://akbank.com/",
+    "scheme": "http",
+    "status": 301,
+    "url": "http://akbank.com/"
+   },
+   {
+    "host": "akbank.com",
+    "location": "https://www.akbank.com/",
+    "scheme": "https",
+    "status": 301,
+    "url": "https://akbank.com/"
+   },
+   {
+    "host": "www.akbank.com",
+    "location": null,
+    "scheme": "https",
+    "status": 200,
+    "url": "https://www.akbank.com/"
+   }
+  ],
+  "cleartext_after_https": false,
+  "final_scheme": "https",
+  "final_url": "https://www.akbank.com/",
+  "hops": 3,
+  "host_changed": true,
+  "reached_https": true
+ },
+ "input_domain": "akbank.com",
+ "security_txt": {
+  "present": false,
+  "status": 404,
+  "url": "https://akbank.com/.well-known/security.txt"
+ },
+ "tls_versions": {
+  "note": "Each version is a separate standard handshake on 443 (browser-equivalent, K-07). 'not_supported' vs 'unprobeable_local' for TLS 1.0/1.1 may reflect the local OpenSSL build rather than the server; detail is recorded.",
+  "probed": {
+   "TLSv1": {
+    "detail": "SSLError: [SSL: NO_CIPHERS_AVAILABLE] no ciphers available (_ssl.c:1077)",
+    "status": "not_supported"
+   },
+   "TLSv1.1": {
+    "detail": "SSLError: [SSL: NO_CIPHERS_AVAILABLE] no ciphers available (_ssl.c:1077)",
+    "status": "not_supported"
+   },
+   "TLSv1.2": {
+    "cipher": "ECDHE-RSA-CHACHA20-POLY1305",
+    "negotiated_version": "TLSv1.2",
+    "status": "supported"
+   },
+   "TLSv1.3": {
+    "cipher": "TLS_AES_256_GCM_SHA384",
+    "negotiated_version": "TLSv1.3",
+    "status": "supported"
+   }
+  },
+  "supported": [
+   "TLSv1.2",
+   "TLSv1.3"
+  ]
+ }
+}

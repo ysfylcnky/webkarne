@@ -156,12 +156,46 @@ def test_format_summary_handles_servfail():
 # ---------------------------------------------------------------------------
 
 
+def sample_b_payload() -> dict:
+    """Minimal but structurally valid dimension-B (tls_http) payload."""
+    return {
+        "collector": "tls_http",
+        "collector_version": "0.1.0",
+        "input_domain": "example.com",
+        "domain": "example.com",
+        "collected_at": "2026-01-01T00:00:00+00:00",
+        "config_hash": "abc123",
+        "http": {"hops": 2, "reached_https": True, "cleartext_after_https": False},
+        "tls_versions": {"probed": {}, "supported": ["TLSv1.2", "TLSv1.3"], "note": ""},
+        "certificate": {
+            "obtained": True,
+            "verified": True,
+            "issuer": "Test CA",
+            "days_remaining": 100,
+            "san": ["example.com"],
+            "hostname_in_san": True,
+        },
+        "homepage": {
+            "reachable": True,
+            "status": 200,
+            "security_headers": {},
+            "info_headers": {},
+            "hsts": {"present": False},
+            "csp": {"present": False},
+            "cookies": [],
+        },
+        "security_txt": {"present": False},
+    }
+
+
 def _patch_collect(monkeypatch):
+    """Patch BOTH collectors so the default (email+transport) scan runs offline."""
     monkeypatch.setattr(cli.dns_email, "load_settings", lambda *a, **k: {})
     monkeypatch.setattr(cli.dns_email, "collect", lambda domain, settings: sample_payload())
+    monkeypatch.setattr(cli.batch.tls_http, "collect", lambda domain, settings: sample_b_payload())
 
 
-def test_scan_stores_result(monkeypatch, tmp_path):
+def test_scan_stores_both_collectors_by_default(monkeypatch, tmp_path):
     _patch_collect(monkeypatch)
     db_path = tmp_path / "karne.db"
     result = runner.invoke(cli.app, ["scan", "example.com", "--db", str(db_path)])
@@ -170,9 +204,31 @@ def test_scan_stores_result(monkeypatch, tmp_path):
 
     conn = storage.connect(db_path)
     assert conn.execute("SELECT COUNT(*) FROM scans").fetchone()[0] == 1
-    stored = storage.get_scan_result(conn, 1, "dns_email")
-    assert stored.payload["domain"] == "example.com"  # raw payload persisted intact
+    # One scan, two collectors' raw results.
+    assert storage.get_scan_result(conn, 1, "dns_email").payload["domain"] == "example.com"
+    assert storage.get_scan_result(conn, 1, "tls_http").payload["domain"] == "example.com"
     conn.close()
+
+
+def test_scan_single_collector_selection(monkeypatch, tmp_path):
+    _patch_collect(monkeypatch)
+    db_path = tmp_path / "karne.db"
+    result = runner.invoke(
+        cli.app, ["scan", "example.com", "--collectors", "email", "--db", str(db_path)]
+    )
+    assert result.exit_code == 0, result.output
+    conn = storage.connect(db_path)
+    assert storage.get_scan_result(conn, 1, "dns_email") is not None
+    assert storage.get_scan_result(conn, 1, "tls_http") is None  # transport not run
+    conn.close()
+
+
+def test_scan_rejects_unknown_collector(tmp_path):
+    result = runner.invoke(
+        cli.app, ["scan", "example.com", "--collectors", "bogus", "--db", str(tmp_path / "k.db")]
+    )
+    assert result.exit_code == 2
+    assert "unknown collector" in result.output
 
 
 def test_scan_no_store(monkeypatch, tmp_path):
@@ -189,8 +245,10 @@ def test_scan_json_output(monkeypatch):
     result = runner.invoke(cli.app, ["scan", "example.com", "--json", "--no-store"])
     assert result.exit_code == 0
     parsed = json.loads(result.output)
-    assert parsed["domain"] == "example.com"
-    assert "queries" in parsed
+    # JSON is keyed by collector when multiple run.
+    assert parsed["dns_email"]["domain"] == "example.com"
+    assert "queries" in parsed["dns_email"]
+    assert parsed["tls_http"]["domain"] == "example.com"
 
 
 # ---------------------------------------------------------------------------
@@ -198,10 +256,10 @@ def test_scan_json_output(monkeypatch):
 # ---------------------------------------------------------------------------
 
 MINI_TRANCO = (
-    "1,trendyol.com\n"       # curated ecommerce, also in Tranco
-    "2,google.com\n"         # non-Turkish -> excluded
-    "3,itu.edu.tr\n"         # university via TLD rule
-    "4,garantibbva.com.tr\n" # bank via seed
+    "1,trendyol.com\n"  # curated ecommerce, also in Tranco
+    "2,google.com\n"  # non-Turkish -> excluded
+    "3,itu.edu.tr\n"  # university via TLD rule
+    "4,garantibbva.com.tr\n"  # bank via seed
     "5,randomcompany.com.tr\n"  # unknown .tr
 )
 
@@ -217,8 +275,15 @@ def test_frontier_builds_and_stores(tmp_path):
     db_path = tmp_path / "karne.db"
     result = runner.invoke(
         cli.app,
-        ["frontier", "--tranco-file", str(csv_path), "--db", str(db_path),
-         "--manifest-dir", str(tmp_path / "manifests")],
+        [
+            "frontier",
+            "--tranco-file",
+            str(csv_path),
+            "--db",
+            str(db_path),
+            "--manifest-dir",
+            str(tmp_path / "manifests"),
+        ],
     )
     assert result.exit_code == 0, result.output
     assert "added" in result.output
@@ -243,8 +308,16 @@ def test_frontier_no_store(tmp_path):
     db_path = tmp_path / "karne.db"
     result = runner.invoke(
         cli.app,
-        ["frontier", "--tranco-file", str(csv_path), "--no-store", "--db", str(db_path),
-         "--manifest-dir", str(tmp_path / "manifests")],
+        [
+            "frontier",
+            "--tranco-file",
+            str(csv_path),
+            "--no-store",
+            "--db",
+            str(db_path),
+            "--manifest-dir",
+            str(tmp_path / "manifests"),
+        ],
     )
     assert result.exit_code == 0
     assert "no (--no-store)" in result.output
@@ -277,11 +350,16 @@ def test_batch_runs_and_stores(monkeypatch, tmp_path):
     db_path = tmp_path / "karne.db"
     _seed_domains(db_path, ["a.tr", "b.tr"])
     monkeypatch.setattr(cli.dns_email, "load_settings", lambda *a, **k: {})
-    # Per-domain canned payload (the real collector is not called).
+    # Per-domain canned payloads for BOTH collectors (default: email+transport).
     monkeypatch.setattr(
         cli.dns_email,
         "collect",
         lambda domain, settings: {**sample_payload(), "domain": domain, "input_domain": domain},
+    )
+    monkeypatch.setattr(
+        cli.batch.tls_http,
+        "collect",
+        lambda domain, settings: {**sample_b_payload(), "domain": domain, "input_domain": domain},
     )
     result = runner.invoke(
         cli.app,
@@ -294,6 +372,9 @@ def test_batch_runs_and_stores(monkeypatch, tmp_path):
     for domain in ("a.tr", "b.tr"):
         scan = storage.latest_scan_for_domain(conn, domain)
         assert scan.status == "ok" and scan.run_label == "2026-11"
+        # Both collectors' raw results stored under the one scan.
+        assert storage.get_scan_result(conn, scan.id, "dns_email") is not None
+        assert storage.get_scan_result(conn, scan.id, "tls_http") is not None
     conn.close()
 
 
@@ -365,10 +446,27 @@ def test_rescore_dry_run_writes_nothing(monkeypatch, tmp_path):
         conn.close()
 
 
+def test_rescore_transport_dimension(monkeypatch, tmp_path):
+    db_path = tmp_path / "karne.db"
+    _store_one_scan(monkeypatch, db_path)  # default scan stores a tls_http result too
+
+    result = runner.invoke(cli.app, ["rescore", "--dimension", "transport", "--db", str(db_path)])
+    assert result.exit_code == 0, result.output
+    assert "1/1 scored" in result.output
+
+    conn = storage.connect(db_path)
+    try:
+        scan = storage.latest_scan_for_domain(conn, "example.com")
+        scores = storage.get_scores(conn, scan.id)
+        assert len(scores) == 1
+        assert scores[0].dimension == "transport"
+        assert scores[0].ruleset_version  # a version was stamped
+    finally:
+        conn.close()
+
+
 def test_rescore_rejects_unknown_dimension(tmp_path):
     db_path = tmp_path / "karne.db"
-    result = runner.invoke(
-        cli.app, ["rescore", "--dimension", "transport", "--db", str(db_path)]
-    )
+    result = runner.invoke(cli.app, ["rescore", "--dimension", "privacy", "--db", str(db_path)])
     assert result.exit_code == 2
-    assert "Only 'email'" in result.output
+    assert "Unknown dimension" in result.output

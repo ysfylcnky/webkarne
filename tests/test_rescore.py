@@ -42,9 +42,7 @@ def ruleset() -> dict:
     return load_ruleset()
 
 
-def _seed_scan(
-    conn, domain: str, fixture: str | None, *, run_label: str | None = None
-) -> int:
+def _seed_scan(conn, domain: str, fixture: str | None, *, run_label: str | None = None) -> int:
     """Create a domain + scan; attach the fixture payload as a dns_email result.
 
     ``fixture=None`` seeds a scan with no raw payload (nothing to score).
@@ -77,7 +75,7 @@ def test_rescore_scan_persists_score_and_findings(conn, ruleset):
     assert scores[0].dimension == "email"
     assert scores[0].grade == "C"
     assert scores[0].raw_score == pytest.approx(60.0)
-    assert scores[0].ruleset_version == "1.1.0"
+    assert scores[0].ruleset_version == "1.2.0"
 
     findings = storage.get_findings(conn, scan_id)
     codes = {f.code for f in findings}
@@ -196,9 +194,7 @@ def test_only_unscored_skips_already_scored(conn, ruleset):
     rescore.rescore_scan(conn, sid_a, ruleset)
     conn.commit()
 
-    summary = rescore.select_and_rescore(
-        conn, ruleset, run_label="2026-09", only_unscored=True
-    )
+    summary = rescore.select_and_rescore(conn, ruleset, run_label="2026-09", only_unscored=True)
     assert summary.scored == 1  # only itu remained unscored
 
 
