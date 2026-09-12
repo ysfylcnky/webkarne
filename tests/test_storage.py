@@ -57,8 +57,9 @@ def test_add_domains_inserts_new(conn):
         conn,
         [
             Domain("itu.edu.tr", source="tranco", sector="university", is_public_body=True),
-            Domain("mumifashion.com", source="curated_tr_com", sector="ecommerce",
-                   is_public_body=False),
+            Domain(
+                "mumifashion.com", source="curated_tr_com", sector="ecommerce", is_public_body=False
+            ),
         ],
     )
     assert result == {"added": 2, "updated": 0, "total": 2}

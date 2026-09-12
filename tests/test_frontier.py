@@ -42,8 +42,8 @@ def test_tr_second_level_extracts_sld():
 
 
 def test_tr_second_level_none_cases():
-    assert f.tr_second_level("example.com") is None      # not .tr
-    assert f.tr_second_level("example.tr") is None        # bare 2-label .tr
+    assert f.tr_second_level("example.com") is None  # not .tr
+    assert f.tr_second_level("example.tr") is None  # bare 2-label .tr
 
 
 # ---------------------------------------------------------------------------
@@ -156,9 +156,9 @@ def test_parse_tranco_line_normalizes_trailing_dot_and_space():
 def test_parse_tranco_line_rejects_malformed():
     assert f.parse_tranco_line("") is None
     assert f.parse_tranco_line("   ") is None
-    assert f.parse_tranco_line("nodomain") is None          # single field
+    assert f.parse_tranco_line("nodomain") is None  # single field
     assert f.parse_tranco_line("notarank,example.com") is None  # non-int rank
-    assert f.parse_tranco_line("5,") is None                 # empty domain
+    assert f.parse_tranco_line("5,") is None  # empty domain
 
 
 def test_parse_tranco_rows_skips_bad_lines():
@@ -177,12 +177,12 @@ def _sample_rows():
     # Mixed list: .tr (kept), generic non-curated .com (dropped), and a curated
     # .com that also ranks in Tranco (kept, rank backfilled).
     return [
-        (1, "trendyol.com"),        # curated ecommerce, also in Tranco
-        (2, "google.com"),          # non-Turkish generic -> excluded
-        (3, "itu.edu.tr"),          # university via TLD rule
+        (1, "trendyol.com"),  # curated ecommerce, also in Tranco
+        (2, "google.com"),  # non-Turkish generic -> excluded
+        (3, "itu.edu.tr"),  # university via TLD rule
         (4, "garantibbva.com.tr"),  # bank via seed
-        (5, "randomcompany.com.tr"),# unknown .tr
-        (6, "notturkish.com"),      # generic, not curated -> excluded
+        (5, "randomcompany.com.tr"),  # unknown .tr
+        (6, "notturkish.com"),  # generic, not curated -> excluded
     ]
 
 
@@ -214,8 +214,8 @@ def test_build_frame_sources_and_ranks():
 
 def test_build_frame_without_curated():
     frame = {e.domain for e in f.build_frame(_sample_rows(), include_curated=False)}
-    assert "mumifashion.com" not in frame   # curated set omitted
-    assert "trendyol.com" not in frame       # only .tr survives Pass A
+    assert "mumifashion.com" not in frame  # curated set omitted
+    assert "trendyol.com" not in frame  # only .tr survives Pass A
     assert "itu.edu.tr" in frame
 
 
@@ -223,13 +223,15 @@ def test_build_frame_dedup_and_order():
     rows = [(10, "b.edu.tr"), (2, "a.gov.tr"), (10, "b.edu.tr")]
     frame = f.build_frame(rows, include_curated=False)
     domains = [e.domain for e in frame]
-    assert domains.count("b.edu.tr") == 1          # de-duplicated
+    assert domains.count("b.edu.tr") == 1  # de-duplicated
     assert domains.index("a.gov.tr") < domains.index("b.edu.tr")  # ranked order
 
 
 def test_build_frame_dedup_keeps_smallest_rank():
-    frame = {e.domain: e for e in f.build_frame([(50, "x.edu.tr"), (5, "x.edu.tr")],
-                                                include_curated=False)}
+    frame = {
+        e.domain: e
+        for e in f.build_frame([(50, "x.edu.tr"), (5, "x.edu.tr")], include_curated=False)
+    }
     assert frame["x.edu.tr"].rank == 5
 
 
@@ -241,7 +243,7 @@ def test_build_frame_dedup_keeps_smallest_rank():
 def test_sector_counts_zero_fills_all_sectors():
     frame = f.build_frame(_sample_rows())
     counts = f.sector_counts(frame)
-    assert set(counts) == set(f.SECTORS)     # every sector present
+    assert set(counts) == set(f.SECTORS)  # every sector present
     assert counts[f.SECTOR_UNIVERSITY] >= 1
     assert counts[f.SECTOR_UNKNOWN] >= 1
     assert sum(counts.values()) == len(frame)

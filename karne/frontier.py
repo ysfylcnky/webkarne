@@ -69,13 +69,13 @@ SECTORS = (
 )
 
 # How a sector label was assigned (provenance).
-METHOD_TLD_RULE = "tld_rule"      # from the .tr second-level label (e.g. edu.tr)
-METHOD_SEED_LIST = "seed_list"    # exact match in a curated seed list
-METHOD_KEYWORD = "keyword"        # high-precision keyword in the domain label
-METHOD_NONE = "none"              # no signal -> SECTOR_UNKNOWN
+METHOD_TLD_RULE = "tld_rule"  # from the .tr second-level label (e.g. edu.tr)
+METHOD_SEED_LIST = "seed_list"  # exact match in a curated seed list
+METHOD_KEYWORD = "keyword"  # high-precision keyword in the domain label
+METHOD_NONE = "none"  # no signal -> SECTOR_UNKNOWN
 
 # Domain-origin markers written to domains.source.
-SOURCE_TRANCO = "tranco"                  # appeared in the Tranco .tr subset
+SOURCE_TRANCO = "tranco"  # appeared in the Tranco .tr subset
 SOURCE_CURATED_TR_COM = "curated_tr_com"  # curated Turkish .com/.net/.org site
 
 # ---------------------------------------------------------------------------
@@ -126,8 +126,8 @@ TR_TLD_RULES: dict[str, tuple[str, bool]] = {
     "edu": (SECTOR_UNIVERSITY, True),
     "gov": (SECTOR_PUBLIC_BODY, True),
     "bel": (SECTOR_MUNICIPALITY, True),
-    "pol": (SECTOR_PUBLIC_BODY, True),   # police
-    "tsk": (SECTOR_PUBLIC_BODY, True),   # armed forces
+    "pol": (SECTOR_PUBLIC_BODY, True),  # police
+    "tsk": (SECTOR_PUBLIC_BODY, True),  # armed forces
 }
 
 
@@ -141,30 +141,71 @@ TR_TLD_RULES: dict[str, tuple[str, bool]] = {
 # generic TLDs double as the "Turkish .com" expansion set (CURATED_TR_COM below).
 
 _BANK_SEEDS = {
-    "garantibbva.com.tr", "isbank.com.tr", "yapikredi.com.tr", "ziraatbank.com.tr",
-    "vakifbank.com.tr", "halkbank.com.tr", "teb.com.tr", "ing.com.tr",
-    "sekerbank.com.tr", "odeabank.com.tr", "fibabanka.com.tr", "kuveytturk.com.tr",
-    "albaraka.com.tr", "turkiyefinans.com.tr", "qnb.com.tr",
-    "akbank.com", "denizbank.com", "enpara.com",
+    "garantibbva.com.tr",
+    "isbank.com.tr",
+    "yapikredi.com.tr",
+    "ziraatbank.com.tr",
+    "vakifbank.com.tr",
+    "halkbank.com.tr",
+    "teb.com.tr",
+    "ing.com.tr",
+    "sekerbank.com.tr",
+    "odeabank.com.tr",
+    "fibabanka.com.tr",
+    "kuveytturk.com.tr",
+    "albaraka.com.tr",
+    "turkiyefinans.com.tr",
+    "qnb.com.tr",
+    "akbank.com",
+    "denizbank.com",
+    "enpara.com",
 }
 
 _ECOMMERCE_SEEDS = {
-    "trendyol.com", "hepsiburada.com", "n11.com", "ciceksepeti.com", "morhipo.com",
-    "teknosa.com", "vatanbilgisayar.com", "getir.com", "mumifashion.com",
-    "lcw.com", "koton.com", "defacto.com.tr", "boyner.com.tr", "a101.com.tr",
-    "migros.com.tr", "mediamarkt.com.tr", "gratis.com",
+    "trendyol.com",
+    "hepsiburada.com",
+    "n11.com",
+    "ciceksepeti.com",
+    "morhipo.com",
+    "teknosa.com",
+    "vatanbilgisayar.com",
+    "getir.com",
+    "mumifashion.com",
+    "lcw.com",
+    "koton.com",
+    "defacto.com.tr",
+    "boyner.com.tr",
+    "a101.com.tr",
+    "migros.com.tr",
+    "mediamarkt.com.tr",
+    "gratis.com",
 }
 
 _MEDIA_SEEDS = {
-    "hurriyet.com.tr", "milliyet.com.tr", "sozcu.com.tr", "sabah.com.tr",
-    "ntv.com.tr", "cnnturk.com", "haberturk.com", "cumhuriyet.com.tr",
-    "t24.com.tr", "birgun.net", "trthaber.com", "aa.com.tr", "donanimhaber.com",
+    "hurriyet.com.tr",
+    "milliyet.com.tr",
+    "sozcu.com.tr",
+    "sabah.com.tr",
+    "ntv.com.tr",
+    "cnnturk.com",
+    "haberturk.com",
+    "cumhuriyet.com.tr",
+    "t24.com.tr",
+    "birgun.net",
+    "trthaber.com",
+    "aa.com.tr",
+    "donanimhaber.com",
     "webtekno.com",
 }
 
 _HOSPITAL_SEEDS = {
-    "acibadem.com.tr", "memorial.com.tr", "medicalpark.com.tr", "florence.com.tr",
-    "dunyagoz.com", "livhospital.com", "anadolusaglik.org",
+    "acibadem.com.tr",
+    "memorial.com.tr",
+    "medicalpark.com.tr",
+    "florence.com.tr",
+    "dunyagoz.com",
+    "livhospital.com",
+    "anadolusaglik.org",
 }
 
 # Sector seeds keyed by domain (flattened). University/public-body/municipality are
@@ -306,10 +347,10 @@ class FrameEntry:
     """One domain in the sample frame, ready to write to the ``domains`` table."""
 
     domain: str
-    source: str            # SOURCE_TRANCO | SOURCE_CURATED_TR_COM
+    source: str  # SOURCE_TRANCO | SOURCE_CURATED_TR_COM
     sector: str
     is_public_body: bool
-    method: str            # sector-label provenance
+    method: str  # sector-label provenance
     evidence: str | None
     rank: int | None = None  # Tranco rank if known (None for curated-only entries)
 

@@ -452,9 +452,7 @@ class _FlakyResolver:
     def resolve(self, name, rtype, raise_on_no_answer=True):
         self.calls += 1
         if self.calls <= self.fail_times or self.answer is None:
-            raise dns.resolver.NoNameservers(
-                "All nameservers failed; server answered SERVFAIL"
-            )
+            raise dns.resolver.NoNameservers("All nameservers failed; server answered SERVFAIL")
         return self.answer
 
 
