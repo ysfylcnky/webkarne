@@ -19,3 +19,7 @@ data/
 Thumbs.db
 .idea/
 .vscode/
+
+# Claude Code local (per-machine) settings — the shared skill under
+# .claude/skills/ IS committed; only the local settings file is ignored.
+.claude/settings.local.json

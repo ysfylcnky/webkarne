@@ -1,0 +1,231 @@
+/* ==========================================================================
+   WebKarne — Design Tokens
+   --------------------------------------------------------------------------
+   Single source of truth for every visual value in the interface.
+
+   RULE: No colour, spacing, font size, radius or duration may be written
+   literally anywhere else in the codebase. If a value is missing here, add it
+   here first and record it in docs/DESIGN-SYSTEM.md — never inline it.
+
+   Fonts are linked in the base template, not imported here (an @import would
+   block rendering). Required in <head>:
+
+     <link rel="preconnect" href="https://fonts.googleapis.com">
+     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?
+       family=Playfair+Display:wght@500;600;700
+       &family=Public+Sans:wght@400;500;600
+       &family=IBM+Plex+Mono:wght@400;500
+       &display=swap">
+
+   Every face MUST include the latin-ext subset. Verify ğ Ğ ş Ş ı İ ç Ç ö Ö ü Ü
+   render in the real face before shipping — a missing glyph silently falls back
+   and breaks the whole page.
+
+   No dark theme. See docs/DESIGN-SYSTEM.md § 13.
+   ========================================================================== */
+
+:root {
+  color-scheme: light;
+
+  /* ---------------------------------------------------------------- COLOUR */
+
+  /* Neutral scale — the interface is built almost entirely from these */
+  --bg:               #F7F6F2;  /* page ground, broken white */
+  --surface:          #FFFFFF;  /* cards, boxes, panels */
+  --surface-sunken:   #F1EFEA;  /* code blocks, table headers */
+  --ink:              #17191A;  /* primary text, headings */
+  --ink-2:            #575D60;  /* body text, descriptions */
+  --ink-3:            #8B9095;  /* labels, eyebrows, secondary info */
+  --ink-4:            #B4B8BB;  /* disabled, "not applicable" */
+  --line:             #E4E1DB;  /* hairlines, card borders */
+  --line-strong:      #CBC7BF;  /* section dividers, table rules */
+
+  /* Semantic colour — ONLY for grade, severity, delta and status.
+     Never for decoration. No additional brand accent exists. */
+  --good:             #1C7A50;
+  --good-tint:        #E9F2ED;
+  --info:             #2A5FA5;
+  --info-tint:        #E8EFF7;
+  --warn:             #A5761C;
+  --warn-tint:        #FAF2E1;
+  --bad:              #C0392E;
+  --bad-tint:         #FBEAE8;
+  --neutral-tint:     #EEECE7;
+
+  /* Grade mapping — A green, B blue, C amber, D/F red */
+  --grade-a:          var(--good);
+  --grade-b:          var(--info);
+  --grade-c:          var(--warn);
+  --grade-d:          var(--bad);
+  --grade-f:          var(--bad);
+
+  /* Severity mapping */
+  --sev-high:         var(--bad);
+  --sev-high-bg:      var(--bad-tint);
+  --sev-medium:       var(--warn);
+  --sev-medium-bg:    var(--warn-tint);
+  --sev-low:          var(--ink-2);
+  --sev-low-bg:       var(--neutral-tint);
+
+  /* Control status (see DESIGN-SYSTEM § 8.2) */
+  --status-pass:      var(--good);
+  --status-fail:      var(--bad);
+  --status-unmeasured: var(--ink-3);   /* rendered with a dashed border */
+  --status-na:        var(--ink-4);
+
+  /* Interactive neutrals */
+  --btn-primary-bg:   var(--ink);
+  --btn-primary-ink:  var(--bg);
+  --focus-ring:       var(--good);
+
+  /* ------------------------------------------------------------ TYPOGRAPHY */
+
+  --font-display: "Playfair Display", Georgia, "Times New Roman", serif;
+  --font-body:    "Public Sans", -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
+  --font-mono:    "IBM Plex Mono", ui-monospace, Menlo, monospace;
+
+  /* Display XL — home page headline · 64px */
+  --fs-display-xl: 4rem;
+  --lh-display-xl: 1.05;
+  --ls-display-xl: -0.022em;
+
+  /* Display L — screen title, domain name · 46px */
+  --fs-display-l: 2.875rem;
+  --lh-display-l: 1.08;
+  --ls-display-l: -0.02em;
+
+  /* Display M — finding title · 34px */
+  --fs-display-m: 2.125rem;
+  --lh-display-m: 1.16;
+  --ls-display-m: -0.015em;
+
+  /* Grade XL — overall grade letter · 92px */
+  --fs-grade-xl: 5.75rem;
+  --lh-grade-xl: 1;
+  --ls-grade-xl: -0.03em;
+
+  /* Grade M — dimension card grade · 38px */
+  --fs-grade-m: 2.375rem;
+  --lh-grade-m: 1;
+  --ls-grade-m: -0.02em;
+
+  /* Section heading (serif) · 22px */
+  --fs-section: 1.375rem;
+  --lh-section: 1.3;
+  --ls-section: -0.01em;
+
+  /* Sub heading (sans 600) · 17px */
+  --fs-h3: 1.0625rem;
+  --lh-h3: 1.4;
+  --ls-h3: 0;
+
+  /* Body · 15.5px */
+  --fs-body: 0.96875rem;
+  --lh-body: 1.62;
+  --ls-body: 0;
+
+  /* Small · 13.5px */
+  --fs-small: 0.84375rem;
+  --lh-small: 1.55;
+  --ls-small: 0;
+
+  /* Label / eyebrow · 10.5px, uppercase */
+  --fs-label: 0.65625rem;
+  --lh-label: 1.4;
+  --ls-label: 0.14em;
+
+  /* Mono · 13px */
+  --fs-mono: 0.8125rem;
+  --lh-mono: 1.6;
+  --ls-mono: 0;
+
+  /* Weights */
+  --fw-regular: 400;
+  --fw-medium: 500;
+  --fw-semibold: 600;
+  --fw-display: 600;   /* Playfair at display sizes */
+  --fw-display-bold: 700;
+
+  /* --------------------------------------------------------------- SPACING */
+  /* 4-based scale. Nothing outside this scale. */
+  --s-1: 0.25rem;   /*   4 */
+  --s-2: 0.5rem;    /*   8 */
+  --s-3: 0.75rem;   /*  12 */
+  --s-4: 1rem;      /*  16 */
+  --s-5: 1.5rem;    /*  24 */
+  --s-6: 2rem;      /*  32 */
+  --s-7: 3rem;      /*  48 */
+  --s-8: 4rem;      /*  64 */
+  --s-9: 6rem;      /*  96 */
+  --s-10: 8rem;     /* 128 */
+
+  /* Vertical rhythm between major sections */
+  --section-gap: var(--s-8);
+
+  /* ---------------------------------------------------------------- LAYOUT */
+  --page-max:   1560px;
+  --gutter:     2rem;      /* 32px */
+  --header-h:   68px;
+  --nav-w:      264px;     /* left analysis navigation */
+  --rail-w:     340px;     /* right helper column */
+  --read-w:     720px;     /* prose measure */
+
+  /* ------------------------------------------------------- BORDER / RADIUS */
+  --border-w:   1px;
+  --hairline:   var(--border-w) solid var(--line);
+  --hairline-strong: var(--border-w) solid var(--line-strong);
+  --r-box:      3px;       /* cards, boxes, inputs, buttons */
+  --r-pill:     999px;     /* severity pills only */
+  /* No shadow token exists. Elevation is not part of this system. */
+
+  /* ---------------------------------------------------------------- MOTION */
+  --t-fast:     120ms;     /* hover, focus, button */
+  --t-base:     200ms;     /* content appearing, transitions */
+  --t-slow:     320ms;     /* accordion expansion */
+  --ease:       cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-inout: cubic-bezier(0.65, 0, 0.35, 1);
+
+  /* Only opacity and transform are animated. Height animates via the
+     grid-template-rows 0fr → 1fr technique. See DESIGN-SYSTEM § 5. */
+
+  /* --------------------------------------------------------------- LAYERING */
+  --z-base:     0;
+  --z-sticky:   50;    /* left nav, right rail */
+  --z-header:   100;
+  --z-drawer:   150;   /* mobile navigation drawer */
+  --z-tooltip:  200;   /* term tooltip */
+}
+
+/* ============================================================== BREAKPOINTS
+   CSS cannot use custom properties inside media queries, so the breakpoints
+   are documented here and written literally in media queries only.
+
+     sm   < 720px      single column, nav drawer, rail inlined
+     md   720–1079     single column, nav drawer, rail below content
+     lg   1080–1439    fixed left nav, rail below content
+     xl   ≥ 1440       full three-column layout
+   ========================================================================== */
+
+/* Mobile type scale — display sizes step down, body stays put */
+@media (max-width: 719px) {
+  :root {
+    --fs-display-xl: 2.5rem;    /* 40 */
+    --fs-display-l:  2rem;      /* 32 */
+    --fs-display-m:  1.625rem;  /* 26 */
+    --fs-grade-xl:   4.25rem;   /* 68 */
+    --fs-grade-m:    2rem;      /* 32 */
+    --gutter:        1.25rem;   /* 20 */
+    --section-gap:   var(--s-6);
+  }
+}
+
+/* ========================================================== REDUCED MOTION
+   Every duration collapses; components must also drop transforms. */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --t-fast: 1ms;
+    --t-base: 1ms;
+    --t-slow: 1ms;
+  }
+}

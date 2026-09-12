@@ -8,8 +8,14 @@ Turkish). `docs/PROGRESS.md` records **how far** we have come.
 
 - **At the start of every session, read three files:** `CLAUDE.md`, `docs/PLAN.md`,
   and `docs/PROGRESS.md`. They are the project's persistent memory.
-- **At the end of every session, update `docs/PROGRESS.md`:** what was done,
-  decisions made, known gaps, and the starting point for the next session.
+- **At the end of every session:** prepend the new session record to the top of
+  `docs/PROGRESS-ARCHIVE.md` (newest first), and update the **Mevcut durum**
+  (current-state) section of `docs/PROGRESS.md`. `docs/PROGRESS.md` never exceeds
+  one page; if it grows past that, the older content is moved into the archive.
+- **All UI work is governed by `docs/DESIGN-SYSTEM.md`.** No raw colour, spacing,
+  font size, radius or duration value is written anywhere except
+  `karne/web/static/tokens.css`. A missing value is defined there first (and
+  recorded in `docs/DESIGN-SYSTEM.md`), never inlined.
 - **One session, one module.** Collectors are deliberately small and independent.
   "Write the SPF parser and test it on these ten domains" is a good task;
   "build the privacy module" is not.
