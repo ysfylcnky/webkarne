@@ -1,0 +1,73 @@
+{#
+  Reusable component macros. Imported "with context" so t()/lang are available.
+  These are the single source for each component's markup — the catalog and the
+  real screens both call them, so a component is defined once.
+
+    {% from "_macros.html" import grade, severity_pill, sev_icon, control_row,
+       button, stat_tile with context %}
+#}
+
+{# Grade display (component 03): letter in its grade colour + optional score. #}
+{% macro grade(letter, score=None, variant="m") %}
+<span class="grade grade--{{ letter|lower }} grade--{{ variant }}">
+  <span class="grade__letter" aria-hidden="true">{{ letter }}</span>
+  {% if score is not none %}
+  <span class="grade__score tnum">{{ score }} <span class="grade__of">{{ t('grade.out_of') }}</span></span>
+  {% endif %}
+</span>
+{% endmacro %}
+
+{# Severity pill (component 09): High / Medium / Low. #}
+{% macro severity_pill(sev) %}
+<span class="pill pill--{{ sev }}">{{ t('severity.' ~ sev) }}</span>
+{% endmacro %}
+
+{# Severity icon for a finding row: alert glyph for high/medium, info for low/info. #}
+{% macro sev_icon(sev) %}
+<span class="sev-icon sev-icon--{{ sev }}">
+  {%- if sev in ["high", "medium"] -%}
+    {% include "icons/_severity-alert.svg" %}
+  {%- else -%}
+    {% include "icons/_severity-info.svg" %}
+  {%- endif -%}
+</span>
+{% endmacro %}
+
+{# Control row (component 07 / § 8.2): four states — pass, fail, unmeasured, na. #}
+{% macro control_row(name, status, result) %}
+<div class="control control--{{ status }}">
+  <span class="control__icon" aria-hidden="true">
+    {%- if status == "pass" -%}{% include "icons/_check.svg" %}
+    {%- elif status == "fail" -%}{% include "icons/_severity-alert.svg" %}
+    {%- endif -%}
+  </span>
+  <span class="control__name">{{ name }}</span>
+  <span class="control__result">{{ result }}</span>
+  <span class="control__status">
+    {{ t('control.status.' ~ status) }}
+    {%- if status == "unmeasured" %} · <a href="#" class="control__retry">{{ t('control.retry') }}</a>{% endif %}
+  </span>
+</div>
+{% endmacro %}
+
+{# Button (component 21): primary / secondary / text. States shown in catalog. #}
+{% macro button(kind, label, href="#", trailing_arrow=False, disabled=False, loading=False) %}
+<a href="{{ href }}"
+   class="btn btn--{{ kind }}{% if loading %} is-loading{% endif %}"
+   {% if disabled %}aria-disabled="true" tabindex="-1"{% endif %}
+   {% if loading %}aria-busy="true"{% endif %}>
+  <span class="btn__label">{{ label }}</span>
+  {% if trailing_arrow %}<span class="btn__icon">{% include "icons/_arrow-right.svg" %}</span>{% endif %}
+</a>
+{% endmacro %}
+
+{# Stat tile (component 14): icon + label + value; example tag when placeholder. #}
+{% macro stat_tile(label, value, example=False) %}
+<div class="stat-tile">
+  <div class="stat-tile__head">
+    <span class="stat-tile__label">{{ label }}</span>
+    {% if example %}<span class="tag tag--example">{{ t('catalog.example_tag') }}</span>{% endif %}
+  </div>
+  <span class="stat-tile__value tnum">{{ value }}</span>
+</div>
+{% endmacro %}

@@ -1,0 +1,300 @@
+{% extends "base.html" %}
+{% from "_macros.html" import grade, severity_pill, sev_icon, control_row, button, stat_tile with context %}
+
+{# Live component catalog (DESIGN-SYSTEM § 14). Every component in each state.
+   Real values from webkarne.com (scan 29545) and mumifashion.com (scan 14783);
+   grade-scale thresholds from config/scoring.toml. Anything without a real
+   source is tagged "example". No JavaScript this session — the finding row is
+   shown both closed and open by markup alone; copy/accordion behaviour is a
+   later session. #}
+
+{% block title %}{{ t('catalog.title') }} · {{ t('brand.name') }}{% endblock %}
+{% block main_class %} catalog{% endblock %}
+
+{% block main %}
+<div class="catalog__inner">
+
+  {# ---- Intro -------------------------------------------------------- #}
+  <header class="catalog__intro">
+    <div class="eyebrow">
+      <span class="eyebrow__rule" aria-hidden="true"></span>
+      <span class="eyebrow__text">{{ t('catalog.eyebrow') }}</span>
+    </div>
+    <h1 class="display display--l">{{ t('catalog.title') }}</h1>
+    <p class="lede">{{ t('catalog.intro') }}</p>
+    <p class="catalog__note">{{ t('catalog.data_note') }}</p>
+  </header>
+
+  {# ---- 01 · Title block --------------------------------------------- #}
+  <section class="cat-section" id="title-block">
+    <div class="cat-section__head"><span class="cat-section__num tnum">01</span><h2 class="cat-section__title">{{ t('catalog.sec.title_block') }}</h2></div>
+    <div class="cat-specimen">
+      <div class="eyebrow"><span class="eyebrow__rule" aria-hidden="true"></span><span class="eyebrow__text">{{ t('dim.email.nav') }}</span></div>
+      <h3 class="display display--m">webkarne.com</h3>
+      <p class="lede">{{ t('dim.email.summary') }}</p>
+    </div>
+  </section>
+
+  {# ---- 02 · Grade display ------------------------------------------- #}
+  <section class="cat-section" id="grade">
+    <div class="cat-section__head"><span class="cat-section__num tnum">02</span><h2 class="cat-section__title">{{ t('catalog.sec.grade') }}</h2></div>
+    <div class="cat-specimen">
+      <p class="cat-caption">{{ t('grade.scale_label') }}</p>
+      <div class="cat-grade-scale">
+        {% for g in ['a','b','c','d','f','i'] %}
+        <div class="cat-grade-scale__item">
+          <span class="grade grade--{{ g }} grade--m"><span class="grade__letter">{{ g|upper }}</span></span>
+          <span class="cat-grade-scale__label">{{ t('grade.threshold.' ~ g) }}</span>
+        </div>
+        {% endfor %}
+      </div>
+
+      <p class="cat-caption cat-caption--spaced">{{ t('catalog.real_tag') }}</p>
+      <div class="cat-row cat-row--gap">
+        <div class="cat-grade-real">{{ grade('C', '55.5', 'xl') }}<span class="cat-grade-real__cap">webkarne.com · {{ t('dim.email.nav') }}</span></div>
+        <div class="cat-grade-real">{{ grade('C', '65.0', 'xl') }}<span class="cat-grade-real__cap">webkarne.com · {{ t('dim.transport.nav') }}</span></div>
+        <div class="cat-grade-real">{{ grade('F', '20.5', 'xl') }}<span class="cat-grade-real__cap">mumifashion.com · {{ t('dim.email.nav') }}</span></div>
+      </div>
+    </div>
+  </section>
+
+  {# ---- 03 · Dimension card ------------------------------------------ #}
+  <section class="cat-section" id="dim-card">
+    <div class="cat-section__head"><span class="cat-section__num tnum">03</span><h2 class="cat-section__title">{{ t('catalog.sec.dim_card') }}</h2></div>
+    <div class="cat-specimen">
+      <div class="dim-grid">
+        {% for d in [
+          {'num':'01','key':'email','letter':'C','score':'55.5','measured':True},
+          {'num':'02','key':'transport','letter':'C','score':'65.0','measured':True},
+          {'num':'03','key':'privacy','letter':None,'score':None,'measured':False}
+        ] %}
+        <a class="dim-card{% if not d.measured %} dim-card--muted{% endif %}" href="#">
+          <span class="dim-card__num tnum">{{ d.num }}</span>
+          <h3 class="dim-card__name">{{ t('dim.' ~ d.key ~ '.nav') }}</h3>
+          {% if d.measured %}
+          <div class="dim-card__grade">{{ grade(d.letter, d.score, 'm') }}</div>
+          {% else %}
+          <p class="dim-card__status">{{ t('card.not_measured') }}</p>
+          {% endif %}
+          <p class="dim-card__desc">{{ t('dim.' ~ d.key ~ '.summary') }}</p>
+          <span class="dim-card__arrow" aria-hidden="true">{% include "icons/_arrow-right.svg" %}</span>
+        </a>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+
+  {# ---- 04 · Finding row (closed + open) ----------------------------- #}
+  <section class="cat-section" id="finding">
+    <div class="cat-section__head"><span class="cat-section__num tnum">04</span><h2 class="cat-section__title">{{ t('catalog.sec.finding') }}</h2></div>
+    <div class="cat-specimen">
+      <p class="cat-caption">{{ t('state.default') }} — webkarne.com · {{ findings|length }}</p>
+      <div class="finding-list">
+        {% for code, sev in findings %}
+        <div class="finding">
+          <div class="finding__row">
+            {{ sev_icon(sev) }}
+            <div class="finding__text">
+              <span class="finding__title">{{ t('finding.' ~ code ~ '.title') }}</span>
+              <span class="finding__summary">{{ t('finding.' ~ code ~ '.summary') }}</span>
+            </div>
+            {{ severity_pill(sev) }}
+            <span class="finding__chev" aria-hidden="true">{% include "icons/_arrow-right.svg" %}</span>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+
+      {# Open state — the DMARC finding expanded by markup (§ 4.4 order). #}
+      <p class="cat-caption cat-caption--spaced">{{ t('state.default') }} → {{ t('finding.section.meaning') }} ({{ t('grade.scale_label')|lower }})</p>
+      <div class="finding is-open">
+        <div class="finding__row">
+          {{ sev_icon('medium') }}
+          <div class="finding__text">
+            <span class="finding__title">{{ t('finding.EMAIL_DMARC_POLICY_NONE.title') }}</span>
+            <span class="finding__summary">{{ t('finding.EMAIL_DMARC_POLICY_NONE.summary') }}</span>
+          </div>
+          {{ severity_pill('medium') }}
+          <span class="finding__chev finding__chev--open" aria-hidden="true">{% include "icons/_arrow-right.svg" %}</span>
+        </div>
+        <div class="finding__body" role="region">
+          <p class="finding__impact">{{ t('finding.impact_qualitative') }}</p>
+
+          <h4 class="finding__h">{{ t('finding.section.meaning') }}</h4>
+          <p class="finding__p">{{ t('finding.EMAIL_DMARC_POLICY_NONE.meaning') }}</p>
+
+          <div class="tint tint--blue">
+            <span class="tint__icon">{% include "icons/_severity-info.svg" %}</span>
+            <p>{{ t('finding.EMAIL_DMARC_POLICY_NONE.info') }}</p>
+          </div>
+
+          <h4 class="finding__h">{{ t('finding.section.your_situation') }}</h4>
+          <p class="mono-label">{{ t('finding.your_situation.dmarc_label') }}</p>
+          <div class="mono-box">
+            <code class="mono-box__code">v=DMARC1; <mark class="mono-box__bad">p=none</mark>; rua=mailto:security@webkarne.com</code>
+            <button type="button" class="mono-box__copy" aria-label="{{ t('finding.copy') }}">{% include "icons/_copy.svg" %}</button>
+          </div>
+
+          <h4 class="finding__h">{{ t('finding.section.fix') }}</h4>
+          <p class="finding__p">{{ t('finding.EMAIL_DMARC_POLICY_NONE.fix') }}</p>
+          <div class="tint tint--green">
+            <span class="tint__icon">{% include "icons/_check.svg" %}</span>
+            <p>{{ t('finding.EMAIL_DMARC_POLICY_NONE.fix_success') }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {# ---- 05 · Control row --------------------------------------------- #}
+  <section class="cat-section" id="control">
+    <div class="cat-section__head"><span class="cat-section__num tnum">05</span><h2 class="cat-section__title">{{ t('catalog.sec.control') }}</h2></div>
+    <div class="cat-specimen">
+      <div class="control-list">
+        {{ control_row('DNSSEC', 'pass', t('control.dnssec.pass')) }}
+        {{ control_row('DMARC', 'fail', t('control.dmarc.fail')) }}
+      </div>
+    </div>
+  </section>
+
+  {# ---- 06 · Status row (measured-state edge cases) ------------------ #}
+  <section class="cat-section" id="status">
+    <div class="cat-section__head"><span class="cat-section__num tnum">06</span><h2 class="cat-section__title">{{ t('catalog.sec.status') }}</h2></div>
+    <div class="cat-specimen">
+      <div class="control-list">
+        <div class="control control--unmeasured">
+          <span class="control__icon" aria-hidden="true"></span>
+          <span class="control__name">MTA-STS <span class="tag tag--example">{{ t('catalog.example_tag') }}</span></span>
+          <span class="control__result">{{ t('control.unmeasured.example') }}</span>
+          <span class="control__status">{{ t('control.status.unmeasured') }} · <a href="#" class="control__retry">{{ t('control.retry') }}</a></span>
+        </div>
+        <div class="control control--na">
+          <span class="control__icon" aria-hidden="true"></span>
+          <span class="control__name">MTA-STS <span class="tag tag--example">{{ t('catalog.example_tag') }}</span></span>
+          <span class="control__result">{{ t('control.na.example') }}</span>
+          <span class="control__status">{{ t('control.status.na') }}</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {# ---- 07 · Severity pill ------------------------------------------- #}
+  <section class="cat-section" id="severity">
+    <div class="cat-section__head"><span class="cat-section__num tnum">07</span><h2 class="cat-section__title">{{ t('catalog.sec.severity') }}</h2></div>
+    <div class="cat-specimen">
+      <div class="cat-row cat-row--gap">
+        {{ severity_pill('high') }}
+        {{ severity_pill('medium') }}
+        {{ severity_pill('low') }}
+        {{ severity_pill('info') }}
+      </div>
+    </div>
+  </section>
+
+  {# ---- 08 · Tint box ------------------------------------------------ #}
+  <section class="cat-section" id="tint">
+    <div class="cat-section__head"><span class="cat-section__num tnum">08</span><h2 class="cat-section__title">{{ t('catalog.sec.tint') }}</h2></div>
+    <div class="cat-specimen cat-specimen--stack">
+      <div class="tint tint--green"><span class="tint__icon">{% include "icons/_check.svg" %}</span><p>{{ t('finding.EMAIL_DMARC_POLICY_NONE.fix_success') }}</p></div>
+      <div class="tint tint--blue"><span class="tint__icon">{% include "icons/_severity-info.svg" %}</span><p>{{ t('finding.EMAIL_DMARC_POLICY_NONE.info') }}</p></div>
+      <div class="tint tint--pink"><span class="tint__icon">{% include "icons/_severity-alert.svg" %}</span><p>{{ t('finding.impact_qualitative') }} <span class="tag tag--example">{{ t('finding.impact_example') }}</span></p></div>
+    </div>
+  </section>
+
+  {# ---- 09 · Mono code box ------------------------------------------- #}
+  <section class="cat-section" id="mono">
+    <div class="cat-section__head"><span class="cat-section__num tnum">09</span><h2 class="cat-section__title">{{ t('catalog.sec.mono') }}</h2></div>
+    <div class="cat-specimen">
+      <p class="mono-label">{{ t('finding.suggested_record') }}</p>
+      <div class="mono-box">
+        <code class="mono-box__code">v=DMARC1; <mark class="mono-box__good">p=quarantine</mark>; rua=mailto:security@webkarne.com</code>
+        <button type="button" class="mono-box__copy" aria-label="{{ t('finding.copy') }}">{% include "icons/_copy.svg" %}</button>
+      </div>
+      <p class="mono-note">{{ t('finding.suggested_record_note') }}</p>
+    </div>
+  </section>
+
+  {# ---- 10 · Right-rail card ----------------------------------------- #}
+  <section class="cat-section" id="rail-card">
+    <div class="cat-section__head"><span class="cat-section__num tnum">10</span><h2 class="cat-section__title">{{ t('catalog.sec.rail_card') }}</h2></div>
+    <div class="cat-specimen cat-specimen--rail">
+      <section class="rail-card">
+        <h3 class="rail-card__title">{{ t('finding.impact_label') }}</h3>
+        <div class="rail-card__impact">
+          {{ grade('C', None, 'm') }}
+          <p class="rail-card__body">{{ t('finding.impact_qualitative') }}</p>
+        </div>
+      </section>
+      <section class="rail-card">
+        <h3 class="rail-card__title">{{ t('finding.more_info') }}</h3>
+        <ul class="rail-links">
+          <li><a href="#">{{ t('guide.dmarc_what') }} <span class="rail-links__arr">{% include "icons/_arrow-right.svg" %}</span></a></li>
+          <li><a href="#">{{ t('guide.dmarc_policies') }} <span class="rail-links__arr">{% include "icons/_arrow-right.svg" %}</span></a></li>
+          <li><a href="#">{{ t('guide.dmarc_setup') }} <span class="rail-links__arr">{% include "icons/_arrow-right.svg" %}</span></a></li>
+        </ul>
+      </section>
+    </div>
+  </section>
+
+  {# ---- 11 · Buttons ------------------------------------------------- #}
+  <section class="cat-section" id="button">
+    <div class="cat-section__head"><span class="cat-section__num tnum">11</span><h2 class="cat-section__title">{{ t('catalog.sec.button') }}</h2></div>
+    <div class="cat-specimen">
+      <div class="cat-states">
+        <div class="cat-state"><div class="cat-state__demo"><a class="btn btn--primary" href="#"><span class="btn__label">{{ t('ui.btn.analyze') }}</span><span class="btn__icon">{% include "icons/_arrow-right.svg" %}</span></a></div><span class="cat-state__label">{{ t('state.default') }}</span></div>
+        <div class="cat-state"><div class="cat-state__demo"><a class="btn btn--primary is-hover" href="#"><span class="btn__label">{{ t('ui.btn.analyze') }}</span><span class="btn__icon">{% include "icons/_arrow-right.svg" %}</span></a></div><span class="cat-state__label">{{ t('state.hover') }}</span></div>
+        <div class="cat-state"><div class="cat-state__demo"><a class="btn btn--primary is-focus" href="#"><span class="btn__label">{{ t('ui.btn.analyze') }}</span><span class="btn__icon">{% include "icons/_arrow-right.svg" %}</span></a></div><span class="cat-state__label">{{ t('state.focus') }}</span></div>
+        <div class="cat-state"><div class="cat-state__demo"><a class="btn btn--primary" href="#" aria-disabled="true" tabindex="-1"><span class="btn__label">{{ t('ui.btn.analyze') }}</span><span class="btn__icon">{% include "icons/_arrow-right.svg" %}</span></a></div><span class="cat-state__label">{{ t('state.disabled') }}</span></div>
+        <div class="cat-state"><div class="cat-state__demo"><a class="btn btn--primary is-loading" href="#" aria-busy="true"><span class="btn__label">{{ t('ui.btn.loading') }}</span></a></div><span class="cat-state__label">{{ t('state.loading') }}</span></div>
+      </div>
+      <div class="cat-row cat-row--gap cat-row--top">
+        <a class="btn btn--secondary" href="#"><span class="btn__label">{{ t('ui.btn.secondary') }}</span></a>
+        <a class="btn btn--text" href="#"><span class="btn__label">{{ t('ui.btn.text_link') }}</span><span class="btn__icon">{% include "icons/_arrow-right.svg" %}</span></a>
+      </div>
+    </div>
+  </section>
+
+  {# ---- 12 · Stat tile ----------------------------------------------- #}
+  <section class="cat-section" id="stat">
+    <div class="cat-section__head"><span class="cat-section__num tnum">12</span><h2 class="cat-section__title">{{ t('catalog.sec.stat') }}</h2></div>
+    <div class="cat-specimen">
+      <div class="stat-grid">
+        {{ stat_tile(t('stat.your_score'), '55.5', example=False) }}
+        {{ stat_tile(t('stat.your_sector'), t('stat.universities'), example=True) }}
+        {{ stat_tile(t('stat.sector_avg'), '68', example=True) }}
+        {{ stat_tile(t('stat.your_rank'), '—', example=True) }}
+      </div>
+    </div>
+  </section>
+
+  {# ---- 13 · Breadcrumb ---------------------------------------------- #}
+  <section class="cat-section" id="breadcrumb">
+    <div class="cat-section__head"><span class="cat-section__num tnum">13</span><h2 class="cat-section__title">{{ t('catalog.sec.breadcrumb') }}</h2></div>
+    <div class="cat-specimen">
+      <nav class="breadcrumb" aria-label="breadcrumb">
+        <a href="#">{{ t('nav.overview') }}</a>
+        <span class="breadcrumb__sep" aria-hidden="true">›</span>
+        <span class="breadcrumb__current">{{ t('dim.email.nav') }}</span>
+      </nav>
+    </div>
+  </section>
+
+  {# ---- 14 · Mountain illustration ----------------------------------- #}
+  <section class="cat-section" id="mountain">
+    <div class="cat-section__head"><span class="cat-section__num tnum">14</span><h2 class="cat-section__title">{{ t('catalog.sec.mountain') }}</h2></div>
+    <div class="cat-specimen">
+      <div class="cat-mountain">
+        <div class="cat-mountain__nav">
+          <div class="mountain mountain--nav">{% include "icons/_mountain.svg" %}</div>
+          <p class="cat-caption cat-caption--spaced">{{ t('catalog.mountain.nav') }}</p>
+        </div>
+        <div class="cat-mountain__home">
+          <div class="mountain mountain--home">{% include "icons/_mountain.svg" %}</div>
+          <p class="cat-caption cat-caption--spaced">{{ t('catalog.mountain.home') }}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+{% endblock %}

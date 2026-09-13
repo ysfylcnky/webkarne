@@ -1,0 +1,28 @@
+{#
+  Analysis shell (DESIGN-SYSTEM § 3.2). The container Overview / dimension /
+  finding / sector screens all open inside. Three columns at xl; left nav stays,
+  rail drops below content at lg; single column at md/sm.
+
+  Screens extend this template and fill {% block content %} and {% block rail %}.
+  The bottom band is suppressed — brand/legal live in the left nav (§ 3.4).
+#}
+{% extends "base.html" %}
+{% set show_footer = false %}
+
+{% block main_class %} site-main--shell{% endblock %}
+
+{% block main %}
+<div class="shell">
+  <div class="shell__nav">
+    {% include "_analysis_nav.html" %}
+  </div>
+
+  <div class="shell__content">
+    {% block content %}{% endblock %}
+  </div>
+
+  <div class="shell__rail">
+    {% block rail %}{% endblock %}
+  </div>
+</div>
+{% endblock %}

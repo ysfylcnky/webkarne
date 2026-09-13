@@ -1,0 +1,12 @@
+<svg class="mountain__svg" viewBox="0 0 300 132" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke" aria-hidden="true" focusable="false" preserveAspectRatio="xMidYMax meet">
+  <!-- back ridge -->
+  <path d="M0 96 L34 66 L54 82 L84 44 L112 78 L134 56 L166 86 L192 52 L220 84 L248 62 L276 88 L300 70" vector-effect="non-scaling-stroke"/>
+  <!-- snow hatch near the two high peaks -->
+  <path d="M84 44 L79 55 M84 44 L90 56 M88 52 L84 60 M192 52 L187 62 M192 52 L198 63 M196 60 L192 68" stroke-width="0.8" vector-effect="non-scaling-stroke"/>
+  <!-- front ridge -->
+  <path d="M0 120 L26 106 L50 118 L80 98 L104 116 L132 102 L158 120 L188 104 L216 118 L244 106 L272 120 L300 108" vector-effect="non-scaling-stroke"/>
+  <!-- slope shading, front range -->
+  <path d="M80 98 L74 112 M104 116 L110 104 M188 104 L182 118 M216 118 L222 106" stroke-width="0.8" vector-effect="non-scaling-stroke"/>
+  <!-- ground line -->
+  <path d="M0 128 L300 128" stroke-width="0.8" vector-effect="non-scaling-stroke"/>
+</svg>

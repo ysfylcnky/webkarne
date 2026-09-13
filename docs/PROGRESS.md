@@ -1,15 +1,16 @@
 # WebKarne — İlerleme
 
 ## Mevcut durum
-**Son güncelleme:** 12 Eylül 2026 · **Aktif sprint:** Sprint 3 (puanlama → canlı web arayüzü)
-**Son oturumda:** B boyutu (aktarım) skorlayıcısı tamamlandı (ruleset `1.2.0`); tüm frame `2026-10` turunda email+transport ile tarandı (14.735 ok / 0 hata) ve transport puanlaması koşuldu → Türkiye geneli aktarım not dağılımı: A=935 · B=3571 · C=6991 · D=1548 · F=303 · I=1417.
-**Sıradaki iş:** Web arayüzü — Jinja2 SSR base şablon + analiz kabuğu + i18n altyapısı + `/tr/stil` bileşen kataloğu. Tümü `docs/DESIGN-SYSTEM.md`'ye tabi; `karne/web/static/tokens.css` dışında ham değer yazılmaz.
+**Son güncelleme:** 13 Eylül 2026 · **Aktif sprint:** Sprint 3 (puanlama → canlı web arayüzü)
+**Son oturumda:** Web arayüzü iskeleti kuruldu (SSR, JS'siz) — **FastAPI + Uvicorn + Jinja2** (kullanıcı onaylı, PLAN'ın seçimi). Taban şablon + üst/alt bant, i18n altyapısı (tr/en parity, startup denetimi, dil değiştirici, URL önekleri), analiz kabuğu (üç kolon + yapışkan + dört kırılım), `/tr/stil`·`/en/stil` bileşen kataloğu (13 bileşen, gerçek webkarne.com scan 29545 verisiyle), dağ illüstrasyonu. Türkçe glifler üç yazı tipinde de doğrulandı. Tümü token tabanlı; ham değer yalnız `tokens.css`.
+**Sıradaki iş:** Gerçek ekranlar — Genel Bakış + ana sayfa sorgu panelleri (işaretleme), sonra FastAPI DB-tabanlı route'lar + alan adı sorgulama akışı. **Kod commit bekliyor** (kullanıcı talimatıyla).
+**Not:** Dağıtım altyapısı hazır — webkarne.com + VPS + DNS kullanıcı tarafından kuruldu (canlıya çıkış oturumunda kullanılacak).
 
 ## Tamamlananlar
 - **Sprint 0** — İskelet, SQLite şeması, `dns_email` toplayıcısı (A boyutu, DANE dâhil), `karne scan`.
 - **Sprint 1** — Türkiye örneklemi: 14.766 alan adı, sektör etiketli (`frontier`).
 - **Sprint 2** — `karne batch`: paralel, hız-sınırlı, dayanıklı tarama + sabit doğrulayıcı çözümleyiciler (K-11).
-- **Sprint 3 (kısmi)** — Sürümlü puanlama (`scoring.toml` + `karne rescore`): A boyutu `1.1.0`, B boyutu (TLS/HTTP toplayıcı + skorlayıcı) `1.2.0`. Bulgu #1 (e-posta karnesi) üretildi, B tüm frame'e uygulandı. **Kod commit bekliyor** (Sprint 3 sonunda, kullanıcı talimatı).
+- **Sprint 3 (kısmi)** — Sürümlü puanlama (`scoring.toml` + `karne rescore`): A boyutu `1.1.0`, B boyutu (TLS/HTTP toplayıcı + skorlayıcı) `1.2.0`. Bulgu #1 (e-posta karnesi) üretildi, B tüm frame'e uygulandı. Web arayüzü iskeleti (SSR/Jinja2): base + i18n (tr/en) + analiz kabuğu + `/tr/stil` bileşen kataloğu + dağ SVG'si. **Kod commit bekliyor** (kullanıcı talimatı).
 
 ## Çalışan komutlar
 - `karne scan <alan>` — tek alan adı tarar (A ve/veya B), ham sonucu saklar. `--collectors email,transport` · `--json` · `--no-store`.
@@ -27,14 +28,17 @@
 ## Açık kararlar
 - Aylık cron (K-09) kurulmadı — açılmadan önce tartışılacak.
 - Bulgu #1 grafikleri matplotlib/pandas bağımlılığı gerektirir — eklenmeden önce sorulacak.
-- Fix-hint metinleri için tr/en çeviri dosyaları henüz yok — web sprintinde başlıyor.
+- Fix-hint metinleri için tr/en çeviri dosyaları başladı (`karne/web/translations/`, katalogda gösterilen A+B bulguları); kalan bulgu metinleri gerçek ekran oturumlarında tamamlanır.
+- Bağımlılık eklendi: `fastapi`, `uvicorn`, `jinja2` (web arayüzü, kullanıcı onaylı).
 
 ## Bilinen eksikler
 - `2026-10` turunun e-posta verisi henüz puanlanmadı (yalnız transport puanlandı); `2026-09` A-turudur, onun transport verisi yoktur.
 - Geçersiz sertifikaların tam alan ayrıştırması ertelendi (`cryptography` gerektirir).
 - Ad-hoc taramalar (run_label NULL, ör. webkarne.com) tur-rescore'una girmez.
 - C (gizlilik) ve D (teknoloji) boyutları henüz yok (Sprint 4–5); bileşik not yok.
-- Web arayüzü henüz yok — `karne/web/` içinde yalnızca `tokens.css` var.
+- Gerçek ekranlar (Genel Bakış/boyut/bulgu/sektör/ana sayfa), grafikler, JS (akordiyon/kopyala/ipucu/ilerleme), PDF ve FastAPI DB route'ları + sorgulama akışı henüz yok — sonraki oturumlar.
+- Tasarımdaki bulgu-başına puan etkisi (`−X puan`) veri modelinde yok (`findings`'te delta sütunu yok); puanlayıcının üretmesi gerekir.
+- `_shell_demo.html` + `/{lang}/kabuk` geçici adım-3 önizlemesidir; gerçek Genel Bakış ekranıyla kaldırılacak.
 
 ## Geçmiş kayıtlar
 → docs/PROGRESS-ARCHIVE.md

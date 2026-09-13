@@ -1,0 +1,92 @@
+{#
+  Left analysis navigation (DESIGN-SYSTEM § 3.4). Fixed order.
+
+  Context:
+    nav.domain          domain name (data)
+    nav.date            long-form analysis date (data, pre-formatted)
+    nav.active          active item key: overview | email | transport |
+                        privacy | tech | sector
+    nav.dimensions      list of {key, label, num, measured}
+
+  Back link is always "← New analysis" and goes to the home page (§ 3.4).
+  Unmeasured dimensions stay listed but muted with a one-line reason; the
+  in-progress pulse + live "measuring" state belong to the progress JS (§ 8.1)
+  and are a later session.
+#}
+<nav class="analysis-nav" aria-label="{{ t('a11y.analysis_nav') }}">
+  <a class="analysis-nav__back" href="/{{ lang }}/">
+    {% include "icons/_arrow-left.svg" %}
+    <span>{{ t('analysis.back_new') }}</span>
+  </a>
+
+  <div class="analysis-nav__id">
+    <span class="analysis-nav__domain">{{ nav.domain }}</span>
+    <span class="analysis-nav__date">{{ t('analysis.analyzed_on') }}: {{ nav.date }}</span>
+  </div>
+
+  <hr class="analysis-nav__sep">
+
+  <ul class="analysis-nav__list">
+    <li>
+      <a class="analysis-nav__item{% if nav.active == 'overview' %} is-active{% endif %}"
+         href="/{{ lang }}/"
+         {% if nav.active == 'overview' %}aria-current="page"{% endif %}>
+        <span class="analysis-nav__icon">{% include "icons/_overview.svg" %}</span>
+        <span class="analysis-nav__label">{{ t('nav.overview') }}</span>
+      </a>
+    </li>
+    {% for d in nav.dimensions %}
+    <li>
+      <a class="analysis-nav__item{% if nav.active == d.key %} is-active{% endif %}{% if not d.measured %} is-unmeasured{% endif %}"
+         href="/{{ lang }}/"
+         {% if nav.active == d.key %}aria-current="page"{% endif %}
+         {% if not d.measured %}title="{{ t('nav.status_not_measured') }}"{% endif %}>
+        <span class="analysis-nav__num tnum">{{ d.num }}</span>
+        <span class="analysis-nav__label">{{ t(d.label) }}</span>
+      </a>
+    </li>
+    {% endfor %}
+  </ul>
+
+  <hr class="analysis-nav__sep">
+
+  <ul class="analysis-nav__list">
+    <li>
+      <a class="analysis-nav__item{% if nav.active == 'sector' %} is-active{% endif %}"
+         href="/{{ lang }}/"
+         {% if nav.active == 'sector' %}aria-current="page"{% endif %}>
+        <span class="analysis-nav__icon">{% include "icons/_sector.svg" %}</span>
+        <span class="analysis-nav__label">{{ t('nav.sector_compare') }}</span>
+      </a>
+    </li>
+  </ul>
+
+  <hr class="analysis-nav__sep">
+
+  <ul class="analysis-nav__list">
+    <li>
+      <a class="analysis-nav__item analysis-nav__item--action" href="/{{ lang }}/">
+        <span class="analysis-nav__icon">{% include "icons/_download.svg" %}</span>
+        <span class="analysis-nav__label">{{ t('action.download_pdf') }}</span>
+      </a>
+    </li>
+    <li>
+      <a class="analysis-nav__item analysis-nav__item--action" href="/{{ lang }}/">
+        <span class="analysis-nav__icon">{% include "icons/_share.svg" %}</span>
+        <span class="analysis-nav__label">{{ t('action.share') }}</span>
+      </a>
+    </li>
+  </ul>
+
+  <div class="analysis-nav__footer">
+    <hr class="analysis-nav__sep">
+    <figure class="analysis-nav__quote">
+      <blockquote>{{ t('nav.quote') }}</blockquote>
+      <figcaption>— {{ t('nav.quote_by') }}</figcaption>
+    </figure>
+    <div class="mountain mountain--nav" aria-hidden="true">
+      {% include "icons/_mountain.svg" %}
+    </div>
+    <p class="analysis-nav__copy">{{ t('footer.copyright') }}</p>
+  </div>
+</nav>

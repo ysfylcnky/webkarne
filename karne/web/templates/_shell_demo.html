@@ -1,0 +1,29 @@
+{% extends "shell.html" %}
+
+{# Temporary step-3 preview: shows the shell grid, sticky columns and the four
+   breakpoints with placeholder content. Removed when the real Overview screen
+   lands. Data (domain, date, measured dimensions) is real (webkarne.com,
+   scan 29545); the prose is a placeholder. #}
+
+{% block title %}{{ t('shell.demo.title') }} · {{ t('brand.name') }}{% endblock %}
+
+{% block content %}
+<div class="eyebrow">
+  <span class="eyebrow__rule" aria-hidden="true"></span>
+  <span class="eyebrow__text">{{ t('shell.demo.eyebrow') }}</span>
+</div>
+<h1 class="display display--l">{{ t('shell.demo.title') }}</h1>
+<p class="lede">{{ t('shell.demo.body') }}</p>
+
+{# Filler blocks so the content column is tall enough to show sticky columns. #}
+<div class="demo-fill" aria-hidden="true">
+  {% for _ in range(6) %}<div class="demo-fill__block"></div>{% endfor %}
+</div>
+{% endblock %}
+
+{% block rail %}
+<section class="rail-card">
+  <h2 class="rail-card__title">{{ t('shell.demo.rail_title') }}</h2>
+  <p class="rail-card__body">{{ t('shell.demo.rail_body') }}</p>
+</section>
+{% endblock %}

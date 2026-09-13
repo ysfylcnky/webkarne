@@ -1,0 +1,24 @@
+{#
+  Bottom band (DESIGN-SYSTEM § 4.1, item 6). Shown on non-shell pages (home,
+  guides, catalog). Left: wordmark → hairline → tagline. Right: open-source →
+  GitHub ↗ → hairline → copyright.
+#}
+<footer class="site-footer">
+  <div class="site-footer__inner">
+    <div class="brand">
+      <span class="wordmark wordmark--footer">{{ t('brand.name') }}</span>
+      <span class="rule-v" aria-hidden="true"></span>
+      <span class="site-footer__tagline">{{ t('footer.tagline') }}</span>
+    </div>
+
+    <div class="site-footer__meta">
+      <a href="https://github.com" class="site-footer__link">{{ t('footer.open_source') }}</a>
+      <a href="https://github.com" class="site-footer__link site-footer__link--ext">
+        {{ t('footer.github') }}
+        {% include "icons/_arrow-up-right.svg" %}
+      </a>
+      <span class="rule-v" aria-hidden="true"></span>
+      <span class="site-footer__copy">{{ t('footer.copyright') }}</span>
+    </div>
+  </div>
+</footer>

@@ -59,6 +59,7 @@
   --grade-c:          var(--warn);
   --grade-d:          var(--bad);
   --grade-f:          var(--bad);
+  --grade-i:          var(--ink-3);   /* insufficient data — neutral, not a fail */
 
   /* Severity mapping */
   --sev-high:         var(--bad);
@@ -109,6 +110,11 @@
   --fs-grade-m: 2.375rem;
   --lh-grade-m: 1;
   --ls-grade-m: -0.02em;
+
+  /* Wordmark — header/footer brand (serif) · 26px */
+  --fs-wordmark: 1.625rem;
+  --lh-wordmark: 1;
+  --ls-wordmark: -0.01em;
 
   /* Section heading (serif) · 22px */
   --fs-section: 1.375rem;

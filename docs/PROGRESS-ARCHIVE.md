@@ -12,6 +12,84 @@ and `docs/PROGRESS.md` (current state — one page). This archive is the long ta
 
 ---
 
+## Sprint 3 · Session 2 — Web UI foundation (shell, i18n, component catalog) (COMPLETE)
+
+Built the server-rendered web-UI skeleton. No real analysis screens, no charts,
+no JavaScript, no deployment — those are later sessions. Everything is governed by
+`docs/DESIGN-SYSTEM.md`; no raw colour/space/size/radius/duration lives outside
+`karne/web/static/tokens.css`.
+
+**Stack decision (user-approved):** FastAPI + Uvicorn + Jinja2 (PLAN.md Sprint 3's
+choice — no plan deviation). Added via `uv add fastapi uvicorn jinja2`. Server-side
+render only; SPA/build-step/Tailwind explicitly avoided.
+
+**What was built (5 approved steps):**
+
+1. **Base template + bands.** `karne/web/app.py` (FastAPI, static mount — tokens.css
+   stays at `karne/web/static/tokens.css`), `templates/base.html` + `_header.html`
+   (top band §3.3, nav order binding) + `_footer.html`. Jinja `StrictUndefined` so a
+   missing key/var fails loudly. Fonts (Playfair Display, Public Sans, IBM Plex Mono,
+   latin-ext) linked in head; **Turkish glyphs verified rendering in all three real
+   faces** (ğĞşŞıİçÇöÖüÜ). Added token `--fs-wordmark`.
+2. **i18n.** `i18n.py` with `get_translator` (missing key raises) + `verify_parity`
+   (run at import — tr/en must share one key set, the "build-time" check for K-08).
+   `translations/tr.json` + `en.json`. URL prefixes `tr|en` only (unknown → 404,
+   `/favicon.ico` → 204). Language switcher swaps only the prefix, same page (§9);
+   `hreflang` + `aria-current`.
+3. **Analysis shell** `templates/shell.html` + `_analysis_nav.html` (§3.4 exact
+   order). CSS grid-areas + `position: sticky`, four breakpoints verified by computed
+   style: **xl ≥1440** `264 1fr 340` (nav+rail sticky) · **lg 1080–1439** `264 1fr`
+   (nav sticky, rail below) · **md 720–1079** single-col stacked · **sm <720** compact
+   header. Active item = 2px `--good` bar + `--surface`. Unmeasured dims (privacy,
+   tech — no collector yet) shown muted `--ink-4`. Nav drawer toggle deferred (needs
+   JS). Added cache-busting `?v=<mtime>` on static links (fixed a stale-CSS trap).
+4. **Component catalog** `/tr/stil` · `/en/stil` (`templates/catalog.html` +
+   `_macros.html`). All 13 required components in their states, **real webkarne.com
+   data (scan 29545)**: grade display (A/B/C/D/F/I + real C 55.5 / C 65.0 / F 20.5
+   from mumifashion 14783); dimension cards; 8 finding rows + 1 open (§4.4 order,
+   markup only) faithfully matching reference 03, incl. mono box with the real DMARC
+   record `v=DMARC1; p=none; rua=mailto:security@webkarne.com` (`p=none` in `--bad`);
+   control rows (pass/fail) + status rows (unmeasured/na); severity pills; tint boxes;
+   mono box + copy (button visual, no JS); rail card; buttons (primary/secondary/text
+   × default/hover/focus/disabled/loading); stat tiles; breadcrumb. Added token
+   `--grade-i` (= `--ink-3`, neutral — insufficient data is not a fail).
+5. **Mountain illustration** `icons/_mountain.svg` — inline, thin single-colour,
+   `non-scaling-stroke`; two sizes (`--nav` `--ink-4`, `--home` `--line-strong`).
+   Wired into the nav; shown in catalog §14.
+
+**Honesty / data-model notes (surfaced to user):**
+- Values tagged "örnek/example" in the catalog: sector average/rank stat tiles
+  (no sector scoring yet) and the per-finding point delta ("−15 puan"). Clearly
+  labelled in-template + in the catalog data note.
+- **Gap found:** the design's per-finding point delta ("−X puan") is **not in the
+  data model** — `findings` has no delta column (code · severity · evidence ·
+  fix_hint). Rendered the impact line qualitatively + delta as example. The scoring
+  layer would need to emit per-finding contributions (not a UI task).
+
+**Deliberate deferrals (all later sessions):** all real screens incl. the home page
+with the query panels (ref-04) and the live domain-query flow; inline-SVG charts;
+accordion/copy/tooltip/progress JavaScript; PDF/print; FastAPI DB-backed routes;
+VPS deployment. The nav drawer toggle and the top-band scroll-hairline also need JS.
+
+**Verification note:** browser screenshots go blank/time out when the desktop-app
+window is backgrounded (the pane stops painting). Verified all components rendered
+via DOM/computed-style and captured key sections (grade scale/colours, grade real,
+finding rows + open expansion + mono highlight, control pass/fail, buttons, mountain,
+mobile reflow) at native and 375px widths; shell four-breakpoint behaviour verified
+by computed style in step 3.
+
+**Files:** `karne/web/{app,i18n}.py`, `karne/web/templates/{base,_header,_footer,
+shell,_analysis_nav,_shell_demo,catalog,_macros}.html` + `templates/icons/*.svg`,
+`karne/web/translations/{tr,en}.json`, `karne/web/static/app.css`, tokens added to
+`tokens.css`, `.claude/launch.json`. `_shell_demo.html` + `/kabuk` route are a
+temporary step-3 preview (real values, remove with the real Overview screen).
+
+**Next session:** real screens (start with Overview + the home page query panels as
+markup), then the FastAPI DB-backed routes + domain-query flow. **Code uncommitted**
+(user commits on request).
+
+---
+
 ## Sprint 3 · Session 1 — A-dimension scoring engine (COMPLETE)
 
 **Correction to the Sprint 2 record above:** the full country-wide run has since

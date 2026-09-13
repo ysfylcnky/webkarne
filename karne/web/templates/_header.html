@@ -1,0 +1,42 @@
+{#
+  Top band (DESIGN-SYSTEM § 3.3). Sticky, header-height tall.
+  Left:  wordmark → vertical hairline → two-line tagline label.
+  Right: single nav list (spec order) → vertical hairline → TR|EN switcher.
+
+  The nav order is binding per § 3.3, regardless of what the reference mockups
+  show. The language switcher's active state is set here; its switching
+  behaviour (URL prefix swap, keeping scroll/open findings) is step 2.
+#}
+<header class="site-header">
+  <div class="site-header__inner">
+    <div class="brand">
+      <a class="wordmark" href="/{{ lang }}/">{{ t('brand.name') }}</a>
+      <span class="rule-v" aria-hidden="true"></span>
+      <span class="brand__tagline">
+        <span>{{ t('brand.tagline_line1') }}</span>
+        <span>{{ t('brand.tagline_line2') }}</span>
+      </span>
+    </div>
+
+    <div class="site-header__right">
+      <nav class="site-nav" aria-label="{{ t('nav.new_analysis') }}">
+        <a href="/{{ lang }}/">{{ t('nav.new_analysis') }}</a>
+        <a href="/{{ lang }}/metodoloji">{{ t('nav.methodology') }}</a>
+        <a href="/{{ lang }}/sektor">{{ t('nav.sector_analyses') }}</a>
+        <a href="/{{ lang }}/acik-veri">{{ t('nav.open_data') }}</a>
+        <a href="/{{ lang }}/hakkinda">{{ t('nav.about') }}</a>
+      </nav>
+
+      <span class="rule-v" aria-hidden="true"></span>
+
+      <div class="lang-switch" role="group" aria-label="{{ t('lang.switch_to') }}">
+        <a href="{{ alt_lang_urls['tr'] }}" hreflang="tr"
+           class="lang-switch__opt{% if lang == 'tr' %} is-active{% endif %}"
+           {% if lang == 'tr' %}aria-current="true"{% endif %}>{{ t('lang.tr') }}</a>
+        <a href="{{ alt_lang_urls['en'] }}" hreflang="en"
+           class="lang-switch__opt{% if lang == 'en' %} is-active{% endif %}"
+           {% if lang == 'en' %}aria-current="true"{% endif %}>{{ t('lang.en') }}</a>
+      </div>
+    </div>
+  </div>
+</header>
