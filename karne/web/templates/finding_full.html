@@ -1,0 +1,133 @@
+{% extends "shell.html" %}
+{% from "_macros.html" import grade, ftitle, fsummary with context %}
+
+{# Full finding page (DESIGN-SYSTEM § 4.4). Same finding text (translation keys)
+   as the in-place expansion — one source — in a shareable full-page container
+   with the sticky anchor strip. Data (record, evidence) is real from the scan.
+   The score impact moves to the right rail here. #}
+
+{% set code = finding.finding_code %}
+{% set has_fix = t.has('finding.' ~ code ~ '.fix') %}
+{% set is_dmarc = code.startswith('EMAIL_DMARC') %}
+
+{% block title %}{{ ftitle(code) }} · {{ report.domain }} · {{ t('brand.name') }}{% endblock %}
+
+{% block content %}
+<nav class="breadcrumb" aria-label="breadcrumb">
+  <a href="{{ nav.report_url }}/{{ dim_slug }}">{{ t(dim_label) }}</a>
+  <span class="breadcrumb__sep" aria-hidden="true">›</span>
+  <span class="breadcrumb__current">{{ ftitle(code) }}</span>
+</nav>
+
+<div class="ffull-head">
+  <div class="ffull-badge">
+    <span class="sev-icon sev-icon--{{ finding.severity }}">
+      {%- if finding.severity in ['high', 'medium'] -%}{% include "icons/_severity-alert.svg" %}
+      {%- else -%}{% include "icons/_severity-info.svg" %}{%- endif -%}
+    </span>
+    {% if finding.severity in ['high', 'medium'] %}
+    <span class="pill pill--{{ finding.severity }}">{{ t('finding.important') }}</span>
+    {% endif %}
+  </div>
+  <h1 class="display display--m">{{ ftitle(code) }}</h1>
+  <p class="lede">{{ fsummary(code) }}</p>
+</div>
+
+<nav class="anchor-strip" aria-label="{{ t('finding.sections_nav') }}">
+  <a href="#genel">{{ t('nav.overview') }}</a>
+  {% if has_fix %}<a href="#duzeltme">{{ t('finding.section.fix') }}</a>{% endif %}
+  <a href="#teknik">{{ t('finding.section.technical') }}</a>
+  <a href="#kaynaklar">{{ t('finding.section.resources') }}</a>
+</nav>
+
+<section id="genel" class="ffull-section">
+  <h2 class="section-title">{{ t('finding.section.meaning') }}</h2>
+  <p class="finding__p">
+    {{- t.get('finding.' ~ code ~ '.meaning') or fsummary(code) -}}
+  </p>
+
+  {% if t.has('finding.' ~ code ~ '.info') %}
+  <div class="tint tint--blue">
+    <span class="tint__icon">{% include "icons/_severity-info.svg" %}</span>
+    <p>{{ t('finding.' ~ code ~ '.info') }}</p>
+  </div>
+  {% endif %}
+
+  {% if finding.record %}
+  <h3 class="finding__h">{{ t('finding.section.your_situation') }}</h3>
+  <div class="mono-box">
+    <code class="mono-box__code">
+      {%- if finding.highlight and finding.highlight in finding.record -%}
+        {{ finding.record.split(finding.highlight, 1)[0] }}<mark class="mono-box__bad">{{ finding.highlight }}</mark>{{ finding.record.split(finding.highlight, 1)[1] }}
+      {%- else -%}{{ finding.record }}{%- endif -%}
+    </code>
+    <button type="button" class="mono-box__copy" data-copy="{{ finding.record }}"
+            data-copied="{{ t('finding.copied') }}" aria-label="{{ t('finding.copy') }}">
+      {% include "icons/_copy.svg" %}
+    </button>
+  </div>
+  {% endif %}
+</section>
+
+{% if has_fix %}
+<section id="duzeltme" class="ffull-section">
+  <h2 class="section-title">{{ t('finding.section.fix') }}</h2>
+  <p class="finding__p">{{ t('finding.' ~ code ~ '.fix') }}</p>
+  {% if t.has('finding.' ~ code ~ '.fix_success') %}
+  <div class="tint tint--green">
+    <span class="tint__icon">{% include "icons/_check.svg" %}</span>
+    <p>{{ t('finding.' ~ code ~ '.fix_success') }}</p>
+  </div>
+  {% endif %}
+</section>
+{% endif %}
+
+<section id="teknik" class="ffull-section">
+  <h2 class="section-title">{{ t('finding.section.technical') }}</h2>
+  {% if finding.evidence %}
+  <pre class="finding-tech__pre">{{ finding.evidence | tojson(indent=2) }}</pre>
+  {% endif %}
+  <p class="ffull-meta">{{ t('finding.scanned_on') }}: {{ nav.date }}</p>
+</section>
+
+<section id="kaynaklar" class="ffull-section">
+  <h2 class="section-title">{{ t('finding.section.resources') }}</h2>
+  <ul class="rail-links">
+    <li><a href="/{{ lang }}/metodoloji">{{ t('link.methodology') }} <span class="rail-links__arr">{% include "icons/_arrow-right.svg" %}</span></a></li>
+  </ul>
+</section>
+{% endblock %}
+
+{% block rail %}
+<section class="rail-card">
+  <h3 class="rail-card__title">{{ t('finding.impact_label') }}</h3>
+  <div class="rail-card__impact">
+    {{ grade(finding.grade, finding.score, 'm') }}
+    <p class="rail-card__body">{{ t('finding.impact_qualitative') }}</p>
+  </div>
+</section>
+
+{% if finding.record and is_dmarc %}
+{% set suggested = finding.record.replace('p=none', 'p=quarantine') %}
+<section class="rail-card">
+  <h3 class="rail-card__title">{{ t('finding.suggested_record') }}</h3>
+  <div class="mono-box">
+    <code class="mono-box__code">{{ suggested }}</code>
+    <button type="button" class="mono-box__copy" data-copy="{{ suggested }}"
+            data-copied="{{ t('finding.copied') }}" aria-label="{{ t('finding.copy') }}">
+      {% include "icons/_copy.svg" %}
+    </button>
+  </div>
+  <p class="mono-note">{{ t('finding.suggested_record_note') }}</p>
+</section>
+{% endif %}
+
+<div class="tint tint--green ffull-unsure">
+  <h3 class="rail-card__title">{{ t('finding.still_unsure') }}</h3>
+  <p>{{ t('finding.still_unsure_body') }}</p>
+  <a class="btn btn--text" href="/{{ lang }}/metodoloji">
+    <span class="btn__label">{{ t('finding.open_guide') }}</span>
+    <span class="btn__icon">{% include "icons/_arrow-right.svg" %}</span>
+  </a>
+</div>
+{% endblock %}

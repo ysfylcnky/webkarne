@@ -1,0 +1,115 @@
+{% extends "shell.html" %}
+{% from "_macros.html" import grade, fsummary with context %}
+
+{# Dimension screen (DESIGN-SYSTEM § 4.3). Control list with the four measurement
+   states (§ 8.2) derived from the raw payload. Rows that carry a finding show an
+   expand affordance; the in-place accordion is JS (S3) — here they render closed.
+   Privacy/tech (no collector) show the not-measured state. #}
+
+{% block title %}{{ t(dim_label) }} · {{ report.domain }} · {{ t('brand.name') }}{% endblock %}
+
+{% block content %}
+<nav class="breadcrumb" aria-label="breadcrumb">
+  <a href="{{ nav.overview_url }}">{{ t('nav.overview') }}</a>
+  <span class="breadcrumb__sep" aria-hidden="true">›</span>
+  <span class="breadcrumb__current">{{ t(dim_label) }}</span>
+</nav>
+
+{% if not detail.measured %}
+  <h1 class="display display--l dim-header__title">{{ t(dim_label) }}</h1>
+  <div class="empty-block">
+    <h2 class="section-title">{{ t('dimension.not_measured_title') }}</h2>
+    <p class="lede">{{ t('dimension.not_measured_body') }}</p>
+  </div>
+{% else %}
+  <div class="dim-header">
+    <h1 class="display display--l dim-header__title">{{ t(dim_label) }}</h1>
+    <div class="dim-header__grade">{{ grade(detail.grade, detail.score, 'm') }}</div>
+  </div>
+  <p class="lede">{{ t('dim.' ~ detail.dim ~ '.summary') }}</p>
+
+  <div class="control-toolbar">
+    <button type="button" class="btn btn--text" data-toggle-all>
+      <span class="btn__label">{{ t('control.toggle_all') }}</span>
+    </button>
+  </div>
+
+  <div class="control-list">
+    {% for c in detail.controls %}
+    {% set cname = t(c.name_key) if c.name_key else c.name %}
+    {% if c.finding_code %}
+    {# Expandable: header is a button, detail expands in place (accordion, § 5).
+       The row carries the finding's SEVERITY — icon and pill (§ 8.2) — so medium
+       reads amber, low reads calm/neutral, and the rows match the rail's
+       severity summary one-to-one. A low finding is never drowned in red. #}
+    <div class="control control--expandable" id="c-{{ c.key }}">
+      <button type="button" class="control__head" aria-expanded="false"
+              aria-controls="cr-{{ c.key }}" id="ch-{{ c.key }}" data-anchor="{{ c.key }}">
+        <span class="control__icon sev-icon--{{ c.severity }}" aria-hidden="true">
+          {%- if c.severity in ['high', 'medium'] -%}{% include "icons/_severity-alert.svg" %}
+          {%- else -%}{% include "icons/_severity-info.svg" %}{%- endif -%}
+        </span>
+        <span class="control__name">{{ cname }}</span>
+        <span class="control__result">{{ fsummary(c.finding_code) }}</span>
+        <span class="control__status">
+          <span class="pill pill--{{ c.severity }}">{{ t('severity.' ~ c.severity) }}</span>
+          <span class="control__chev" aria-hidden="true">{% include "icons/_arrow-right.svg" %}</span>
+        </span>
+      </button>
+      <div class="control__region" id="cr-{{ c.key }}" role="region" aria-labelledby="ch-{{ c.key }}">
+        <div class="control__region-inner">
+          {% include "_finding_detail.html" %}
+        </div>
+      </div>
+    </div>
+    {% else %}
+    <div class="control control--{{ c.status }}">
+      <span class="control__icon" aria-hidden="true">
+        {%- if c.status == 'pass' -%}{% include "icons/_check.svg" %}{%- endif -%}
+      </span>
+      <span class="control__name">{{ cname }}</span>
+      <span class="control__result">{{ t(c.result_key) }}</span>
+      <span class="control__status">
+        {{ t('control.status.' ~ c.status) }}
+        {%- if c.status == 'unmeasured' %} · <a href="#" class="control__retry">{{ t('control.retry') }}</a>{% endif %}
+      </span>
+    </div>
+    {% endif %}
+    {% endfor %}
+  </div>
+{% endif %}
+{% endblock %}
+
+{% block rail %}
+{% if detail.measured %}
+<section class="rail-card">
+  <h3 class="rail-card__title">{{ t('rail.dim_grade_label') }}</h3>
+  <div class="rail-card__impact">{{ grade(detail.grade, detail.score, 'm') }}</div>
+</section>
+
+<section class="rail-card">
+  <h3 class="rail-card__title">{{ t('rail.findings_label') }}</h3>
+  {% if detail.finding_count %}
+  <ul class="sev-counts">
+    {% for sev in ['high', 'medium', 'low', 'info'] %}
+    {% if sev in detail.severity_counts %}
+    <li>
+      <span class="sev-dot sev-dot--{{ sev }}" aria-hidden="true"></span>
+      <span class="sev-counts__n tnum">{{ detail.severity_counts[sev] }}</span>
+      <span class="sev-counts__label">{{ t('severity.' ~ sev) }}</span>
+    </li>
+    {% endif %}
+    {% endfor %}
+  </ul>
+  {% endif %}
+</section>
+
+<section class="rail-card">
+  <h3 class="rail-card__title">{{ t('rail.about_label') }}</h3>
+  <a class="btn btn--text" href="/{{ lang }}/metodoloji">
+    <span class="btn__label">{{ t('link.methodology') }}</span>
+    <span class="btn__icon">{% include "icons/_arrow-right.svg" %}</span>
+  </a>
+</section>
+{% endif %}
+{% endblock %}

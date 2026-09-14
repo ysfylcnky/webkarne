@@ -1,0 +1,79 @@
+{% extends "shell.html" %}
+{% from "_macros.html" import grade with context %}
+
+{# Sector comparison (DESIGN-SYSTEM § 4.5). Per-dimension only — no composite —
+   set against the REAL grade distribution of the domain's labelled sector. The
+   chart is a server-rendered inline SVG (no chart library); peers are aggregated
+   and never named. Every bar count is real. #}
+
+{% block title %}{{ t('sector.title') }} · {{ report.domain }} · {{ t('brand.name') }}{% endblock %}
+
+{% block content %}
+<nav class="breadcrumb" aria-label="breadcrumb">
+  <a href="{{ nav.overview_url }}">{{ t('nav.overview') }}</a>
+  <span class="breadcrumb__sep" aria-hidden="true">›</span>
+  <span class="breadcrumb__current">{{ t('nav.sector_compare') }}</span>
+</nav>
+
+<div class="eyebrow">
+  <span class="eyebrow__rule" aria-hidden="true"></span>
+  <span class="eyebrow__text">{{ t('sector.eyebrow') }}</span>
+</div>
+<h1 class="display display--l dim-header__title">{{ t('sector.title') }}</h1>
+
+{% if not sector.sector_known %}
+<div class="empty-block">
+  <h2 class="section-title">{{ t('sector.unknown_title') }}</h2>
+  <p class="lede">{{ t('sector.unknown_body') }}</p>
+</div>
+{% else %}
+{% set sector_name = t('sector.name.' ~ sector.sector) %}
+<p class="lede">{{ t('sector.lede').format(sector=sector_name) }}</p>
+
+{% for d in sector.dimensions %}
+<section class="sector-block">
+  <div class="sector-block__head">
+    <h2 class="section-title">
+      <span class="sector-block__num tnum">{{ d.num }}</span>{{ t('dim.' ~ d.key ~ '.nav') }}
+    </h2>
+    {{ grade(d.grade, d.score, 'm') }}
+  </div>
+
+  <p class="sector-block__summary">
+    {{ t('sector.summary').format(sector=sector_name, total=d.total, avg=d.sector_avg, pct=d.better_pct) }}
+  </p>
+
+  <figure class="sector-chart">
+    {% set alt = t('sector.chart_alt').format(dim=t('dim.' ~ d.key ~ '.nav'), sector=sector_name) %}
+    <svg viewBox="0 0 380 {{ d.dist | length * 32 + 6 }}" role="img" aria-label="{{ alt }}">
+      <title>{{ alt }}</title>
+      {% for b in d.dist %}
+      {% set y = loop.index0 * 32 + 6 %}
+      {% set bw = b.pct * 2.2 %}
+      {% set bw = bw if bw > 3 else 3 %}
+      <text x="16" y="{{ y + 14 }}" font-size="15" text-anchor="middle"
+            class="sec-grade sec-grade--{{ b.grade | lower }}">{{ b.grade }}</text>
+      <rect x="38" y="{{ y }}" width="{{ '%.1f' | format(bw) }}" height="19" rx="1"
+            class="secbar secbar--{{ b.grade | lower }}{% if b.is_own %} secbar--own{% endif %}"></rect>
+      <text x="{{ '%.1f' | format(38 + bw + 8) }}" y="{{ y + 14 }}" font-size="12"
+            class="sec-count tnum">{{ b.count }}{% if b.is_own %} · {{ t('sector.you') }}{% endif %}</text>
+      {% endfor %}
+    </svg>
+    <figcaption class="sector-chart__cap">{{ t('sector.chart_cap').format(total=d.total) }}</figcaption>
+  </figure>
+</section>
+{% endfor %}
+{% endif %}
+{% endblock %}
+
+{% block rail %}
+<section class="rail-card">
+  <h3 class="rail-card__title">{{ t('sector.rail_title') }}</h3>
+  <p class="rail-card__body">{{ t('sector.rail_body') }}</p>
+</section>
+
+<div class="tint tint--blue">
+  <span class="tint__icon">{% include "icons/_severity-info.svg" %}</span>
+  <p>{{ t('sector.rail_privacy') }}</p>
+</div>
+{% endblock %}

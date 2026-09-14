@@ -6,7 +6,10 @@
     nav.date            long-form analysis date (data, pre-formatted)
     nav.active          active item key: overview | email | transport |
                         privacy | tech | sector
-    nav.dimensions      list of {key, label, num, measured}
+    nav.home_url        back link target (home page)
+    nav.overview_url    overview screen
+    nav.sector_url      sector comparison
+    nav.dimensions      list of {key, label, num, measured, url}
 
   Back link is always "← New analysis" and goes to the home page (§ 3.4).
   Unmeasured dimensions stay listed but muted with a one-line reason; the
@@ -14,7 +17,7 @@
   and are a later session.
 #}
 <nav class="analysis-nav" aria-label="{{ t('a11y.analysis_nav') }}">
-  <a class="analysis-nav__back" href="/{{ lang }}/">
+  <a class="analysis-nav__back" href="{{ nav.home_url }}">
     {% include "icons/_arrow-left.svg" %}
     <span>{{ t('analysis.back_new') }}</span>
   </a>
@@ -29,7 +32,7 @@
   <ul class="analysis-nav__list">
     <li>
       <a class="analysis-nav__item{% if nav.active == 'overview' %} is-active{% endif %}"
-         href="/{{ lang }}/"
+         href="{{ nav.overview_url }}"
          {% if nav.active == 'overview' %}aria-current="page"{% endif %}>
         <span class="analysis-nav__icon">{% include "icons/_overview.svg" %}</span>
         <span class="analysis-nav__label">{{ t('nav.overview') }}</span>
@@ -38,7 +41,7 @@
     {% for d in nav.dimensions %}
     <li>
       <a class="analysis-nav__item{% if nav.active == d.key %} is-active{% endif %}{% if not d.measured %} is-unmeasured{% endif %}"
-         href="/{{ lang }}/"
+         href="{{ d.url }}"
          {% if nav.active == d.key %}aria-current="page"{% endif %}
          {% if not d.measured %}title="{{ t('nav.status_not_measured') }}"{% endif %}>
         <span class="analysis-nav__num tnum">{{ d.num }}</span>
@@ -53,7 +56,7 @@
   <ul class="analysis-nav__list">
     <li>
       <a class="analysis-nav__item{% if nav.active == 'sector' %} is-active{% endif %}"
-         href="/{{ lang }}/"
+         href="{{ nav.sector_url }}"
          {% if nav.active == 'sector' %}aria-current="page"{% endif %}>
         <span class="analysis-nav__icon">{% include "icons/_sector.svg" %}</span>
         <span class="analysis-nav__label">{{ t('nav.sector_compare') }}</span>
@@ -65,7 +68,7 @@
 
   <ul class="analysis-nav__list">
     <li>
-      <a class="analysis-nav__item analysis-nav__item--action" href="/{{ lang }}/">
+      <a class="analysis-nav__item analysis-nav__item--action" href="#" data-print>
         <span class="analysis-nav__icon">{% include "icons/_download.svg" %}</span>
         <span class="analysis-nav__label">{{ t('action.download_pdf') }}</span>
       </a>

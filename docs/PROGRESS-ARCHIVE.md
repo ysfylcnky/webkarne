@@ -12,6 +12,89 @@ and `docs/PROGRESS.md` (current state — one page). This archive is the long ta
 
 ---
 
+## Sprint 3 · Session 3 — Live web UI: query flow, real screens, sector, print (COMPLETE)
+
+Turned the foundation into a working product: a typed domain/email runs a live
+scan and returns a real report. Every screen is governed by `docs/DESIGN-SYSTEM.md`
+and the `webkarne-ui` skill; no raw colour/space/size/duration lives outside
+`tokens.css`; every user-facing string is a tr/en translation key (parity enforced
+at startup). No new dependency, no build step, no framework — SSR Jinja2 + a single
+vanilla `app.js`.
+
+**What was built:**
+
+1. **Read-only data layer — `karne/web/reports.py`.** `load_report`,
+   `dimension_detail` (per-control state from raw payload: pass/fail/unmeasured/na +
+   info), `finding_detail`, and `sector_comparison`. Never scores, never writes raw
+   data (K-02/K-03, rule 5); reads a `mode=ro` connection.
+
+2. **Query flow — `karne/web/query.py` + routes.** `/git` validates the typed
+   domain/email then renders the "measuring…" screen (`scanning.html`); its JS
+   fetches `/tara`, which runs a FRESH live scan (`run_live_scan`: batch.collect_bundle
+   → store_bundle(source="web") → rescore email+transport) and returns the report URL;
+   `<noscript>` meta-refresh drives the same route for JS-off. **Every query scans
+   from scratch — a stored scan is never handed back.**
+
+3. **Scoped results (user requirement).** An email query lands on the email dimension
+   only; a domain query on a web-scoped overview (`?kapsam=web`) that excludes email
+   and shows transport + privacy/tech ("ölçülmedi"). Never a mix, never email-first in
+   a domain report. Scope also drives the left-nav dimension list.
+
+4. **Real screens.** Overview (`overview.html`, honest partial-measurement count, no
+   invented composite), dimension (`dimension.html`, accordion controls — each finding
+   row carries its **severity** icon + pill so low never reads as red; rows match the
+   rail's severity summary one-to-one, counted per issue-bearing control), full finding
+   page (`finding_full.html`, sticky anchor strip + scroll-spy), home query panels.
+
+5. **Sector comparison (§ 4.5) — `sector.html`.** Per dimension (no composite — that
+   decision is still open), the domain's grade set against the REAL grade distribution
+   of its labelled sector (latest scan per peer), rendered as a server-side **inline
+   SVG histogram** (no chart library) with the domain's own bucket highlighted. Peers
+   are aggregated, never named. Honest empty state when the domain has no labelled
+   sector. Reachable at `/{lang}/analiz/{id}/sektor` (was 404).
+
+6. **Static pages — `article.html`.** Methodology / About / Open Data as real bilingual
+   content, plus an honest "in preparation" `sektor` landing, closing the four top-nav
+   404s. One frame, prose from translation keys, sibling cross-links.
+
+7. **JS — `app.js` (vanilla, defer).** Accordion (grid-rows 0fr→1fr), copy
+   (clipboard + textarea fallback), toggle-all, deep-link (#hash), scroll-spy
+   (IntersectionObserver), and `[data-print]` → `window.print()`.
+
+8. **Print / PDF (§ 8).** `@media print` block: drops top band, sidebar nav, toolbars;
+   flows content full width; forces every accordion open; `break-inside: avoid` on data
+   groups. "Raporu İndir (PDF)" = the browser's own print-to-PDF over this stylesheet.
+
+**Fixes made this session:**
+- Scope query (`?kapsam=`) leaked into child URLs built by concatenating onto
+  `overview_url`, corrupting finding links back to the full mixed overview. Added a
+  query-free `nav.report_url` for all path concatenation (findings, breadcrumbs).
+- Control rows showed a generic red alert for every finding regardless of severity, and
+  the rail severity summary (all findings) disagreed with the rows (one per control).
+  Rows now render severity icon + pill; the summary counts per issue-bearing control.
+- `_fmt_score(None)` crashed the overview/dimension for an insufficient-data grade
+  ("I", null score); it now returns None so the grade renders letter-only.
+- `home.new_scan_note` reworded — every query now scans live (not just first-seen).
+
+**Decisions / notes:**
+- Domain query shows web dimensions only, email query email only (user decision).
+- Privacy (03) / Tech (04) stay labelled "ölçülmedi" (user decision) — collectors are
+  Sprint 4–5, not built.
+- Composite/overall grade still deliberately absent (no rule in `scoring.toml`); sector
+  comparison is per-dimension so it does not depend on that open decision.
+- Sector histogram kept screen-specific (not added to the `/tr/stil` catalog).
+
+**Known gaps / next session:** VPS deployment (webkarne.com + VPS + DNS already
+provisioned) is Sprint 3's only remaining task, on the user's server. Then Sprint 4
+(dimension C — privacy/tracking, Playwright). Term tooltips and a live progress bar
+(§ 8.1) are not built; the scanning screen is an honest indeterminate indicator.
+
+**Verify:** `ruff check` clean, `pytest -m "not network"` 192 passed. Screens checked
+in the browser against real scans (istanbul.edu.tr 29563: email F / transport B, sector
+university — email better than 32%, transport 87%).
+
+---
+
 ## Sprint 3 · Session 2 — Web UI foundation (shell, i18n, component catalog) (COMPLETE)
 
 Built the server-rendered web-UI skeleton. No real analysis screens, no charts,

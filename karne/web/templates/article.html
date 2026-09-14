@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{# Static content page (methodology / about / open data / sector landing). One
+   frame, prose sourced entirely from translations (K-08). `sections` is the
+   number of headed sections to render; each is page.<slug>.s<i>.h + .body, with
+   paragraphs separated by a blank line. `related` links the sibling info pages. #}
+
+{% set pk = 'page.' ~ slug %}
+
+{% block title %}{{ t(pk ~ '.title') }} · {{ t('brand.name') }}{% endblock %}
+{% block main_class %} page{% endblock %}
+
+{% block main %}
+<article class="page__inner">
+  <div class="eyebrow">
+    <span class="eyebrow__rule" aria-hidden="true"></span>
+    <span class="eyebrow__text">{{ t(pk ~ '.eyebrow') }}</span>
+  </div>
+  <h1 class="display display--l page__title">{{ t(pk ~ '.title') }}</h1>
+  <p class="lede page__lede">{{ t(pk ~ '.lede') }}</p>
+
+  {% for i in range(1, sections + 1) %}
+  {% set sk = pk ~ '.s' ~ i %}
+  <section class="page__section">
+    <h2 class="section-title">{{ t(sk ~ '.h') }}</h2>
+    {% for para in t(sk ~ '.body').split('\n\n') %}
+    <p class="page__p">{{ para }}</p>
+    {% endfor %}
+  </section>
+  {% endfor %}
+
+  {% if related %}
+  <nav class="page__related" aria-label="{{ t('page.related_label') }}">
+    <span class="page__related-label">{{ t('page.related_label') }}</span>
+    <ul class="page__related-list">
+      {% for other in related %}
+      <li>
+        <a class="page__related-link" href="/{{ lang }}/{{ other.slug }}">
+          <span>{{ t(other.label) }}</span>
+          <span class="page__related-arr" aria-hidden="true">{% include "icons/_arrow-right.svg" %}</span>
+        </a>
+      </li>
+      {% endfor %}
+    </ul>
+  </nav>
+  {% endif %}
+</article>
+{% endblock %}

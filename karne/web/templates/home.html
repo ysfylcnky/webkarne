@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+
+{# Home page (DESIGN-SYSTEM § 4.1). Two query panels — domain and email — that
+   submit to the resolve route. No analysis shell here. #}
+
+{% block title %}{{ t('brand.name') }} — {{ t('home.slogan') }}{% endblock %}
+{% block main_class %} home{% endblock %}
+
+{% block main %}
+<div class="home__inner">
+  <div class="home__top">
+    <div class="home__intro">
+      <div class="eyebrow">
+        <span class="eyebrow__text tnum">{{ t('home.eyebrow') }}</span>
+        <span class="eyebrow__rule" aria-hidden="true"></span>
+      </div>
+      <h1 class="display display--xl">{{ t('home.headline') }}</h1>
+      <p class="lede home__lede">{{ t('home.lede') }}</p>
+    </div>
+    <p class="home__slogan">{{ t('home.slogan') }}</p>
+  </div>
+
+  <div class="home__panels">
+    <form class="qpanel" action="/{{ lang }}/git" method="get" novalidate>
+      <input type="hidden" name="tur" value="alan">
+      <div class="qpanel__head">
+        <span class="qpanel__label">{{ t('home.domain_panel_label') }}</span>
+        <span class="qpanel__num tnum">01</span>
+      </div>
+      <div class="qpanel__title-row">
+        <span class="qpanel__icon" aria-hidden="true">{% include "icons/_globe.svg" %}</span>
+        <h2 class="qpanel__title">{{ t('home.domain_panel_title') }}</h2>
+      </div>
+      <div class="qpanel__field">
+        <input class="qpanel__input" type="text" name="q" inputmode="url" autocomplete="off"
+               spellcheck="false" placeholder="{{ t('home.domain_placeholder') }}"
+               aria-label="{{ t('home.domain_panel_label') }}"
+               {% if error == 'domain' %}aria-invalid="true" autofocus{% endif %}>
+        <button class="btn btn--primary qpanel__submit" type="submit">
+          <span class="btn__label">{{ t('ui.btn.analyze') }}</span>
+          <span class="btn__icon">{% include "icons/_arrow-right.svg" %}</span>
+        </button>
+      </div>
+      {% if error == 'domain' %}<p class="qpanel__error" role="alert">{{ t('home.error_invalid_domain') }}</p>{% endif %}
+      <p class="qpanel__example">{{ t('home.domain_example') }}</p>
+    </form>
+
+    <div class="home__or" aria-hidden="true"><span>{{ t('home.or') }}</span></div>
+
+    <form class="qpanel" action="/{{ lang }}/git" method="get" novalidate>
+      <input type="hidden" name="tur" value="eposta">
+      <div class="qpanel__head">
+        <span class="qpanel__label">{{ t('home.email_panel_label') }}</span>
+        <span class="qpanel__num tnum">02</span>
+      </div>
+      <div class="qpanel__title-row">
+        <span class="qpanel__icon" aria-hidden="true">{% include "icons/_envelope.svg" %}</span>
+        <h2 class="qpanel__title">{{ t('home.email_panel_title') }}</h2>
+      </div>
+      <div class="qpanel__field">
+        <input class="qpanel__input" type="text" name="q" inputmode="email" autocomplete="off"
+               spellcheck="false" placeholder="{{ t('home.email_placeholder') }}"
+               aria-label="{{ t('home.email_panel_label') }}"
+               {% if error == 'email' %}aria-invalid="true" autofocus{% endif %}>
+        <button class="btn btn--primary qpanel__submit" type="submit">
+          <span class="btn__label">{{ t('ui.btn.analyze') }}</span>
+          <span class="btn__icon">{% include "icons/_arrow-right.svg" %}</span>
+        </button>
+      </div>
+      {% if error == 'email' %}<p class="qpanel__error" role="alert">{{ t('home.error_invalid_email') }}</p>{% endif %}
+      <p class="qpanel__example">{{ t('home.email_example') }}</p>
+      <p class="qpanel__scope">{{ t('home.email_scope') }}</p>
+    </form>
+  </div>
+
+  <p class="home__note">{{ t('home.new_scan_note') }}</p>
+
+  <a class="home__how" href="#nasil">
+    <span class="home__how-arrow" aria-hidden="true">{% include "icons/_arrow-down.svg" %}</span>
+    <span>{{ t('home.how_it_works') }}</span>
+  </a>
+
+  <div class="home__mountain mountain mountain--home" aria-hidden="true">
+    {% include "icons/_mountain.svg" %}
+  </div>
+</div>
+{% endblock %}

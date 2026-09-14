@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{# "Measuring…" screen (DESIGN-SYSTEM § 8.1). Shown the instant a query is
+   submitted; the live scan runs behind it. Progressive enhancement: JS fetches
+   the scan and redirects to the report; with JS off the <noscript> meta-refresh
+   drives the same /tara route, which then 303s to the report. No fake progress —
+   the indicator is indeterminate because the synchronous scan has no per-step
+   signal to report honestly. #}
+
+{% block title %}{{ t('scanning.title').format(domain=domain) }} · {{ t('brand.name') }}{% endblock %}
+{% block main_class %} scanning{% endblock %}
+
+{% block head_extra %}
+<noscript><meta http-equiv="refresh" content="0; url={{ run_url }}"></noscript>
+{% endblock %}
+
+{% block main %}
+<div class="scanning__inner" role="status" aria-live="polite"
+     data-scan-url="{{ run_json_url }}" data-scan-fallback="{{ run_url }}">
+  <div class="scanning__pulse" aria-hidden="true">
+    <span class="scanning__bar"></span>
+    <span class="scanning__bar"></span>
+    <span class="scanning__bar"></span>
+    <span class="scanning__bar"></span>
+  </div>
+  <p class="scanning__eyebrow tnum">{{ t('scanning.eyebrow') }}</p>
+  <h1 class="display display--l scanning__domain">{{ domain }}</h1>
+  <p class="scanning__scope">{{ t('scanning.scope_' ~ tur) }}</p>
+  <p class="lede scanning__body">{{ t('scanning.body') }}</p>
+  <p class="scanning__note">{{ t('scanning.note') }}</p>
+  <noscript>
+    <p class="scanning__fallback"><a href="{{ run_url }}">{{ t('scanning.fallback') }}</a></p>
+  </noscript>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  (function () {
+    "use strict";
+    var box = document.querySelector(".scanning__inner");
+    if (!box) return;
+    var url = box.getAttribute("data-scan-url");
+    var fallback = box.getAttribute("data-scan-fallback");
+    function go(target) {
+      location.replace(target || fallback);
+    }
+    fetch(url, { headers: { Accept: "application/json" } })
+      .then(function (r) {
+        return r.ok ? r.json() : null;
+      })
+      .then(function (data) {
+        go(data && data.redirect);
+      })
+      .catch(function () {
+        go(fallback);
+      });
+  })();
+</script>
+{% endblock %}

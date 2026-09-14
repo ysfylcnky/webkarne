@@ -1,0 +1,66 @@
+{# In-place finding expansion (DESIGN-SYSTEM § 4.4). Receives control `c` with
+   finding_code, evidence, record, highlight. Sections render only when their
+   text exists (optional per finding); the same content feeds the full finding
+   page later. Data (record, evidence) is real from the stored scan. #}
+<div class="finding-detail">
+  <p class="finding__impact">{{ t('finding.impact_qualitative') }}</p>
+
+  <h4 class="finding__h">{{ t('finding.section.meaning') }}</h4>
+  <p class="finding__p">
+    {{- t.get('finding.' ~ c.finding_code ~ '.meaning') or t.get('finding.' ~ c.finding_code ~ '.summary') or t('finding.generic_title') -}}
+  </p>
+
+  {% if t.has('finding.' ~ c.finding_code ~ '.info') %}
+  <div class="tint tint--blue">
+    <span class="tint__icon">{% include "icons/_severity-info.svg" %}</span>
+    <p>{{ t('finding.' ~ c.finding_code ~ '.info') }}</p>
+  </div>
+  {% endif %}
+
+  {% if c.record %}
+  <h4 class="finding__h">{{ t('finding.section.your_situation') }}</h4>
+  <div class="mono-box">
+    <code class="mono-box__code">
+      {%- if c.highlight and c.highlight in c.record -%}
+        {{ c.record.split(c.highlight, 1)[0] }}<mark class="mono-box__bad">{{ c.highlight }}</mark>{{ c.record.split(c.highlight, 1)[1] }}
+      {%- else -%}{{ c.record }}{%- endif -%}
+    </code>
+    <button type="button" class="mono-box__copy" data-copy="{{ c.record }}"
+            data-copied="{{ t('finding.copied') }}" aria-label="{{ t('finding.copy') }}">
+      {% include "icons/_copy.svg" %}
+    </button>
+  </div>
+  {% endif %}
+
+  {% if t.has('finding.' ~ c.finding_code ~ '.fix') %}
+  <h4 class="finding__h">{{ t('finding.section.fix') }}</h4>
+  <p class="finding__p">{{ t('finding.' ~ c.finding_code ~ '.fix') }}</p>
+
+  {% if c.record and c.finding_code.startswith('EMAIL_DMARC') %}
+  {% set suggested = c.record.replace('p=none', 'p=quarantine') %}
+  <p class="mono-label">{{ t('finding.suggested_record') }}</p>
+  <div class="mono-box">
+    <code class="mono-box__code">{{ suggested }}</code>
+    <button type="button" class="mono-box__copy" data-copy="{{ suggested }}"
+            data-copied="{{ t('finding.copied') }}" aria-label="{{ t('finding.copy') }}">
+      {% include "icons/_copy.svg" %}
+    </button>
+  </div>
+  <p class="mono-note">{{ t('finding.suggested_record_note') }}</p>
+  {% endif %}
+
+  {% if t.has('finding.' ~ c.finding_code ~ '.fix_success') %}
+  <div class="tint tint--green">
+    <span class="tint__icon">{% include "icons/_check.svg" %}</span>
+    <p>{{ t('finding.' ~ c.finding_code ~ '.fix_success') }}</p>
+  </div>
+  {% endif %}
+  {% endif %}
+
+  {% if c.evidence %}
+  <details class="finding-tech">
+    <summary>{{ t('finding.section.technical') }}</summary>
+    <pre class="finding-tech__pre">{{ c.evidence | tojson(indent=2) }}</pre>
+  </details>
+  {% endif %}
+</div>

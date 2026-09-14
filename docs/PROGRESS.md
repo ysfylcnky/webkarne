@@ -1,16 +1,16 @@
 # WebKarne — İlerleme
 
 ## Mevcut durum
-**Son güncelleme:** 13 Eylül 2026 · **Aktif sprint:** Sprint 3 (puanlama → canlı web arayüzü)
-**Son oturumda:** Web arayüzü iskeleti kuruldu (SSR, JS'siz) — **FastAPI + Uvicorn + Jinja2** (kullanıcı onaylı, PLAN'ın seçimi). Taban şablon + üst/alt bant, i18n altyapısı (tr/en parity, startup denetimi, dil değiştirici, URL önekleri), analiz kabuğu (üç kolon + yapışkan + dört kırılım), `/tr/stil`·`/en/stil` bileşen kataloğu (13 bileşen, gerçek webkarne.com scan 29545 verisiyle), dağ illüstrasyonu. Türkçe glifler üç yazı tipinde de doğrulandı. Tümü token tabanlı; ham değer yalnız `tokens.css`.
-**Sıradaki iş:** Gerçek ekranlar — Genel Bakış + ana sayfa sorgu panelleri (işaretleme), sonra FastAPI DB-tabanlı route'lar + alan adı sorgulama akışı. **Kod commit bekliyor** (kullanıcı talimatıyla).
-**Not:** Dağıtım altyapısı hazır — webkarne.com + VPS + DNS kullanıcı tarafından kuruldu (canlıya çıkış oturumunda kullanılacak).
+**Son güncelleme:** 14 Eylül 2026 · **Aktif sprint:** Sprint 3 (puanlama → canlı web arayüzü) — **build kapsamı tamamlandı**
+**Son oturumda:** Canlı web arayüzü tamamlandı (SSR, Jinja2, vanilya JS). Ana sayfa sorgu panelleri → **her sorguda sıfırdan canlı tarama** (`query.run_live_scan`, e-posta+aktarım; hazır kayıt döndürülmez) + "taranıyor…" ekranı (fetch, JS'siz için `<noscript>` meta-refresh yedeği). Sonuç kapsamı ayrıldı: e-posta araması yalnız e-posta boyutu, alan araması yalnız web boyutları (e-posta hariç). Gerçek ekranlar: Genel Bakış, boyut (akordiyon kontroller, şiddet ikonu + hap, dört ölçüm durumu; satırlar sağ tablodaki sayımla senkron), bulgu tam sayfası (çapa şeridi + scroll-spy), **sektör karşılaştırması** (boyut-bazlı, gerçek dağılım, inline SVG histogram, kurum adı gösterilmez), statik sayfalar (metodoloji/hakkında/açık-veri + sektör yer tutucusu). PDF = tarayıcı yazdırma + print stylesheet. Tümü token tabanlı, tr/en parity.
+**Sıradaki iş:** **VPS dağıtımı** (webkarne.com + VPS + DNS hazır) — Sprint 3'ün tek kalan işi, kullanıcı sunucusunda çalıştırılacak. Sonra Sprint 4 (C boyutu: gizlilik/izleme toplayıcısı, Playwright).
+**Not:** Bileşik/genel not kararı hâlâ açık (`scoring.toml` + PLAN); sektör karşılaştırması bunu beklemeden boyut-bazlı yapıldı.
 
 ## Tamamlananlar
 - **Sprint 0** — İskelet, SQLite şeması, `dns_email` toplayıcısı (A boyutu, DANE dâhil), `karne scan`.
 - **Sprint 1** — Türkiye örneklemi: 14.766 alan adı, sektör etiketli (`frontier`).
 - **Sprint 2** — `karne batch`: paralel, hız-sınırlı, dayanıklı tarama + sabit doğrulayıcı çözümleyiciler (K-11).
-- **Sprint 3 (kısmi)** — Sürümlü puanlama (`scoring.toml` + `karne rescore`): A boyutu `1.1.0`, B boyutu (TLS/HTTP toplayıcı + skorlayıcı) `1.2.0`. Bulgu #1 (e-posta karnesi) üretildi, B tüm frame'e uygulandı. Web arayüzü iskeleti (SSR/Jinja2): base + i18n (tr/en) + analiz kabuğu + `/tr/stil` bileşen kataloğu + dağ SVG'si. **Kod commit bekliyor** (kullanıcı talimatı).
+- **Sprint 3** — Sürümlü puanlama (A `1.1.0`, B `1.2.0`) + **canlı web arayüzü**: SSR/Jinja2, i18n (tr/en), ana sayfa sorgu → sıfırdan canlı tarama + yükleme ekranı, Genel Bakış/boyut/bulgu/sektör ekranları, statik sayfalar, vanilya JS (akordiyon/kopyala/deep-link/scroll-spy/print), sektör histogramı (inline SVG), yazdırma/PDF. **Kalan: VPS dağıtımı** (kullanıcı sunucusu).
 
 ## Çalışan komutlar
 - `karne scan <alan>` — tek alan adı tarar (A ve/veya B), ham sonucu saklar. `--collectors email,transport` · `--json` · `--no-store`.
@@ -35,10 +35,11 @@
 - `2026-10` turunun e-posta verisi henüz puanlanmadı (yalnız transport puanlandı); `2026-09` A-turudur, onun transport verisi yoktur.
 - Geçersiz sertifikaların tam alan ayrıştırması ertelendi (`cryptography` gerektirir).
 - Ad-hoc taramalar (run_label NULL, ör. webkarne.com) tur-rescore'una girmez.
-- C (gizlilik) ve D (teknoloji) boyutları henüz yok (Sprint 4–5); bileşik not yok.
-- Gerçek ekranlar (Genel Bakış/boyut/bulgu/sektör/ana sayfa), grafikler, JS (akordiyon/kopyala/ipucu/ilerleme), PDF ve FastAPI DB route'ları + sorgulama akışı henüz yok — sonraki oturumlar.
+- C (gizlilik) ve D (teknoloji) boyutları henüz yok (Sprint 4–5); bileşik not yok. Boyut kartlarında "ölçülmedi" olarak dürüstçe gösterilir.
+- **VPS dağıtımı yapılmadı** — arayüz yerelde çalışıyor; canlıya çıkış kullanıcı sunucusunda.
+- Terim ipucu (tooltip) ve canlı ilerleme çubuğu (§8.1 progress) henüz yok; yükleme ekranı belirsiz göstergedir (sahte adım yok).
 - Tasarımdaki bulgu-başına puan etkisi (`−X puan`) veri modelinde yok (`findings`'te delta sütunu yok); puanlayıcının üretmesi gerekir.
-- `_shell_demo.html` + `/{lang}/kabuk` geçici adım-3 önizlemesidir; gerçek Genel Bakış ekranıyla kaldırılacak.
+- Sektör histogramı yeni bir görselleştirme; ekran-özel tutuldu, `/tr/stil` kataloğuna eklenmedi.
 
 ## Geçmiş kayıtlar
 → docs/PROGRESS-ARCHIVE.md

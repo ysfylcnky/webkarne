@@ -99,18 +99,32 @@ def format_long_date(iso: str, lang: str) -> str:
     return f"{dt.day} {months[dt.month - 1]} {dt.year}"
 
 
-def get_translator(lang: str) -> Callable[[str], str]:
-    """Return ``t(key)`` for one language.
+class Translator:
+    """Callable translator for one language.
 
-    A missing key raises loudly instead of rendering an empty string — an
-    untranslated string must never reach the page (K-08).
+    ``t(key)`` raises loudly on a missing key — an untranslated string must never
+    reach the page (K-08). ``t.has(key)`` / ``t.get(key)`` are for genuinely
+    optional content (e.g. a finding section that only some findings carry), so
+    templates can decide whether to render a section rather than fail.
     """
-    data = _load(normalize_lang(lang))
 
-    def t(key: str) -> str:
+    def __init__(self, data: dict[str, str], lang: str) -> None:
+        self._data = data
+        self._lang = lang
+
+    def __call__(self, key: str) -> str:
         try:
-            return data[key]
+            return self._data[key]
         except KeyError as exc:
-            raise KeyError(f"Missing translation key {key!r} for language {lang!r}") from exc
+            raise KeyError(f"Missing translation key {key!r} for language {self._lang!r}") from exc
 
-    return t
+    def has(self, key: str) -> bool:
+        return key in self._data
+
+    def get(self, key: str, default: str = "") -> str:
+        return self._data.get(key, default)
+
+
+def get_translator(lang: str) -> Callable[[str], str]:
+    """Return the :class:`Translator` for one language."""
+    return Translator(_load(normalize_lang(lang)), normalize_lang(lang))

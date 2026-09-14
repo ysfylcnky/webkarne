@@ -1,0 +1,113 @@
+{% extends "shell.html" %}
+{% from "_macros.html" import grade, severity_pill, sev_icon, ftitle, fsummary with context %}
+
+{# Overview screen (DESIGN-SYSTEM § 4.2), wired to a real frozen scan. The
+   overall "GENEL GÜVENLİK NOTU" shows a partial-measurement state, not an
+   invented composite: no composite rule exists in scoring.toml and only two of
+   four dimensions are collected (§ 8.1). #}
+
+{% block title %}{{ report.domain }} · {{ t('brand.name') }}{% endblock %}
+
+{% block content %}
+<div class="eyebrow">
+  <span class="eyebrow__rule" aria-hidden="true"></span>
+  <span class="eyebrow__text">{{ t('overview.eyebrow') }}</span>
+</div>
+
+<div class="ov-head">
+  <div class="ov-head__id">
+    <h1 class="display display--l">{{ report.domain }}</h1>
+    <p class="ov-head__date">{{ t('overview.analyzed').format(date=nav.date) }}</p>
+    <p class="lede">{{ t('overview.summary').format(domain=report.domain) }}</p>
+  </div>
+
+  <aside class="ov-overall">
+    <span class="ov-overall__label">{{ t('overview.overall_label') }}</span>
+    <div class="ov-overall__partial">
+      <span class="ov-overall__count tnum">{{ report.measured_count }}/{{ report.total_dimensions }}</span>
+      <span class="ov-overall__suffix">{{ t('overview.partial_count_suffix') }}</span>
+    </div>
+    <p class="ov-overall__body">{{ t('overview.partial_body') }}</p>
+  </aside>
+</div>
+
+<section class="ov-dims">
+  <div class="eyebrow">
+    <span class="eyebrow__rule" aria-hidden="true"></span>
+    <span class="eyebrow__text">{{ t('overview.dimensions_label') }}</span>
+  </div>
+  <div class="dim-grid">
+    {% for d in nav.dimensions %}
+    <a class="dim-card{% if not d.measured %} dim-card--muted{% endif %}"
+       href="{% if d.measured %}{{ d.url }}{% else %}#{% endif %}">
+      <span class="dim-card__num tnum">{{ d.num }}</span>
+      <h3 class="dim-card__name">{{ t(d.label) }}</h3>
+      {% if d.measured %}
+        <div class="dim-card__grade">
+          {% set dd = report.dimensions[loop.index0] %}
+          {{ grade(dd.grade, dd.score, 'm') }}
+        </div>
+      {% else %}
+        <p class="dim-card__status">{{ t('card.not_measured') }}</p>
+      {% endif %}
+      <p class="dim-card__desc">{{ t('dim.' ~ d.key ~ '.summary') }}</p>
+      <span class="dim-card__arrow" aria-hidden="true">{% include "icons/_arrow-right.svg" %}</span>
+    </a>
+    {% endfor %}
+  </div>
+</section>
+
+<section class="ov-findings">
+  <div class="ov-findings__head">
+    <h2 class="section-title">{{ t('overview.featured_label') }}</h2>
+    <a class="btn btn--text" href="#">
+      <span class="btn__label">{{ t('overview.see_all_findings') }}</span>
+      <span class="btn__icon">{% include "icons/_arrow-right.svg" %}</span>
+    </a>
+  </div>
+  <div class="finding-list">
+    {% for f in report.featured_findings %}
+    {% set fslug = 'eposta' if f.code.startswith('EMAIL_') else 'aktarim' %}
+    <div class="finding">
+      <a class="finding__row finding__row--link"
+         href="{{ nav.report_url }}/{{ fslug }}/{{ f.code.lower().replace('_', '-') }}">
+        {{ sev_icon(f.severity) }}
+        <div class="finding__text">
+          <span class="finding__title">{{ ftitle(f.code) }}</span>
+          <span class="finding__summary">{{ fsummary(f.code) }}</span>
+        </div>
+        {{ severity_pill(f.severity) }}
+        <span class="finding__chev" aria-hidden="true">{% include "icons/_arrow-right.svg" %}</span>
+      </a>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}
+
+{% block rail %}
+<div class="tint tint--green ov-rail-scope">
+  <span class="tint__icon">{% include "icons/_check.svg" %}</span>
+  <p>{{ t('overview.rail_scope') }}</p>
+</div>
+
+<figure class="ov-rail-quote">
+  <blockquote>{{ t('overview.rail_quote') }}</blockquote>
+</figure>
+
+<section class="rail-card">
+  <h3 class="rail-card__title">{{ t('overview.next_steps_label') }}</h3>
+  <ol class="ov-steps">
+    {% for f in report.featured_findings %}
+    <li>
+      <span class="ov-steps__num tnum">{{ loop.index }}</span>
+      <span class="ov-steps__text">{{ ftitle(f.code) }}</span>
+    </li>
+    {% endfor %}
+  </ol>
+  <a class="btn btn--text" href="#">
+    <span class="btn__label">{{ t('overview.see_all_recs') }}</span>
+    <span class="btn__icon">{% include "icons/_arrow-right.svg" %}</span>
+  </a>
+</section>
+{% endblock %}

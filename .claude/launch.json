@@ -4,7 +4,7 @@
     {
       "name": "webkarne",
       "runtimeExecutable": "uv",
-      "runtimeArgs": ["run", "uvicorn", "karne.web.app:app", "--reload", "--port", "8000"],
+      "runtimeArgs": ["run", "uvicorn", "karne.web.app:app", "--reload", "--reload-include", "*.json", "--reload-include", "*.html", "--reload-include", "*.css", "--port", "8000"],
       "port": 8000
     }
   ]

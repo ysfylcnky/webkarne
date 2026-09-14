@@ -22,6 +22,11 @@
 <span class="pill pill--{{ sev }}">{{ t('severity.' ~ sev) }}</span>
 {% endmacro %}
 
+{# Finding title/summary with a safe fallback, so an unmapped finding code never
+   500s the page — it degrades to a generic label until its text is authored. #}
+{% macro ftitle(code) %}{{ t.get('finding.' ~ code ~ '.title') or t('finding.generic_title') }}{% endmacro %}
+{% macro fsummary(code) %}{{ t.get('finding.' ~ code ~ '.summary') }}{% endmacro %}
+
 {# Severity icon for a finding row: alert glyph for high/medium, info for low/info. #}
 {% macro sev_icon(sev) %}
 <span class="sev-icon sev-icon--{{ sev }}">
