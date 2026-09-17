@@ -8,12 +8,24 @@
   "main_response": {
     "url": "https://www.example.com.tr/",
     "status": 200,
-    "headers": {"content-type": "text/html; charset=utf-8", "server": "nginx"}
+    "headers": {
+      "content-type": "text/html; charset=utf-8",
+      "server": "nginx"
+    }
   },
-  "redirects": [{"url": "https://example.com.tr/", "status": 301}],
+  "redirects": [
+    {
+      "url": "https://example.com.tr/",
+      "status": 301
+    }
+  ],
   "final_url": "https://www.example.com.tr/",
   "title": "Example Mağaza",
-  "timing": {"goto_ms": 1210, "dom_content_loaded_ms": 1180.4, "load_ms": 2140.9},
+  "timing": {
+    "goto_ms": 1210,
+    "dom_content_loaded_ms": 1180.4,
+    "load_ms": 2140.9
+  },
   "observe_seconds": 15.0,
   "interactions": [],
   "cookies": [
@@ -51,9 +63,16 @@
   ],
   "storage": {
     "origin": "https://www.example.com.tr",
-    "local": ["_gcl_ls", "cart_v2"],
-    "session": ["_hjSession"],
-    "indexeddb": ["firebase-heartbeat-database"],
+    "local": [
+      "_gcl_ls",
+      "cart_v2"
+    ],
+    "session": [
+      "_hjSession"
+    ],
+    "indexeddb": [
+      "firebase-heartbeat-database"
+    ],
     "error": null
   },
   "request_count": 5,
@@ -66,7 +85,9 @@
       "failure": null,
       "response_bytes": 0,
       "frame": "main",
-      "is_navigation": true
+      "is_navigation": true,
+      "t_ms": 0,
+      "phase": null
     },
     {
       "url": "https://www.example.com.tr/",
@@ -76,7 +97,9 @@
       "failure": null,
       "response_bytes": 48211,
       "frame": "main",
-      "is_navigation": true
+      "is_navigation": true,
+      "t_ms": 210,
+      "phase": null
     },
     {
       "url": "https://www.googletagmanager.com/gtag/js?id=G-ABC123XYZ",
@@ -86,7 +109,9 @@
       "failure": null,
       "response_bytes": 104233,
       "frame": "main",
-      "is_navigation": false
+      "is_navigation": false,
+      "t_ms": 640,
+      "phase": null
     },
     {
       "url": "https://Static.Hotjar.com:443/c/hotjar-1.js?sv=7",
@@ -96,7 +121,54 @@
       "failure": "net::ERR_BLOCKED_BY_CLIENT",
       "response_bytes": null,
       "frame": "sub",
-      "is_navigation": false
+      "is_navigation": false,
+      "t_ms": 1500,
+      "phase": null
     }
-  ]
+  ],
+  "consent_ui_raw": {
+    "scanned_at_ms": 17120,
+    "error": null,
+    "frames": [
+      {
+        "frame_url": "https://www.example.com.tr/",
+        "cmp_evidence": {},
+        "tcf_api": false,
+        "candidates": [
+          {
+            "rule": "generic:keywords",
+            "in_shadow_dom": false,
+            "rect": [
+              0,
+              700,
+              1366,
+              68
+            ],
+            "visible": true,
+            "text": "Gizlilik Politikası · Çerez Politikası",
+            "controls": [
+              {
+                "tag": "a",
+                "text": "Çerez Politikası",
+                "aria_label": null,
+                "css_id": null,
+                "rect": [
+                  600,
+                  720,
+                  120,
+                  18
+                ],
+                "visibility": "visible",
+                "opacity": 1.0,
+                "display": "inline",
+                "cursor": "pointer",
+                "vendor_role": null,
+                "vendor_rule": null
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
 }

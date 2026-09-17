@@ -344,6 +344,55 @@ kaydedileceğini ve tarayıcı ölçümünün koşullarını sabitler.)*
   sınırı, dil/saat dilimi/görüntü alanı `settings.toml` `[web_privacy]`'de.
   Bot koruması aşılmaya çalışılmaz; engel "ölçülemedi" (`blocked`) olarak kaydedilir.
 
+**K-16 eki — Sprint 4 · Oturum 2 (2026-09-17): tarayıcı modu, onay arayüzü, reddet.**
+
+- **Tarayıcı modu: pencereli (headless değil) Chromium, pencere ekran dışında.** Ön
+  keşifte (40 Türk ana sayfası) headless Chromium sitelerin ~%30'unda engellendi ve
+  engellenenler büyük e-ticarette yığıldı — sektör karşılaştırmasında sistematik
+  yanlılık. "Yeni headless" modu fark yaratmadı (UA yine `HeadlessChrome`). UA'ya
+  dokunmadan, WebKarne kimliği dururken pencereli Chromium 12 engelden 7'sini açtı
+  (işbank, trendyol, n11, lcw, teknosa, getir, decathlon); hepsiburada, pegasus,
+  yemeksepeti, arçelik, beko, THY yine engelledi ve öyle kaydedilir. Gerekçe: sıradan
+  ziyaretçi pencereli tarayıcı kullanır; otomasyon-imzalı modu seçmemek bot korumasını
+  aşmak değildir (UA sahtelenmez, kimlik açık, §4). Ekran dışı pencerede arka plan
+  kısıtlaması kapatılır ki sayfa normal hızda çalışsın. Kullanılan mod her payload'da
+  (`browser.headless`) kayıtlıdır; tur boyunca sabit tutulur.
+- **Onay arayüzü gözlemi (`consent_ui`), iki durumda da.** Toplayıcı yalnız gözlem
+  yazar: CMP imzaları ve kanıtı (global değişken, betik host'u, seçici), TCF API varlığı,
+  banner (hangi kuralla bulundu, çerçeve, shadow DOM içinde mi, metni — ilk 2000
+  karakter) ve banner içindeki **tüm** tıklanabilir kontroller (etiket metni, geometri,
+  görünürlük/opaklık/display, CSS id), eşleşen rol (`reject`/`accept`/`settings`) ve
+  eşleşen kural kimliği. Gizli kontroller de kaydedilir (dr.com.tr'de Cookiebot "Reddet"
+  düğmesi DOM'da ama `visibility:hidden; opacity:0`; görünür reddet, banner metnindeki
+  tıklanabilir "Reddet" kelimesidir). "Reddet ilk ekranda mı", "karanlık
+  desen mi" yargısı analiz katmanındadır. `untouched` durumunda arayüz gözlem penceresinin
+  sonunda okunur; tıklama yoktur.
+- **Kural seti config'de (`[web_privacy.consent]`), yeni bağımlılık yok.** (1) CMP'ye
+  özgü imzalar ve banner/kontrol seçicileri (OneTrust, Cookiebot, Didomi, Usercentrics,
+  CookieYes, Complianz, iubenda ve yerli **Efilli**); (2) Türkçe+İngilizce etiket
+  kalıpları (CMP'siz özel banner'lar ve CMP'nin standart dışı düğmeleri için — ör.
+  vodafone.com.tr OneTrust'ta "Reddet" metin içi bir bağlantıdır). Etiketler Türkçe-duyarlı
+  küçük harfe normalize edilir; sınıflandırma Python'da saf fonksiyondur. Kural listesi
+  `config_hash`'e girer; eşleşen kural kanıt olarak yazılır.
+- **"Reddet" tanımı: yalnız ilk katman.** Banner'ın ilk ekranındaki, **görünür**, reddet
+  rolüyle eşleşen **tek** kontrole **bir kez** tıklanır; "yalnızca zorunlu çerezler"
+  türü seçenekler de reddet sayılır ama ayrı kural kimliğiyle kaydedilir (analiz
+  ayırabilir). Öncelik: CMP'ye özgü kural, sonra etiket kalıbı. İkinci katmana (Ayarlar)
+  inilmez; ilk katmanda görünür reddet yoksa tıklanmaz ve `control_not_found` yazılır
+  (kendisi bir gözlemdir). Gizli bir kontrole asla tıklanmaz.
+- **Reddet protokolü.** Temiz bağlam → ana sayfa → banner/reddet kontrolü için en çok
+  `banner_wait_seconds` beklenir → tıklama → 15 sn gözlem → **ana sayfa bir kez yeniden
+  yüklenir** (birçok site onayı sonraki sayfa görüntülemesinde uygular) → 15 sn gözlem →
+  banner yeniden okunur. Her istek navigasyon başından `t_ms` ve faz (`before_action` /
+  `after_action` / `after_reload`) taşır; çerez ve storage anahtarları her fazın sonunda
+  anlık görüntü olarak kaydedilir. Tıklama olmazsa (banner/kontrol yok, tıklama başarısız)
+  sonrası gözlenmez ve yeniden yükleme yapılmaz; sonuç `consent_action.result`'ta durur
+  (`clicked` / `banner_not_found` / `control_not_found` / `click_failed`), sayfa yüklendiyse
+  `outcome` yine `loaded`'dır. `interactions` en çok bir reddet tıklaması içerebilir.
+- **Blok işaretleri genişletildi.** Bazı engel sayfaları 200 döner (işbank: "İstek
+  Engellendi") ya da Türkçedir (decathlon: "Bir dakika lütfen..."): durum kodundan bağımsız
+  sayılan ayrı bir başlık listesi eklendi.
+
 ---
 
 ## 3. Ne ölçüyoruz
@@ -468,7 +517,7 @@ Sınırların bir kısmı yorum değil, doğrudan yazılım kısıtıdır.
 
 - Yalnızca kamuya açık veri: sıradan bir ziyaretçinin tarayıcısının gördüğü ve herkese açık DNS kayıtları
 - Alan adı başına saniyede en fazla bir istek, eşzamanlılık sınırlı, tarama gece saatlerinde
-- Tarayıcı kimliğini açıkça bildirir: kullanıcı aracısı dizesinde proje adı ve bilgi sayfası adresi (`WebKarne/1.0 (+https://webkarne.com/tr/hakkinda; …)`, bkz. K-14; gerçek tarayıcı ölçümünde Chromium UA'sına ek olarak, bkz. K-16)
+- Tarayıcı kimliğini açıkça bildirir: kullanıcı aracısı dizesinde proje adı ve bilgi sayfası adresi (`WebKarne/1.0 (+https://webkarne.com/tr/hakkinda; …)`, bkz. K-14; gerçek tarayıcı ölçümünde Chromium UA'sına ek olarak, bkz. K-16). Tarayıcı ölçümü pencereli Chromium ile yapılır: otomasyon-imzalı headless mod seçilmez, UA sahtelenmez (K-16 eki)
 - Taranmak istemeyen kurumlar için vazgeçme kanalı; bu tezde raporlanır
 - Kurum bazında ciddi bulgular önce ilgili kuruma bildirilir, yayına sektör toplamıyla çıkılır
 - Bölüm etik kurul onayı istiyorsa **Ekim ayında** başvurulur

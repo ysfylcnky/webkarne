@@ -51,13 +51,22 @@ probe_tls_versions = ["TLSv1", "TLSv1.1", "TLSv1.2", "TLSv1.3"]
 # once per consent state, each in a fresh browser context. No link following, no
 # forms, no login; in the "untouched" state there is no interaction at all.
 # Local-only for now: `karne scan <domain> --collectors privacy` (not batch, not web).
-navigation_timeout_seconds = 30.0  # page.goto until DOMContentLoaded
-observe_seconds = 15.0             # fixed observation window after load (PLAN §3-C)
-state_budget_seconds = 60.0        # hard cap per consent state (navigation + load wait + observe)
+navigation_timeout_seconds = 30.0  # page.goto / page.reload until DOMContentLoaded
+observe_seconds = 15.0             # fixed observation window after load / after an action (PLAN §3-C)
+state_budget_seconds = 120.0       # cap per state before the action (navigation + load wait + banner wait)
 min_interval_seconds = 1.0         # minimum gap between our navigations (§4: <= 1 req/s)
 max_requests = 1000                # network requests recorded per state; beyond: truncated flag
 max_url_length = 2048              # request URLs longer than this are cut and flagged
-headless = true
+# Headed Chromium, window placed off-screen (K-16 addendum): headless was blocked on
+# ~30% of a Turkish sample, clustered in e-commerce. The UA is never spoofed.
+headless = false
+browser_args = [
+    "--window-position=-32000,-32000",
+    # An off-screen window must not be throttled like a background tab.
+    "--disable-backgrounding-occluded-windows",
+    "--disable-renderer-backgrounding",
+    "--disable-background-timer-throttling",
+]
 locale = "tr-TR"
 timezone = "Europe/Istanbul"
 viewport_width = 1366
@@ -77,7 +86,115 @@ titles = [
     "Attention Required! | Cloudflare",
     "Access Denied",
     "Pardon Our Interruption",
+    "Access to this page has been denied",
+    "Bir dakika lütfen...",
 ]
+# Block pages served with ANY status (isbank.com.tr answers 200; its title is also
+# observed mis-decoded, so both spellings are listed).
+titles_any_status = ["İstek Engellendi", "Ä°stek Engellendi"]
+
+[web_privacy.consent]
+# Consent-UI observation and the "rejected" state (PLAN.md K-06, K-16 addendum).
+# Only the banner's own first-layer reject control is ever clicked, once, and only if
+# visible. These rules FIND things; they judge nothing (the matched rule id is stored).
+banner_wait_seconds = 15.0     # max wait for a banner / visible reject control after load
+poll_interval_seconds = 1.0
+click_timeout_seconds = 5.0
+banner_text_max_chars = 2000
+max_label_chars = 80           # longer "controls" are prose, never classified
+max_generic_candidates = 10
+max_frames_scanned = 30        # iframes included (CMP notices often live in one)
+# A non-CMP banner is a visible fixed/sticky/dialog element whose text holds one of these
+# (compared Turkish-aware lower-case).
+banner_keywords = ["çerez", "cerez", "cookie", "kvkk", "kişisel veri", "tanımlama bilgi"]
+
+# Label rules, tried in order; the first match gives the role. Patterns are Python
+# regexes searched in the normalised label (Turkish-aware lower-case, whitespace
+# collapsed). Reject rules come first ("kabul etmiyorum" contains "kabul").
+[[web_privacy.consent.label_rules]]
+id = "reject"
+role = "reject"
+pattern = '\b(reddet|reject|decline|deny)\b|kabul etmiyorum'
+[[web_privacy.consent.label_rules]]
+id = "necessary_only"
+role = "reject"
+pattern = '\b(yaln[ıi]zca|sadece) (zorunlu|gerekli)\b|\b(only|strictly) (necessary|essential)\b|\bnecessary only\b'
+[[web_privacy.consent.label_rules]]
+id = "settings"
+role = "settings"
+pattern = '\b(ayar\w*|tercih\w*|yönet\w*|özelleştir\w*|settings|preferences|customi[sz]e|manage)\b'
+[[web_privacy.consent.label_rules]]
+id = "accept"
+role = "accept"
+pattern = '\b(kabul|izin ver|onayla|accept|allow|agree)\b'
+
+# CMP signatures and vendor selectors (from vendor markup; verified on live sites where
+# noted). Selectors are matched through open shadow roots. A vendor selector role beats
+# a label rule; unmatched controls still fall back to label rules.
+[[web_privacy.consent.cmps]]
+id = "onetrust"           # verified: vodafone.com.tr, trendyol.com, toyota.com.tr
+globals = ["OneTrust", "OptanonWrapper"]
+script_hosts = ["cdn.cookielaw.org", "optanon.blob.core.windows.net"]
+banner_selectors = ["#onetrust-banner-sdk"]
+reject_selectors = ["#onetrust-reject-all-handler"]
+accept_selectors = ["#onetrust-accept-btn-handler"]
+settings_selectors = ["#onetrust-pc-btn-handler"]
+[[web_privacy.consent.cmps]]
+id = "cookiebot"          # verified: dr.com.tr
+globals = ["Cookiebot"]
+script_hosts = ["consent.cookiebot.com", "consentcdn.cookiebot.com"]
+banner_selectors = ["#CybotCookiebotDialog"]
+reject_selectors = ["#CybotCookiebotDialogBodyButtonDecline"]
+accept_selectors = ["#CybotCookiebotDialogBodyLevelButtonLevelOptinAllowAll", "#CybotCookiebotDialogBodyButtonAccept"]
+settings_selectors = ["#CybotCookiebotDialogBodyLevelButtonCustomize"]
+[[web_privacy.consent.cmps]]
+id = "didomi"             # verified: decathlon.com.tr
+globals = ["Didomi"]
+script_hosts = ["sdk.privacy-center.org"]
+banner_selectors = ["#didomi-notice", "#didomi-popup"]
+reject_selectors = ["#didomi-notice-disagree-button"]
+accept_selectors = ["#didomi-notice-agree-button"]
+settings_selectors = ["#didomi-notice-learn-more-button"]
+[[web_privacy.consent.cmps]]
+id = "efilli"             # Turkish CMP, shadow DOM, UUID ids -> label rules; verified: akbank.com
+globals = ["efilliSdk"]
+script_hosts = ["bundles.efilli.com"]
+banner_selectors = ["efilli-layout-dynamic"]
+reject_selectors = []
+accept_selectors = []
+settings_selectors = []
+[[web_privacy.consent.cmps]]
+id = "usercentrics"
+globals = ["UC_UI"]
+script_hosts = ["app.usercentrics.eu", "web.cmp.usercentrics.eu"]
+banner_selectors = ["#usercentrics-root", "#usercentrics-cmp-ui"]
+reject_selectors = ["[data-testid='uc-deny-all-button']"]
+accept_selectors = ["[data-testid='uc-accept-all-button']"]
+settings_selectors = ["[data-testid='uc-more-button']"]
+[[web_privacy.consent.cmps]]
+id = "cookieyes"
+globals = []
+script_hosts = ["cdn-cookieyes.com"]
+banner_selectors = [".cky-consent-container"]
+reject_selectors = [".cky-btn-reject"]
+accept_selectors = [".cky-btn-accept"]
+settings_selectors = [".cky-btn-customize"]
+[[web_privacy.consent.cmps]]
+id = "complianz"
+globals = []
+script_hosts = []
+banner_selectors = [".cmplz-cookiebanner"]
+reject_selectors = [".cmplz-deny"]
+accept_selectors = [".cmplz-accept"]
+settings_selectors = [".cmplz-view-preferences"]
+[[web_privacy.consent.cmps]]
+id = "iubenda"
+globals = ["_iub"]
+script_hosts = ["cdn.iubenda.com"]
+banner_selectors = ["#iubenda-cs-banner"]
+reject_selectors = [".iubenda-cs-reject-btn"]
+accept_selectors = [".iubenda-cs-accept-btn"]
+settings_selectors = [".iubenda-cs-customize-btn"]
 
 [web]
 # Abuse guard for the public "scan any domain" endpoint (PLAN.md K-14). Limits are

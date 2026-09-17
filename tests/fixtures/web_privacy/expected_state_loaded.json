@@ -10,7 +10,12 @@
     "final_url": "https://www.example.com.tr/",
     "final_host": "www.example.com.tr",
     "main_status": 200,
-    "redirects": [{"url": "https://example.com.tr/", "status": 301}],
+    "redirects": [
+      {
+        "url": "https://example.com.tr/",
+        "status": 301
+      }
+    ],
     "title": "Example Mağaza",
     "goto_ms": 1210,
     "dom_content_loaded_ms": 1180.4,
@@ -56,9 +61,16 @@
   ],
   "storage": {
     "origin": "https://www.example.com.tr",
-    "local_storage_keys": ["_gcl_ls", "cart_v2"],
-    "session_storage_keys": ["_hjSession"],
-    "indexeddb_names": ["firebase-heartbeat-database"],
+    "local_storage_keys": [
+      "_gcl_ls",
+      "cart_v2"
+    ],
+    "session_storage_keys": [
+      "_hjSession"
+    ],
+    "indexeddb_names": [
+      "firebase-heartbeat-database"
+    ],
     "error": null
   },
   "requests": [
@@ -73,7 +85,9 @@
       "failure": null,
       "response_bytes": 0,
       "frame": "main",
-      "is_navigation": true
+      "is_navigation": true,
+      "t_ms": 0,
+      "phase": null
     },
     {
       "url": "https://www.example.com.tr/",
@@ -86,7 +100,9 @@
       "failure": null,
       "response_bytes": 48211,
       "frame": "main",
-      "is_navigation": true
+      "is_navigation": true,
+      "t_ms": 210,
+      "phase": null
     },
     {
       "url": "https://www.googletagmanager.com/gtag/js?id=G-ABC123XYZ",
@@ -99,7 +115,9 @@
       "failure": null,
       "response_bytes": 104233,
       "frame": "main",
-      "is_navigation": false
+      "is_navigation": false,
+      "t_ms": 640,
+      "phase": null
     },
     {
       "url": "https://Static.Hotjar.com:443/c/hotjar-1.js?sv=7",
@@ -112,9 +130,22 @@
       "failure": "net::ERR_BLOCKED_BY_CLIENT",
       "response_bytes": null,
       "frame": "sub",
-      "is_navigation": false
+      "is_navigation": false,
+      "t_ms": 1500,
+      "phase": null
     }
   ],
   "request_count": 5,
-  "requests_truncated": true
+  "requests_truncated": true,
+  "consent_ui": {
+    "scanned_at_ms": 17120,
+    "cmp": [],
+    "tcf_api": false,
+    "banner": {
+      "found": false
+    },
+    "controls": [],
+    "candidates_seen": 1,
+    "error": null
+  }
 }

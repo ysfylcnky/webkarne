@@ -11,7 +11,10 @@ collector: our own templates and CSP for webkarne.com, and the raw homepage HTML
 mumifashion.com fetched with curl on 2026-09-17. If one fails, investigate the
 measurement first; do not edit the expectation to match the code.
 
-Only the "untouched" state exists in Sprint 4 · Session 1 (PLAN.md K-06/K-16).
+Session 1 implemented "untouched"; Session 2 added the consent-UI observation and the
+"rejected" state (PLAN.md K-06, K-16 addendum). Session 2's expectations (vodafone,
+yapikredi, akbank) were written before its code from the in-app browser pane (DOM
+inspection + screenshots, no clicks) on 2026-09-17.
 """
 
 from __future__ import annotations
@@ -39,10 +42,11 @@ def _hosts(state: dict) -> set[str]:
     return {r["host"] for r in state["requests"] if r["host"]}
 
 
-def test_payload_carries_three_states_only_untouched_run(webkarne):
+def test_payload_carries_three_states(webkarne):
     assert set(webkarne["states"]) == {"untouched", "rejected", "accepted"}
-    assert webkarne["states"]["rejected"]["outcome"] == "not_run"
+    assert webkarne["states"]["rejected"]["outcome"] == "loaded"
     assert webkarne["states"]["accepted"]["outcome"] == "not_run"
+    assert webkarne["browser"]["headless"] is False  # K-16 addendum
     assert "WebKarne/1.0 (+https://webkarne.com/tr/hakkinda" in webkarne["browser"]["user_agent"]
 
 
@@ -130,3 +134,119 @@ def test_unresolvable_domain_is_dns_error_not_empty():
     s = payload["states"]["untouched"]
     assert s["outcome"] == "dns_error"
     assert s["error"] and "ERR_NAME_NOT_RESOLVED" in s["error"]["message"]
+
+
+# ---------------------------------------------------------------------------
+# Session 2: consent-UI observation + the "rejected" state
+# ---------------------------------------------------------------------------
+
+
+@pytest.fixture(scope="module")
+def vodafone() -> dict:
+    return web_privacy.collect("vodafone.com.tr")
+
+
+@pytest.fixture(scope="module")
+def yapikredi() -> dict:
+    return web_privacy.collect("yapikredi.com.tr")
+
+
+@pytest.fixture(scope="module")
+def akbank() -> dict:
+    return web_privacy.collect("akbank.com")
+
+
+def _control(ui: dict, text: str) -> dict:
+    matches = [c for c in ui["controls"] if c["text"] == text and c["visible"]]
+    assert matches, [(c["text"], c["visible"]) for c in ui["controls"]]
+    return matches[0]
+
+
+def _cookie_names(state: dict) -> set[str]:
+    return {c["name"] for c in state["cookies"]}
+
+
+def _assert_rejected_and_reloaded(state: dict, reject_text: str) -> None:
+    assert state["outcome"] == "loaded", state.get("error")
+    action = state["consent_action"]
+    assert action["result"] == "clicked", action
+    assert action["control"]["text"] == reject_text
+    assert action["control"]["matched_role"] == "reject"
+    assert len(state["page"]["interactions"]) == 1
+    assert state["reload"]["performed"] is True
+    assert state["reload"]["status"] == 200
+    assert [s["phase"] for s in state["snapshots"]] == [
+        "before_action",
+        "after_action",
+        "after_reload",
+    ]
+    phases = {r["phase"] for r in state["requests"]}
+    assert {"before_action", "after_action", "after_reload"} <= phases
+    # The rejection is remembered: no visible banner after the reload.
+    assert state["consent_ui_after_reload"]["banner"]["found"] is False
+
+
+def test_webkarne_has_no_banner(webkarne):
+    """Our own site shows no consent banner, so nothing is clicked or reloaded."""
+    for name in ("untouched", "rejected"):
+        assert webkarne["states"][name]["consent_ui"]["banner"]["found"] is False
+    rejected = webkarne["states"]["rejected"]
+    assert rejected["consent_action"]["result"] == "banner_not_found"
+    assert rejected["page"]["interactions"] == []
+    assert rejected["reload"]["performed"] is False
+
+
+def test_vodafone_onetrust_inline_reject_link(vodafone):
+    """OneTrust modal; its "Reddet" is a custom inline link (a#rejectAllButton), not
+    OneTrust's standard button, so a label rule finds it. Accept is the vendor button.
+    OptanonConsent is set before any interaction (seen via document.cookie)."""
+    untouched = vodafone["states"]["untouched"]
+    ui = untouched["consent_ui"]
+    assert "onetrust" in {c["id"] for c in ui["cmp"]}
+    assert ui["banner"]["found"] is True
+    assert ui["banner"]["rule"] == "cmp:onetrust"
+    reject = _control(ui, "Reddet")
+    assert (reject["tag"], reject["css_id"]) == ("a", "rejectAllButton")
+    assert (reject["matched_role"], reject["rule"]) == ("reject", "label:reject")
+    accept = _control(ui, "Çerezleri kabul et")
+    assert (accept["css_id"], accept["rule"]) == (
+        "onetrust-accept-btn-handler",
+        "cmp:onetrust:accept",
+    )
+    assert untouched["page"]["interactions"] == []
+    assert "OptanonConsent" in _cookie_names(untouched)
+
+    rejected = vodafone["states"]["rejected"]
+    _assert_rejected_and_reloaded(rejected, "Reddet")
+    assert "OptanonAlertBoxClosed" in _cookie_names(rejected)
+
+
+def test_yapikredi_custom_banner(yapikredi):
+    """No known CMP; a fixed bottom bar with three links: Tercihler / Tümünü Reddet /
+    Tümünü Kabul Et."""
+    ui = yapikredi["states"]["untouched"]["consent_ui"]
+    assert ui["cmp"] == []
+    assert ui["banner"]["found"] is True
+    assert ui["banner"]["rule"] == "generic:keywords"
+    assert _control(ui, "Tercihler")["matched_role"] == "settings"
+    assert _control(ui, "Tümünü Reddet")["rule"] == "label:reject"
+    assert _control(ui, "Tümünü Kabul Et")["matched_role"] == "accept"
+
+    _assert_rejected_and_reloaded(yapikredi["states"]["rejected"], "Tümünü Reddet")
+
+
+def test_akbank_efilli_shadow_dom_div_controls(akbank):
+    """Turkish CMP Efilli (window.efilliSdk, bundles.efilli.com), rendered in the open
+    shadow root of <efilli-layout-dynamic>; its controls are clickable <div>s."""
+    ui = akbank["states"]["untouched"]["consent_ui"]
+    efilli = [c for c in ui["cmp"] if c["id"] == "efilli"]
+    assert efilli and "global:efilliSdk" in efilli[0]["evidence"]
+    assert ui["banner"]["found"] is True
+    assert ui["banner"]["rule"] == "cmp:efilli"
+    assert ui["banner"]["in_shadow_dom"] is True
+    reject = _control(ui, "Tümünü Reddet")
+    assert (reject["tag"], reject["matched_role"]) == ("div", "reject")
+    assert _control(ui, "Tümünü Kabul Et")["matched_role"] == "accept"
+    assert _control(ui, "Çerezleri Ayarla")["matched_role"] == "settings"
+
+    _assert_rejected_and_reloaded(akbank["states"]["rejected"], "Tümünü Reddet")

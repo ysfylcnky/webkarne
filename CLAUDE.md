@@ -152,7 +152,10 @@ consent banner's own reject/accept is the only interaction allowed (K-06/K-07); 
 form submission, no login, no crawling. The collector still records only raw
 observations (rule 1). Playwright is approved, in the optional `privacy` uv group
 (PLAN.md K-16: raw record format, outcome states, UA). **Session 1 done:** collector
-skeleton + the `untouched` state; `rejected`/`accepted` are `not_run`.
+skeleton + the `untouched` state. **Session 2 done:** headed (off-screen) Chromium,
+consent-UI observation (CMP + label rules in `[web_privacy.consent]`) and the
+`rejected` state (first-layer visible reject, once; observe; reload; observe).
+`accepted` is still `not_run`.
 
 **Production:** the server runs `main`; ship with `deploy/deploy.sh` (docs/DEPLOY.md).
 Monthly rounds run locally (`scripts/monthly_round.ps1`), never on the server.

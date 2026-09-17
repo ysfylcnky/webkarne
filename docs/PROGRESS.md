@@ -1,9 +1,9 @@
 # WebKarne — İlerleme
 
 ## Mevcut durum
-**Son güncelleme:** 17 Eylül 2026 · **Aktif sprint:** Sprint 4 (C boyutu — gizlilik/izleme, Playwright) — **Oturum 1 bitti**
-**Son oturumda:** `web_privacy` toplayıcısının iskeleti + **dokunmadan (untouched)** onay durumu. Kararlar PLAN **K-16**'da: Playwright ayrı `privacy` grubunda (sunucuya kurulmaz), tek scan içinde `states{}` (reddet/kabul şimdilik `not_run`), ayrı ölçüm-sonucu durumları (loaded/http_error/blocked/timeout/dns_error/navigation_error/browser_error), çerez/storage **değeri yok**, istekler tam URL (2048'de kesilir), taraf ayrımı ve izleyici eşleştirme analiz katmanında, UA = Chromium UA + WebKarne eki. Yalnız `karne scan --collectors privacy`; batch reddeder, web görmez. Beklenen çıktı (webkarne.com, mumifashion.com) canlıda doğrulandı; webkarne.com'da CSP'nin engellediği Cloudflare Web Analytics beacon'ı bu sayede bulundu.
-**Sıradaki iş:** Sprint 4 · Oturum 2 — onay banner'ı gözlemi + **reddet** durumu (yalnız banner'ın kendi reddet düğmesi; K-06/K-07). Bir oturum, bir modül.
+**Son güncelleme:** 17 Eylül 2026 · **Aktif sprint:** Sprint 4 (C boyutu — gizlilik/izleme, Playwright) — **Oturum 2 bitti**
+**Son oturumda:** Onay arayüzü gözlemi + **reddet (rejected)** durumu (`web_privacy` 0.2.0). Kararlar PLAN **K-16 eki**'nde: 40 Türk sitesinde headless ~%30 engellendi (e-ticarette yığılı) → **pencereli, ekran dışı Chromium** (UA sahtelenmez); CMP imzaları + TR/EN etiket kuralları `[web_privacy.consent]`'te (OneTrust, Cookiebot, Didomi, yerli **Efilli**…); yalnız ilk katmandaki **görünür** reddet (yalnızca-zorunlu dâhil, ayrı kural kimliği) bir kez tıklanır → 15 sn gözlem → ana sayfa bir kez yeniden yüklenir → 15 sn gözlem; istekler `t_ms`+faz, çerez/storage faz başına anlık görüntü. Canlı beklentiler (vodafone: OneTrust'ta metin içi "Reddet"; yapıkredi: özel banner; akbank: Efilli, shadow DOM, div düğmeler) panelden bağımsız gözlemle yazıldı, ilk koşuda geçti.
+**Sıradaki iş:** Sprint 4 · Oturum 3 — **kabul (accepted)** durumu (aynı protokol, banner'ın kendi kabul düğmesi) + önceden işaretli kutu gözlemi. Bir oturum, bir modül.
 
 ## Tamamlananlar
 - **Sprint 0** — İskelet, SQLite şeması, `dns_email` toplayıcısı (A boyutu, DANE dâhil), `karne scan`.
@@ -32,8 +32,8 @@
 - webkarne.com'un kendisi: Google Fonts (yurt dışı üçüncü taraf) ve CSP'nin engellediği, işlevsiz Cloudflare Web Analytics — ne yapılacağı kararı kullanıcıda.
 
 ## Bilinen eksikler
-- C boyutu yalnız `untouched` durumunda, puanlaması yok; D yok (Sprint 5); arayüzde "ölçülmedi".
-- C sınırlılıkları: headless UA `HeadlessChrome` içeriyor (bot algısı olası); Chromium sistem resolver'ını kullanır (K-11 değil); storage anahtarları yalnız üst çerçeveden.
+- C boyutu `untouched` + `rejected`; `accepted` yok, puanlaması yok; D yok (Sprint 5); arayüzde "ölçülmedi".
+- C sınırlılıkları: pencereli modda bile hepsiburada, pegasus, yemeksepeti, arçelik, beko, THY engelliyor; Chromium sistem resolver'ını kullanır (K-11 değil); storage anahtarları yalnız üst çerçeveden; kapalı shadow DOM ve ikinci katman görülmez; bir durum ~60–80 sn (alan adı başına ~2,5 dk).
 - `web/reports.latest_scan_id` toplayıcıya bakmıyor: yerel DB'deki yalnız-C taraması sunucuya kopyalanırsa A/B'yi gizler — kopyadan/web bağlamadan önce çözülmeli.
 - Yeni `[web_privacy]` bölümü tüm taramaların `config_hash`'ini değiştirdi (Kasım turu tutarlı kalır).
 - Sunucuya uzaktan erişim: SSH anahtarı parolalı → kullanıcı anahtarı süreli ssh-agent'a yükler; `sudo` parolalı → sudo adımlarını kullanıcı çalıştırır.

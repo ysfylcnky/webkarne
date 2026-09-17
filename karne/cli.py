@@ -242,7 +242,38 @@ def _web_privacy_summary(payload: dict[str, Any]) -> str:
             f"             requests={state.get('request_count')}{truncated}"
             f" distinct_hosts={len(hosts)}"
         )
+        lines.extend(_consent_lines(state))
     return "\n".join(lines)
+
+
+def _consent_lines(state: dict[str, Any]) -> list[str]:
+    """Consent-UI observation and, for the rejected state, what the click did."""
+    out: list[str] = []
+    ui = state.get("consent_ui")
+    if ui:
+        banner = ui.get("banner") or {}
+        cmps = ",".join(c["id"] for c in ui.get("cmp") or []) or "none"
+        if banner.get("found"):
+            visible = [c for c in ui.get("controls") or [] if c.get("visible")]
+            roles = ",".join(sorted({c["matched_role"] for c in visible if c.get("matched_role")}))
+            where = " shadow" if banner.get("in_shadow_dom") else ""
+            banner_str = f"{banner.get('rule')}{where} visible_roles={roles or '-'}"
+        else:
+            banner_str = "not found"
+        out.append(f"             consent_ui: cmp={cmps} banner={banner_str}")
+    action = state.get("consent_action")
+    if action:
+        control = action.get("control") or {}
+        label = f" '{control.get('text')}' ({control.get('rule')})" if control else ""
+        reload = state.get("reload") or {}
+        reload_str = f" reload={reload.get('status')}" if reload.get("performed") else ""
+        phases: dict[str, int] = {}
+        for r in state.get("requests") or []:
+            phases[r.get("phase") or "-"] = phases.get(r.get("phase") or "-", 0) + 1
+        by_phase = " ".join(f"{k}={v}" for k, v in phases.items())
+        out.append(f"             reject: {action.get('result')}{label}{reload_str}")
+        out.append(f"             requests by phase: {by_phase}")
+    return out
 
 
 def format_summary(

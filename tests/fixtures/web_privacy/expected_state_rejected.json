@@ -1,0 +1,124 @@
+{
+  "consent_state": "rejected",
+  "outcome": "loaded",
+  "error": null,
+  "blocked_evidence": [],
+  "started_at": "2026-09-17T11:00:00+00:00",
+  "finished_at": "2026-09-17T11:00:40+00:00",
+  "page": {
+    "requested_url": "https://banka.example.tr/",
+    "final_url": "https://www.banka.example.tr/",
+    "final_host": "www.banka.example.tr",
+    "main_status": 200,
+    "redirects": [{"url": "https://banka.example.tr/", "status": 301}],
+    "title": "Banka",
+    "goto_ms": 800,
+    "dom_content_loaded_ms": 760.0,
+    "load_event_fired": true,
+    "load_ms": 1900.0,
+    "observe_seconds": 15.0,
+    "interactions": [{"action": "click", "role": "reject", "control_index": 1, "t_ms": 3100}]
+  },
+  "cookies": [
+    {"name": "_ga", "domain": ".banka.example.tr", "path": "/", "expires": 1824206400, "session": false,
+     "http_only": false, "secure": false, "same_site": "Lax", "partition_key": null},
+    {"name": "cookie_consent", "domain": ".banka.example.tr", "path": "/", "expires": 1821182400, "session": false,
+     "http_only": false, "secure": true, "same_site": "Lax", "partition_key": null},
+    {"name": "sid", "domain": "www.banka.example.tr", "path": "/", "expires": null, "session": true,
+     "http_only": true, "secure": true, "same_site": "Lax", "partition_key": null}
+  ],
+  "storage": {
+    "origin": "https://www.banka.example.tr",
+    "local_storage_keys": ["consent"],
+    "session_storage_keys": ["tab"],
+    "indexeddb_names": [],
+    "error": null
+  },
+  "requests": [
+    {"url": "https://www.banka.example.tr/", "url_truncated": false, "host": "www.banka.example.tr", "scheme": "https",
+     "resource_type": "document", "method": "GET", "status": 200, "failure": null, "response_bytes": 30000,
+     "frame": "main", "is_navigation": true, "t_ms": 120, "phase": "before_action"},
+    {"url": "https://www.google-analytics.com/g/collect?v=2", "url_truncated": false, "host": "www.google-analytics.com", "scheme": "https",
+     "resource_type": "fetch", "method": "POST", "status": 204, "failure": null, "response_bytes": 0,
+     "frame": "main", "is_navigation": false, "t_ms": 5200, "phase": "after_action"},
+    {"url": "https://www.banka.example.tr/", "url_truncated": false, "host": "www.banka.example.tr", "scheme": "https",
+     "resource_type": "document", "method": "GET", "status": 200, "failure": null, "response_bytes": 30000,
+     "frame": "main", "is_navigation": true, "t_ms": 19000, "phase": "after_reload"}
+  ],
+  "request_count": 3,
+  "requests_truncated": false,
+  "consent_ui": {
+    "scanned_at_ms": 3050,
+    "cmp": [],
+    "tcf_api": false,
+    "banner": {
+      "found": true,
+      "rule": "generic:keywords",
+      "frame_url": "https://www.banka.example.tr/",
+      "frame_index": 0,
+      "candidate_index": 1,
+      "in_shadow_dom": false,
+      "rect": [0, 690, 1366, 78],
+      "text": "Web sitemizde çerezler kullanılmaktadır. Detaylı bilgi için Çerez Aydınlatma Metnimizi inceleyebilirsiniz.",
+      "text_truncated": false
+    },
+    "controls": [
+      {"tag": "a", "text": "Tercihler", "aria_label": null, "css_id": null, "rect": [1000, 710, 80, 36],
+       "visibility": "visible", "opacity": 1.0, "display": "block", "cursor": "pointer",
+       "visible": true, "matched_role": "settings", "rule": "label:settings"},
+      {"tag": "a", "text": "Tümünü Reddet", "aria_label": null, "css_id": null, "rect": [1090, 710, 80, 36],
+       "visibility": "visible", "opacity": 1.0, "display": "block", "cursor": "pointer",
+       "visible": true, "matched_role": "reject", "rule": "label:reject"},
+      {"tag": "a", "text": "TÜMÜNÜ KABUL ET", "aria_label": null, "css_id": "acceptAll", "rect": [1180, 710, 80, 36],
+       "visibility": "visible", "opacity": 1.0, "display": "block", "cursor": "pointer",
+       "visible": true, "matched_role": "accept", "rule": "label:accept"}
+    ],
+    "candidates_seen": 2,
+    "error": null
+  },
+  "consent_action": {
+    "action": "reject",
+    "result": "clicked",
+    "control_index": 1,
+    "clicked_at_ms": 3100,
+    "navigated_after_click": false,
+    "error": null,
+    "control": {"tag": "a", "text": "Tümünü Reddet", "css_id": null, "matched_role": "reject", "rule": "label:reject"}
+  },
+  "reload": {"performed": true, "status": 200, "final_url": "https://www.banka.example.tr/", "goto_ms": 650, "error": null},
+  "consent_ui_after_reload": {
+    "scanned_at_ms": 34800,
+    "cmp": [],
+    "tcf_api": false,
+    "banner": {"found": false},
+    "controls": [],
+    "candidates_seen": 0,
+    "error": null
+  },
+  "snapshots": [
+    {"phase": "before_action", "at_ms": 3080,
+     "cookies": [
+       {"name": "sid", "domain": "www.banka.example.tr", "path": "/", "expires": null, "session": true,
+        "http_only": true, "secure": true, "same_site": "Lax", "partition_key": null}
+     ],
+     "storage": {"origin": "https://www.banka.example.tr", "local_storage_keys": [], "session_storage_keys": [], "indexeddb_names": [], "error": null}},
+    {"phase": "after_action", "at_ms": 18200,
+     "cookies": [
+       {"name": "cookie_consent", "domain": ".banka.example.tr", "path": "/", "expires": 1821182400, "session": false,
+        "http_only": false, "secure": true, "same_site": "Lax", "partition_key": null},
+       {"name": "sid", "domain": "www.banka.example.tr", "path": "/", "expires": null, "session": true,
+        "http_only": true, "secure": true, "same_site": "Lax", "partition_key": null}
+     ],
+     "storage": {"origin": "https://www.banka.example.tr", "local_storage_keys": ["consent"], "session_storage_keys": [], "indexeddb_names": [], "error": null}},
+    {"phase": "after_reload", "at_ms": 34850,
+     "cookies": [
+       {"name": "_ga", "domain": ".banka.example.tr", "path": "/", "expires": 1824206400, "session": false,
+        "http_only": false, "secure": false, "same_site": "Lax", "partition_key": null},
+       {"name": "cookie_consent", "domain": ".banka.example.tr", "path": "/", "expires": 1821182400, "session": false,
+        "http_only": false, "secure": true, "same_site": "Lax", "partition_key": null},
+       {"name": "sid", "domain": "www.banka.example.tr", "path": "/", "expires": null, "session": true,
+        "http_only": true, "secure": true, "same_site": "Lax", "partition_key": null}
+     ],
+     "storage": {"origin": "https://www.banka.example.tr", "local_storage_keys": ["consent"], "session_storage_keys": ["tab"], "indexeddb_names": [], "error": null}}
+  ]
+}

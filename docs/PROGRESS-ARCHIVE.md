@@ -12,6 +12,65 @@ and `docs/PROGRESS.md` (current state — one page). This archive is the long ta
 
 ---
 
+## Sprint 4 · Session 2 — Consent-UI observation + the "rejected" state
+
+Scope: consent banner observation (both states) and the `rejected` state.
+`accepted`, pre-checked boxes and fingerprinting hooks are later sessions.
+
+**Research before questions (no clicks):** a read-only probe of 40 Turkish homepages.
+- CMPs: OneTrust (vodafone, hürriyet, milliyet, ntv, toyota, cnntürk, trendyol), Cookiebot
+  (dr.com.tr), Didomi (decathlon), TCF API (sözcü, habertürk, mynet), the Turkish CMP
+  **Efilli** (akbank, shadow DOM), and custom banners (yapıkredi, mediamarkt, ikea,
+  vestel, lcw, getir) — so vendor selectors alone are not enough.
+- **Headless was blocked on 12/40** (mostly large e-commerce); "new headless" changed
+  nothing (UA still says HeadlessChrome). Headed Chromium, UA untouched, opened 7 of them
+  (işbank, trendyol, n11, lcw, teknosa, getir, decathlon); an off-screen window with
+  background throttling disabled behaves the same.
+- Block pages can be 200 (işbank "İstek Engellendi", also seen mis-decoded) or Turkish
+  (decathlon "Bir dakika lütfen...").
+
+**Decisions (user-approved, PLAN.md K-16 addendum before code):** headed off-screen
+Chromium; own config rule set (CMP signatures/selectors + TR/EN label regexes, no new
+dependency); reject = first layer only, visible controls only, "only necessary" counts as
+reject under its own rule id, vendor rule beats label rule; protocol = click once →
+observe 15 s → reload homepage once → observe 15 s → re-read banner; requests carry
+`t_ms` + phase, cookies/storage snapshotted per phase; extended block markers
+(`titles_any_status`).
+
+**Independent checks in the browser pane (no clicks) corrected three assumptions before
+code:** akbank.com is not banner-less (Efilli renders in an open shadow root with clickable
+`<div>`s, invisible to `document.body.innerText`); vodafone's "Reddet" is a custom inline
+`a#rejectAllButton`, not OneTrust's standard button; dr.com.tr hides Cookiebot's Decline
+(`visibility:hidden; opacity:0`).
+
+**Code (`web_privacy` 0.2.0):** pure `normalize_label` (Turkish-aware), `classify_label`,
+`is_visible`, `assemble_consent_ui` (banner choice: first visible CMP candidate, else the
+smallest visible generic candidate holding a visible reject/accept control),
+`plan_reject`, interaction guards (untouched: none; rejected: at most one reject click,
+consistent with `consent_action.result`). I/O: one read-only JS scan per frame (open
+shadow roots, geometry + computed style + effective opacity, element handles returned so
+exactly the planned control is clicked), `_reject_flow`. CLI summary shows consent lines.
+
+**Tests:** 271 offline (+39: rejected-state fixture pair, 19 observed labels, hidden vendor
+control, Efilli shadow div, priorities, visibility cases, banner selection, guards). 9 live
+tests green on the first run (webkarne no banner; vodafone, yapıkredi, akbank clicked →
+reload 200 → no banner after reload; OptanonAlertBoxClosed after reject on vodafone).
+
+**Found on a manual CLI run:** dr.com.tr's visible reject is the word "Reddet" inside the
+banner prose (a clickable `<span>`); the collector clicked it (label rule) while recording
+the hidden Cookiebot Decline, and the banner did not return after reload. My earlier
+expectation that dr.com.tr would be `control_not_found` was wrong; the offline fixture
+modelled on it stays valid (hidden vendor control is never clicked).
+
+**Known gaps:** closed shadow roots and second-layer settings are not observed; a state
+takes ~60–80 s; Cookiebot dialogs contribute many zero-size second-layer controls
+(recorded, invisible); still blocked when headed: hepsiburada, pegasus, yemeksepeti,
+arçelik, beko, THY.
+
+**Next:** Sprint 4 · Session 3 — `accepted` state + pre-checked box observation.
+
+---
+
 ## Sprint 4 · Session 1 — Dimension C collector skeleton + the "untouched" consent state
 
 Scope: `karne/collectors/web_privacy.py` skeleton and ONE consent state (untouched).

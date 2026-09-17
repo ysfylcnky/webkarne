@@ -1,0 +1,100 @@
+{
+  "consent_state": "rejected",
+  "started_at": "2026-09-17T11:00:00+00:00",
+  "finished_at": "2026-09-17T11:00:40+00:00",
+  "requested_url": "https://banka.example.tr/",
+  "navigation_error": null,
+  "browser_error": null,
+  "main_response": {"url": "https://www.banka.example.tr/", "status": 200, "headers": {}},
+  "redirects": [{"url": "https://banka.example.tr/", "status": 301}],
+  "final_url": "https://www.banka.example.tr/",
+  "title": "Banka",
+  "timing": {"goto_ms": 800, "dom_content_loaded_ms": 760.0, "load_ms": 1900.0},
+  "observe_seconds": 15.0,
+  "interactions": [{"action": "click", "role": "reject", "control_index": 1, "t_ms": 3100}],
+  "consent_ui_raw": {
+    "scanned_at_ms": 3050,
+    "error": null,
+    "frames": [
+      {
+        "frame_url": "https://www.banka.example.tr/",
+        "cmp_evidence": {"onetrust": []},
+        "tcf_api": false,
+        "candidates": [
+          {
+            "rule": "generic:keywords",
+            "in_shadow_dom": false,
+            "rect": [0, 0, 1366, 90],
+            "visible": true,
+            "text": "Menü · Çerez Politikası",
+            "controls": [
+              {"tag": "a", "text": "Çerez Politikası", "aria_label": null, "css_id": null,
+               "rect": [900, 30, 110, 18], "visibility": "visible", "opacity": 1.0,
+               "display": "inline", "cursor": "pointer", "vendor_role": null, "vendor_rule": null}
+            ]
+          },
+          {
+            "rule": "generic:keywords",
+            "in_shadow_dom": false,
+            "rect": [0, 690, 1366, 78],
+            "visible": true,
+            "text": "Web sitemizde çerezler kullanılmaktadır. Detaylı bilgi için Çerez Aydınlatma Metnimizi inceleyebilirsiniz.",
+            "controls": [
+              {"tag": "a", "text": "Tercihler", "aria_label": null, "css_id": null,
+               "rect": [1000, 710, 80, 36], "visibility": "visible", "opacity": 1.0,
+               "display": "block", "cursor": "pointer", "vendor_role": null, "vendor_rule": null},
+              {"tag": "a", "text": "Tümünü\n  Reddet", "aria_label": null, "css_id": null,
+               "rect": [1090, 710, 80, 36], "visibility": "visible", "opacity": 1.0,
+               "display": "block", "cursor": "pointer", "vendor_role": null, "vendor_rule": null},
+              {"tag": "a", "text": "TÜMÜNÜ KABUL ET", "aria_label": null, "css_id": "acceptAll",
+               "rect": [1180, 710, 80, 36], "visibility": "visible", "opacity": 1.0,
+               "display": "block", "cursor": "pointer", "vendor_role": null, "vendor_rule": null}
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "consent_action": {
+    "action": "reject",
+    "result": "clicked",
+    "control_index": 1,
+    "clicked_at_ms": 3100,
+    "navigated_after_click": false,
+    "error": null
+  },
+  "reload": {"performed": true, "status": 200, "final_url": "https://www.banka.example.tr/", "goto_ms": 650, "error": null},
+  "consent_ui_after_reload_raw": {"scanned_at_ms": 34800, "error": null, "frames": [
+    {"frame_url": "https://www.banka.example.tr/", "cmp_evidence": {}, "tcf_api": false, "candidates": []}
+  ]},
+  "snapshots": [
+    {"phase": "before_action", "at_ms": 3080,
+     "cookies": [{"name": "sid", "value": "v1", "domain": "www.banka.example.tr", "path": "/", "expires": -1, "httpOnly": true, "secure": true, "sameSite": "Lax"}],
+     "storage": {"origin": "https://www.banka.example.tr", "local": [], "session": [], "indexeddb": [], "error": null}},
+    {"phase": "after_action", "at_ms": 18200,
+     "cookies": [
+       {"name": "sid", "value": "v1", "domain": "www.banka.example.tr", "path": "/", "expires": -1, "httpOnly": true, "secure": true, "sameSite": "Lax"},
+       {"name": "cookie_consent", "value": "rejected", "domain": ".banka.example.tr", "path": "/", "expires": 1821182400, "httpOnly": false, "secure": true, "sameSite": "Lax"}
+     ],
+     "storage": {"origin": "https://www.banka.example.tr", "local": ["consent"], "session": [], "indexeddb": [], "error": null}},
+    {"phase": "after_reload", "at_ms": 34850,
+     "cookies": [
+       {"name": "sid", "value": "v1", "domain": "www.banka.example.tr", "path": "/", "expires": -1, "httpOnly": true, "secure": true, "sameSite": "Lax"},
+       {"name": "cookie_consent", "value": "rejected", "domain": ".banka.example.tr", "path": "/", "expires": 1821182400, "httpOnly": false, "secure": true, "sameSite": "Lax"},
+       {"name": "_ga", "value": "GA1.1.1.1", "domain": ".banka.example.tr", "path": "/", "expires": 1824206400, "httpOnly": false, "secure": false, "sameSite": "Lax"}
+     ],
+     "storage": {"origin": "https://www.banka.example.tr", "local": ["consent"], "session": ["tab"], "indexeddb": [], "error": null}}
+  ],
+  "cookies": [
+    {"name": "sid", "value": "v1", "domain": "www.banka.example.tr", "path": "/", "expires": -1, "httpOnly": true, "secure": true, "sameSite": "Lax"},
+    {"name": "cookie_consent", "value": "rejected", "domain": ".banka.example.tr", "path": "/", "expires": 1821182400, "httpOnly": false, "secure": true, "sameSite": "Lax"},
+    {"name": "_ga", "value": "GA1.1.1.1", "domain": ".banka.example.tr", "path": "/", "expires": 1824206400, "httpOnly": false, "secure": false, "sameSite": "Lax"}
+  ],
+  "storage": {"origin": "https://www.banka.example.tr", "local": ["consent"], "session": ["tab"], "indexeddb": [], "error": null},
+  "request_count": 3,
+  "requests": [
+    {"url": "https://www.banka.example.tr/", "resource_type": "document", "method": "GET", "status": 200, "failure": null, "response_bytes": 30000, "frame": "main", "is_navigation": true, "t_ms": 120, "phase": "before_action"},
+    {"url": "https://www.google-analytics.com/g/collect?v=2", "resource_type": "fetch", "method": "POST", "status": 204, "failure": null, "response_bytes": 0, "frame": "main", "is_navigation": false, "t_ms": 5200, "phase": "after_action"},
+    {"url": "https://www.banka.example.tr/", "resource_type": "document", "method": "GET", "status": 200, "failure": null, "response_bytes": 30000, "frame": "main", "is_navigation": true, "t_ms": 19000, "phase": "after_reload"}
+  ]
+}

@@ -275,7 +275,28 @@ def sample_c_payload() -> dict:
                 "request_count": 2,
                 "requests_truncated": False,
             },
-            "rejected": {"consent_state": "rejected", "outcome": "not_run", "reason": "x"},
+            "rejected": {
+                "consent_state": "rejected",
+                "outcome": "loaded",
+                "error": None,
+                "blocked_evidence": [],
+                "page": {"final_url": "https://example.com/", "main_status": 200},
+                "cookies": [],
+                "storage": {},
+                "requests": [{"host": "example.com", "phase": "before_action"}],
+                "request_count": 1,
+                "requests_truncated": False,
+                "consent_ui": {
+                    "cmp": [{"id": "onetrust", "evidence": ["global:OneTrust"]}],
+                    "banner": {"found": True, "rule": "cmp:onetrust", "in_shadow_dom": False},
+                    "controls": [{"visible": True, "matched_role": "reject"}],
+                },
+                "consent_action": {
+                    "result": "clicked",
+                    "control": {"text": "Reddet", "rule": "label:reject"},
+                },
+                "reload": {"performed": True, "status": 200},
+            },
             "accepted": {"consent_state": "accepted", "outcome": "not_run", "reason": "x"},
         },
     }
@@ -294,7 +315,10 @@ def test_scan_privacy_collector_stores_raw_payload(monkeypatch, tmp_path):
     assert "[privacy - browser]" in result.output
     assert "untouched: loaded" in result.output
     assert "cookies=1 (httpOnly=1)" in result.output
-    assert "rejected : not run" in result.output
+    assert "accepted : not run" in result.output
+    assert "consent_ui: cmp=onetrust banner=cmp:onetrust visible_roles=reject" in result.output
+    assert "reject: clicked 'Reddet' (label:reject) reload=200" in result.output
+    assert "requests by phase: before_action=1" in result.output
 
     conn = storage.connect(db_path)
     raw = storage.get_scan_result(conn, 1, "web_privacy").payload

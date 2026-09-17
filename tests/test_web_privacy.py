@@ -15,17 +15,13 @@ from pathlib import Path
 import pytest
 
 from karne.collectors import web_privacy as wp
+from karne.collectors.dns_email import load_settings
 
 FIXTURE_DIR = Path(__file__).parent / "fixtures" / "web_privacy"
 
-CFG = {
-    "max_url_length": 2048,
-    "block_markers": {
-        "headers": {"cf-mitigated": "challenge"},
-        "statuses": [403, 429, 503],
-        "titles": ["Just a moment...", "Access Denied"],
-    },
-}
+# The real [web_privacy] section: label rules and block markers are tested as configured.
+CFG = load_settings()["web_privacy"]
+CONSENT = CFG["consent"]
 
 
 def _load(name: str) -> dict:
@@ -226,7 +222,7 @@ def test_not_run_state_record():
 
 def test_consent_state_names():
     assert wp.CONSENT_STATES == ("untouched", "rejected", "accepted")
-    assert wp.IMPLEMENTED_STATES == ("untouched",)
+    assert wp.IMPLEMENTED_STATES == ("untouched", "rejected")
 
 
 # --- user agent (K-16) ---
@@ -279,3 +275,299 @@ def test_local_browser_error_is_partial():
     status, detail = wp.privacy_status(payload)
     assert status == "partial"
     assert "untouched" in detail and "crashed" in detail
+
+
+def test_block_title_any_status():
+    main = {"url": "https://x.tr/", "status": 200, "headers": {}}
+    s = wp.assemble_state(_obs(main_response=main, title="İstek Engellendi"), CFG)
+    assert s["outcome"] == "blocked"
+    assert s["blocked_evidence"] == ["title:İstek Engellendi"]
+
+
+# ===========================================================================
+# Session 2: consent UI observation + the rejected state
+# ===========================================================================
+
+
+def test_assemble_rejected_state_matches_hand_written_expected():
+    assert wp.assemble_state(_load("observation_rejected.json"), CFG) == _load(
+        "expected_state_rejected.json"
+    )
+
+
+# --- labels (every label below was observed on a Turkish site, 2026-09-17) ---
+
+
+@pytest.mark.parametrize(
+    ("label", "role", "rule"),
+    [
+        ("Reddet", "reject", "label:reject"),
+        ("Tümünü Reddet", "reject", "label:reject"),
+        ("Tüm Çerezleri Reddet", "reject", "label:reject"),
+        ("İsteğe Bağlı Çerezlerin Tümünü Reddet", "reject", "label:reject"),
+        ("KABUL ETMİYORUM", "reject", "label:reject"),
+        ("Yalnızca zorunlu çerezlerle devam et", "reject", "label:necessary_only"),
+        ("Kabul Et", "accept", "label:accept"),
+        ("Tümünü Kabul Et", "accept", "label:accept"),
+        ("Tüm Tanımlama Bilgilerini Kabul Et", "accept", "label:accept"),
+        ("Tümüne izin ver", "accept", "label:accept"),
+        ("İsteğe Bağlı Çerezlerin Tümünü Kabul Et", "accept", "label:accept"),
+        ("Ayarlar", "settings", "label:settings"),
+        ("Tercihleri Yönet", "settings", "label:settings"),
+        ("Çerezleri Ayarla", "settings", "label:settings"),
+        ("Tanımlama Bilgisi Ayarları", "settings", "label:settings"),
+        ("Çerez ayarlarını inceleyin", "settings", "label:settings"),
+        ("Çerez Politikamız", None, None),
+        ("buraya tıklayabilirsiniz.", None, None),
+        ("", None, None),
+    ],
+)
+def test_classify_label(label, role, rule):
+    assert wp.classify_label(label, CONSENT) == (role, rule)
+
+
+def test_normalize_label_is_turkish_aware():
+    assert wp.normalize_label("  TÜMÜNÜ\n  REDDET ") == "tümünü reddet"
+    assert wp.normalize_label("İSTEĞE") == "isteğe"  # not "i̇steğe" (no combining dot)
+    # Upper-case I maps to "i", not "ı", so English labels survive ("DECLINE"); the
+    # Turkish label rules therefore spell such letters as [ıi].
+    assert wp.normalize_label("BAĞLI DECLINE") == "bağli decline"
+
+
+def test_prose_is_never_classified():
+    prose = (
+        "Reddet seçeneğine tıklaman halinde tercih ve ilgi alanlarına yönelik "
+        "sana özel bir deneyim sunamayacağız."
+    )
+    assert wp.classify_label(prose, CONSENT) == (None, None)
+
+
+# --- consent UI assembly ---
+
+
+def _ctl(text, *, tag="button", vendor_role=None, vendor_rule=None, **style):
+    c = {
+        "tag": tag,
+        "text": text,
+        "aria_label": None,
+        "css_id": None,
+        "rect": [10, 10, 100, 30],
+        "visibility": "visible",
+        "opacity": 1.0,
+        "display": "block",
+        "cursor": "pointer",
+        "vendor_role": vendor_role,
+        "vendor_rule": vendor_rule,
+    }
+    c.update(style)
+    return c
+
+
+def _raw(*candidates, cmp_evidence=None, tcf=False, frames_extra=()):
+    frames = [
+        {
+            "frame_url": "https://x.tr/",
+            "cmp_evidence": cmp_evidence or {},
+            "tcf_api": tcf,
+            "candidates": [
+                {
+                    "rule": rule,
+                    "in_shadow_dom": shadow,
+                    "rect": rect,
+                    "visible": True,
+                    "text": "Çerez metni",
+                    "controls": controls,
+                }
+                for rule, shadow, rect, controls in candidates
+            ],
+        },
+        *frames_extra,
+    ]
+    return {"scanned_at_ms": 5000, "error": None, "frames": frames}
+
+
+def test_hidden_vendor_reject_is_recorded_but_not_clickable():
+    """Modelled on dr.com.tr: Cookiebot's Decline button exists but is visibility:hidden,
+    opacity 0. (The live site instead offers "Reddet" as a clickable <span> inside the
+    banner prose, which the collector clicks — seen on the first live run, 2026-09-17.)"""
+    decline = _ctl(
+        "Reddet",
+        vendor_role="reject",
+        vendor_rule="cmp:cookiebot:reject",
+        visibility="hidden",
+        opacity=0.0,
+    )
+    controls = [
+        decline,
+        _ctl("Ayarlar", vendor_role="settings", vendor_rule="cmp:cookiebot:settings"),
+        _ctl("Kabul Et", vendor_role="accept", vendor_rule="cmp:cookiebot:accept"),
+    ]
+    raw = _raw(
+        ("cmp:cookiebot", False, [0, 500, 1366, 268], controls),
+        cmp_evidence={"cookiebot": ["global:Cookiebot"]},
+    )
+    ui = wp.assemble_consent_ui(raw, CONSENT)
+    assert ui["cmp"] == [{"id": "cookiebot", "evidence": ["global:Cookiebot"]}]
+    assert ui["banner"]["found"] is True
+    hidden = ui["controls"][0]
+    assert hidden["visible"] is False
+    assert (hidden["matched_role"], hidden["rule"]) == ("reject", "cmp:cookiebot:reject")
+    assert wp.plan_reject(ui, CONSENT) == ("control_not_found", None)
+
+
+def test_efilli_shadow_dom_div_is_clickable():
+    controls = [
+        _ctl("Çerez Aydınlatma Metni", tag="a"),
+        _ctl("Tümünü Kabul Et", tag="div"),
+        _ctl("Tümünü Reddet", tag="div"),
+        _ctl("Çerezleri Ayarla", tag="a"),
+    ]
+    raw = _raw(
+        ("cmp:efilli", True, [0, 650, 1366, 118], controls),
+        cmp_evidence={"efilli": ["global:efilliSdk", "script:bundles.efilli.com"]},
+    )
+    ui = wp.assemble_consent_ui(raw, CONSENT)
+    assert ui["banner"]["in_shadow_dom"] is True
+    assert [c["matched_role"] for c in ui["controls"]] == [None, "accept", "reject", "settings"]
+    assert wp.plan_reject(ui, CONSENT) == ("click", 2)
+
+
+def test_vendor_reject_beats_label_and_reject_beats_necessary_only():
+    controls = [
+        _ctl("Yalnızca zorunlu çerezler"),
+        _ctl("Reddet"),
+        _ctl("Hayır", vendor_role="reject", vendor_rule="cmp:onetrust:reject"),
+    ]
+    ui = wp.assemble_consent_ui(_raw(("cmp:onetrust", False, [0, 0, 500, 300], controls)), CONSENT)
+    assert wp.plan_reject(ui, CONSENT) == ("click", 2)
+    ui["controls"][2]["visible"] = False
+    assert wp.plan_reject(ui, CONSENT) == ("click", 1)
+    ui["controls"][1]["visible"] = False
+    assert wp.plan_reject(ui, CONSENT) == ("click", 0)
+
+
+@pytest.mark.parametrize(
+    "style",
+    [
+        {"rect": [10, 10, 0, 30]},
+        {"visibility": "hidden"},
+        {"opacity": 0.0},
+        {"display": "none"},
+    ],
+)
+def test_invisible_controls(style):
+    controls = [_ctl("Reddet", **style), _ctl("Kabul Et")]
+    ui = wp.assemble_consent_ui(_raw(("cmp:x", False, [0, 0, 500, 300], controls)), CONSENT)
+    assert ui["controls"][0]["visible"] is False
+    assert wp.plan_reject(ui, CONSENT) == ("control_not_found", None)
+
+
+def test_generic_candidate_without_consent_controls_is_not_a_banner():
+    link_bar = ("generic:keywords", False, [0, 0, 1366, 80], [_ctl("Çerez Politikası", tag="a")])
+    ui = wp.assemble_consent_ui(_raw(link_bar), CONSENT)
+    assert ui["banner"] == {"found": False}
+    assert ui["controls"] == []
+    assert ui["candidates_seen"] == 1
+    assert wp.plan_reject(ui, CONSENT) == ("banner_not_found", None)
+
+
+def test_smallest_generic_banner_wins_and_invisible_cmp_banner_is_skipped():
+    big = ("generic:keywords", False, [0, 0, 1366, 768], [_ctl("Kabul Et")])
+    small = ("generic:keywords", False, [0, 700, 1366, 68], [_ctl("Reddet"), _ctl("Kabul Et")])
+    ui = wp.assemble_consent_ui(_raw(big, small), CONSENT)
+    assert ui["banner"]["candidate_index"] == 1
+
+    hidden_cmp = ("cmp:onetrust", False, [0, 0, 0, 0], [_ctl("Reddet")])
+    raw = _raw(hidden_cmp, small)
+    raw["frames"][0]["candidates"][0]["visible"] = False
+    ui = wp.assemble_consent_ui(raw, CONSENT)
+    assert (ui["banner"]["rule"], ui["banner"]["candidate_index"]) == ("generic:keywords", 1)
+
+
+def test_cmp_banner_beats_generic_and_iframe_banner_is_found():
+    generic = ("generic:keywords", False, [0, 700, 1366, 68], [_ctl("Kabul Et")])
+    iframe = {
+        "frame_url": "https://cmp.example/notice",
+        "cmp_evidence": {"sourcepoint": ["selector:x"], "didomi": []},
+        "tcf_api": True,
+        "candidates": [
+            {
+                "rule": "cmp:sourcepoint",
+                "in_shadow_dom": False,
+                "rect": [0, 0, 600, 400],
+                "visible": True,
+                "text": "x" * 5000,
+                "controls": [_ctl("Reject all")],
+            }
+        ],
+    }
+    ui = wp.assemble_consent_ui(_raw(generic, frames_extra=[iframe]), CONSENT)
+    assert ui["cmp"] == [{"id": "sourcepoint", "evidence": ["selector:x"]}]
+    assert ui["tcf_api"] is True
+    banner = ui["banner"]
+    assert (banner["frame_index"], banner["frame_url"]) == (1, "https://cmp.example/notice")
+    assert len(banner["text"]) == CONSENT["banner_text_max_chars"]
+    assert banner["text_truncated"] is True
+
+
+def test_missing_consent_scan_is_none():
+    assert wp.assemble_consent_ui(None, CONSENT) is None
+
+
+def test_consent_scan_error_is_kept():
+    raw = {"scanned_at_ms": 100, "error": "Execution context was destroyed", "frames": []}
+    ui = wp.assemble_consent_ui(raw, CONSENT)
+    assert ui["error"] == "Execution context was destroyed"
+    assert ui["banner"] == {"found": False}
+
+
+# --- rejected-state guards (K-06: one reject click at most) ---
+
+
+def _rejected(**overrides):
+    obs = _load("observation_rejected.json")
+    obs.update(overrides)
+    return obs
+
+
+def test_rejected_state_allows_at_most_one_reject_click():
+    two = [{"action": "click", "role": "reject", "control_index": 1, "t_ms": 1}] * 2
+    with pytest.raises(ValueError, match="at most one"):
+        wp.assemble_state(_rejected(interactions=two), CFG)
+
+
+def test_rejected_state_never_clicks_accept():
+    accept = [{"action": "click", "role": "accept", "control_index": 2, "t_ms": 1}]
+    with pytest.raises(ValueError, match="reject"):
+        wp.assemble_state(_rejected(interactions=accept), CFG)
+
+
+def test_clicked_result_requires_the_interaction():
+    with pytest.raises(ValueError, match="clicked"):
+        wp.assemble_state(_rejected(interactions=[]), CFG)
+
+
+def test_unclicked_rejected_state_has_no_reload():
+    obs = _rejected(
+        interactions=[],
+        consent_action={
+            "action": "reject",
+            "result": "control_not_found",
+            "control_index": None,
+            "clicked_at_ms": None,
+            "navigated_after_click": None,
+            "error": None,
+        },
+        reload={
+            "performed": False,
+            "status": None,
+            "final_url": None,
+            "goto_ms": None,
+            "error": None,
+        },
+        consent_ui_after_reload_raw=None,
+    )
+    s = wp.assemble_state(obs, CFG)
+    assert s["consent_action"]["control"] is None
+    assert s["consent_ui_after_reload"] is None
+    assert s["reload"]["performed"] is False
