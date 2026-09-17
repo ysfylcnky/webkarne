@@ -106,6 +106,9 @@ Common commands:
 
 ```bash
 uv sync                       # create/refresh the environment
+uv sync --group analysis --group privacy  # local full env (syncing ONE group drops the other)
+uv run playwright install chromium        # browser for dimension C (once per Playwright version)
+uv run karne scan example.com --collectors privacy  # dimension C, local only (K-16)
 uv run karne scan example.com # run a scan
 uv run pytest -m "not network"# unit tests (offline, default)
 uv run pytest -m network      # integration tests (need live DNS)
@@ -147,7 +150,9 @@ browser protocol (incl. HttpOnly), storage keys, third-party requests, known tag
 fingerprinting API hooks, consent-banner observations, policy texts. Clicking the
 consent banner's own reject/accept is the only interaction allowed (K-06/K-07); no
 form submission, no login, no crawling. The collector still records only raw
-observations (rule 1). **Ask before adding Playwright** (new dependency).
+observations (rule 1). Playwright is approved, in the optional `privacy` uv group
+(PLAN.md K-16: raw record format, outcome states, UA). **Session 1 done:** collector
+skeleton + the `untouched` state; `rejected`/`accepted` are `not_run`.
 
 **Production:** the server runs `main`; ship with `deploy/deploy.sh` (docs/DEPLOY.md).
 Monthly rounds run locally (`scripts/monthly_round.ps1`), never on the server.

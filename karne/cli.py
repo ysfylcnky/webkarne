@@ -202,6 +202,49 @@ def _tls_http_summary(payload: dict[str, Any]) -> str:
     )
 
 
+def _web_privacy_summary(payload: dict[str, Any]) -> str:
+    """Compact, factual summary of a dimension-C (browser) payload (ASCII-only).
+
+    Counts only: no tracker labels, no first/third-party split (that is analysis).
+    """
+    browser = payload.get("browser") or {}
+    lines = [
+        "  [privacy - browser]",
+        f"  Browser  : chromium {browser.get('browser_version')}"
+        f" (playwright {browser.get('playwright_version')}, headless={browser.get('headless')})",
+    ]
+    for name, state in (payload.get("states") or {}).items():
+        outcome = state.get("outcome")
+        if outcome == "not_run":
+            lines.append(f"  {name:9}: not run ({state.get('reason')})")
+            continue
+        page = state.get("page") or {}
+        storage = state.get("storage") or {}
+        hosts = {r.get("host") for r in state.get("requests") or [] if r.get("host")}
+        line = f"  {name:9}: {outcome}"
+        if state.get("error"):
+            line += f" ({state['error'].get('message')})"
+        if state.get("blocked_evidence"):
+            line += f" evidence={', '.join(state['blocked_evidence'])}"
+        lines.append(line)
+        lines.append(
+            f"             final={page.get('final_url')} status={page.get('main_status')}"
+            f" load_ms={page.get('load_ms')}"
+        )
+        http_only = sum(1 for c in state.get("cookies") or [] if c.get("http_only"))
+        lines.append(
+            f"             cookies={len(state.get('cookies') or [])} (httpOnly={http_only})"
+            f" localStorage={len(storage.get('local_storage_keys') or [])}"
+            f" sessionStorage={len(storage.get('session_storage_keys') or [])}"
+        )
+        truncated = " [truncated]" if state.get("requests_truncated") else ""
+        lines.append(
+            f"             requests={state.get('request_count')}{truncated}"
+            f" distinct_hosts={len(hosts)}"
+        )
+    return "\n".join(lines)
+
+
 def format_summary(
     payload: dict[str, Any],
     *,
@@ -261,7 +304,10 @@ def scan(
     collectors: str = typer.Option(
         ",".join(batch.DEFAULT_COLLECTORS),
         "--collectors",
-        help="Comma-separated dimensions to run: email, transport (default: both).",
+        help=(
+            "Comma-separated dimensions to run: email, transport (default: both), "
+            "privacy (real browser; needs `uv sync --group privacy`)."
+        ),
     ),
     db: Path = typer.Option(
         storage.DEFAULT_DB_PATH, "--db", help="SQLite database path.", show_default=True
@@ -270,7 +316,7 @@ def scan(
         "", "--settings", help="Path to a settings.toml (defaults to config/settings.toml)."
     ),
 ) -> None:
-    """Scan a domain (dimension A email, and/or B transport) and store the raw results."""
+    """Scan a domain (A email, B transport, and/or C privacy) and store the raw results."""
     settings = (
         dns_email.load_settings(settings_file) if settings_file else dns_email.load_settings()
     )
@@ -312,6 +358,8 @@ def scan(
         )
     if "transport" in by_dim and by_dim["transport"].payload is not None:
         blocks.append(_tls_http_summary(by_dim["transport"].payload))
+    if "privacy" in by_dim and by_dim["privacy"].payload is not None:
+        blocks.append(_web_privacy_summary(by_dim["privacy"].payload))
     for o in outcomes:
         if o.payload is None:
             blocks.append(f"  [{o.spec.dimension}] collector error: {o.error}")
@@ -366,7 +414,7 @@ def batch_scan(
     """
     collector_names = [c.strip() for c in collectors.split(",") if c.strip()]
     try:
-        batch.resolve_specs(collector_names)  # validate before touching the DB
+        batch.resolve_batch_specs(collector_names)  # validate before touching the DB
     except ValueError as exc:
         typer.echo(str(exc), err=True)
         raise typer.Exit(code=2) from exc

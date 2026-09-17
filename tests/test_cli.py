@@ -251,6 +251,73 @@ def test_scan_json_output(monkeypatch):
     assert parsed["tls_http"]["domain"] == "example.com"
 
 
+def sample_c_payload() -> dict:
+    """Minimal but structurally valid dimension-C (web_privacy) payload."""
+    return {
+        "collector": "web_privacy",
+        "collector_version": "0.1.0",
+        "input_domain": "example.com",
+        "domain": "example.com",
+        "collected_at": "2026-01-01T00:00:00+00:00",
+        "config_hash": "abc123",
+        "start_url": "https://example.com/",
+        "browser": {"browser_version": "153.0", "playwright_version": "1.63.0", "headless": True},
+        "states": {
+            "untouched": {
+                "consent_state": "untouched",
+                "outcome": "loaded",
+                "error": None,
+                "blocked_evidence": [],
+                "page": {"final_url": "https://example.com/", "main_status": 200, "load_ms": 900},
+                "cookies": [{"name": "sid", "http_only": True}],
+                "storage": {"local_storage_keys": ["k"], "session_storage_keys": []},
+                "requests": [{"host": "example.com"}, {"host": "cdn.example.net"}],
+                "request_count": 2,
+                "requests_truncated": False,
+            },
+            "rejected": {"consent_state": "rejected", "outcome": "not_run", "reason": "x"},
+            "accepted": {"consent_state": "accepted", "outcome": "not_run", "reason": "x"},
+        },
+    }
+
+
+def test_scan_privacy_collector_stores_raw_payload(monkeypatch, tmp_path):
+    _patch_collect(monkeypatch)
+    monkeypatch.setattr(
+        cli.batch.web_privacy, "collect", lambda domain, settings: sample_c_payload()
+    )
+    db_path = tmp_path / "karne.db"
+    result = runner.invoke(
+        cli.app, ["scan", "example.com", "--collectors", "privacy", "--db", str(db_path)]
+    )
+    assert result.exit_code == 0, result.output
+    assert "[privacy - browser]" in result.output
+    assert "untouched: loaded" in result.output
+    assert "cookies=1 (httpOnly=1)" in result.output
+    assert "rejected : not run" in result.output
+
+    conn = storage.connect(db_path)
+    raw = storage.get_scan_result(conn, 1, "web_privacy").payload
+    assert raw["states"]["untouched"]["outcome"] == "loaded"
+    assert storage.get_scan_result(conn, 1, "dns_email") is None  # only privacy ran
+    assert storage.get_scan(conn, 1).consent_state is None  # states live in the payload (K-16)
+    conn.close()
+
+
+def test_privacy_is_not_a_default_collector():
+    assert "privacy" in cli.batch.REGISTRY
+    assert "privacy" not in cli.batch.DEFAULT_COLLECTORS  # web query + scan default
+
+
+def test_batch_rejects_privacy_collector(tmp_path):
+    result = runner.invoke(
+        cli.app,
+        ["batch", "--collectors", "email,privacy", "--dry-run", "--db", str(tmp_path / "k.db")],
+    )
+    assert result.exit_code == 2
+    assert "not available in batch" in result.output
+
+
 # ---------------------------------------------------------------------------
 # frontier command (Sprint 1) — offline, using a fixture CSV (no download)
 # ---------------------------------------------------------------------------

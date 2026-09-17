@@ -12,6 +12,76 @@ and `docs/PROGRESS.md` (current state — one page). This archive is the long ta
 
 ---
 
+## Sprint 4 · Session 1 — Dimension C collector skeleton + the "untouched" consent state
+
+Scope: `karne/collectors/web_privacy.py` skeleton and ONE consent state (untouched).
+Reject/accept clicks, banner detection, fingerprinting hooks, tracker matching and
+policy texts are later sessions.
+
+**Decisions (user-approved, recorded in PLAN.md K-16 before code):**
+- **Playwright 1.63 (Apache-2.0)** in a non-default `privacy` uv group; never on the
+  server; imported lazily (missing -> loud collector error, never an empty payload).
+- **One scan, three states in the payload** (`states.untouched/rejected/accepted`, each
+  its own fresh browser context); `scans.consent_state` stays NULL (§5 note).
+  `models.CONSENT_NONE="none"` renamed to `CONSENT_UNTOUCHED="untouched"` (never stored).
+- **Outcome states (rule 6):** loaded · http_error · blocked (only with an observed,
+  config-listed marker, stored as evidence) · timeout · dns_error · navigation_error ·
+  browser_error · not_run. Failed states still keep what was observed.
+- **Recorded:** all cookies via the browser protocol incl. HttpOnly and partition key,
+  never values; localStorage/sessionStorage key names + IndexedDB database names; every
+  request with the **full URL** (cut at 2048, flagged), host, type, status/failure, body
+  size, frame. **No** first/third-party split (analysis layer, vendored PSL snapshot
+  later) and no tracker labels. Tracker dataset: decision deferred.
+- **User-Agent:** Chromium's own UA + the WebKarne identity appended.
+- **Local only:** `karne scan <d> --collectors privacy`; `batch` rejects it
+  (`SINGLE_SCAN_ONLY`), the web query never sees it (not in `DEFAULT_COLLECTORS`).
+- Settings in `[web_privacy]` (+ `.block_markers`): 30 s navigation timeout, 15 s
+  observation window, 60 s state budget, 1 s between navigations, 1000 requests cap,
+  tr-TR / Europe/Istanbul / 1366x768, headless.
+
+**Code:** pure layer (`assemble_state`, `normalize_cookies`, `normalize_requests`,
+`block_evidence`, `classify_outcome`, `compose_user_agent`, `privacy_status`) separated
+from the Playwright I/O layer (`_observe_state` captures a plain observation dict).
+Registry entry `privacy`, `resolve_batch_specs`, CLI summary block.
+
+**Tests:** 232 offline (199 -> +33: hand-written observation -> expected-state fixture
+pair, every outcome class, value-never-stored, truncation, untouched-has-no-interaction
+guard, missing-Playwright, CLI store, batch rejection); also green without the privacy
+group installed. 5 live-browser tests (`-m network`) green.
+
+**Expected output before code paid off.** Expectations were hand-written from sources
+independent of the collector (our templates/CSP; mumifashion.com HTML via curl). The
+first live run failed on webkarne.com: an extra host `static.cloudflareinsights.com`.
+Investigation: Cloudflare Web Analytics injects its beacon at the edge only for
+`Accept: text/html` (curl sent `*/*`), and our CSP blocks it — the browser records
+`failure="csp"`, nothing is sent. The collector was right; the expectation was corrected
+with this evidence in the test docstring. mumifashion.com matched as written (7
+`sbjs_*` JS cookies, WooCommerce scripts, Google Fonts, no GTM/Meta/TikTok).
+
+**Observations about our own site (not acted on):** webkarne.com sends every visitor's
+request to Google Fonts (fonts.googleapis.com/gstatic.com) — exactly the §3-C
+"transfer abroad / Google Fonts" pattern; Cloudflare Web Analytics is enabled in the
+dashboard but dead (blocked by our CSP).
+
+**Known gaps / notes:**
+- Headless UA says `HeadlessChrome/153…`; some sites may treat it as a bot. Not changed
+  (no evasion, §4); a later decision (headed/new-headless) if block rates are high.
+- Chromium resolves names with the system resolver, not the K-11 fixed resolvers.
+- Storage keys are read from the top-level origin only (iframe storage not captured).
+- The new `[web_privacy]` section changes `config_hash` for A/B scans too (next round
+  is November, so rounds stay internally consistent).
+- `web/reports.latest_scan_id` picks the newest scan regardless of collectors: a
+  privacy-only local scan copied to the server DB would hide A/B for that domain.
+  Filter before any future DB snapshot / before wiring C into the web.
+- `playwright install` deleted the unrelated, unregistered `chromium-1228/1234` from
+  `%LOCALAPPDATA%\ms-playwright` (other tools may re-download them).
+- `uv sync --group privacy` alone uninstalls the analysis group; sync both.
+
+**Next:** Sprint 4 · Session 2 — consent banner observation + the `rejected` state
+(click the banner's own reject only; K-06/K-07).
+
+---
+
 ## Sprint 3 · Session 4 — Open decisions closed + go-live on webkarne.com (SPRINT 3 COMPLETE)
 
 Resumed after the previous session crashed (state reconstructed from its last

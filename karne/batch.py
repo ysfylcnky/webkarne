@@ -38,7 +38,7 @@ from datetime import UTC, datetime
 from typing import Any
 
 from karne import __version__, storage
-from karne.collectors import dns_email, tls_http
+from karne.collectors import dns_email, tls_http, web_privacy
 from karne.models import (
     STATUS_ERROR,
     STATUS_OK,
@@ -117,8 +117,20 @@ REGISTRY: dict[str, CollectorSpec] = {
         transport_status,
         None,
     ),
+    "privacy": CollectorSpec(
+        "privacy",
+        web_privacy.COLLECTOR,
+        lambda d, s: web_privacy.collect(d, s),
+        web_privacy.privacy_status,
+        None,
+    ),
 }
 DEFAULT_COLLECTORS = ["email", "transport"]
+
+# Dimensions allowed in `karne scan` only. Dimension C drives a real browser for
+# ~45 s per consent state; putting it in batch rounds (or the web query, which uses
+# DEFAULT_COLLECTORS) is a separate decision (PLAN.md K-16).
+SINGLE_SCAN_ONLY = frozenset({"privacy"})
 
 
 def resolve_specs(dimensions: Iterable[str]) -> list[CollectorSpec]:
@@ -131,6 +143,18 @@ def resolve_specs(dimensions: Iterable[str]) -> list[CollectorSpec]:
             raise ValueError(f"unknown collector/dimension {name!r} (known: {known})")
         specs.append(spec)
     return specs
+
+
+def resolve_batch_specs(dimensions: Iterable[str]) -> list[CollectorSpec]:
+    """Like :func:`resolve_specs`, but rejects single-scan-only dimensions."""
+    names = list(dimensions)
+    excluded = [n for n in names if n in SINGLE_SCAN_ONLY]
+    if excluded:
+        raise ValueError(
+            f"collector/dimension {', '.join(map(repr, excluded))} is not available in batch "
+            "rounds (single `karne scan` only, PLAN.md K-16)"
+        )
+    return resolve_specs(names)
 
 
 # ---------------------------------------------------------------------------
@@ -390,7 +414,7 @@ def run_batch(
     the real dns_email collector). Returns the final :class:`BatchProgress`.
     """
     use_multi = collectors is not None and collect_fn is None
-    specs = resolve_specs(collectors) if use_multi else None
+    specs = resolve_batch_specs(collectors) if use_multi else None
     if collect_fn is None and not use_multi:
         collect_fn = lambda d: dns_email.collect(d, settings)  # noqa: E731
     if concurrency is None:

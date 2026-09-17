@@ -1,0 +1,102 @@
+{
+  "consent_state": "untouched",
+  "started_at": "2026-09-17T10:00:00+00:00",
+  "finished_at": "2026-09-17T10:00:18+00:00",
+  "requested_url": "https://example.com.tr/",
+  "navigation_error": null,
+  "browser_error": null,
+  "main_response": {
+    "url": "https://www.example.com.tr/",
+    "status": 200,
+    "headers": {"content-type": "text/html; charset=utf-8", "server": "nginx"}
+  },
+  "redirects": [{"url": "https://example.com.tr/", "status": 301}],
+  "final_url": "https://www.example.com.tr/",
+  "title": "Example Mağaza",
+  "timing": {"goto_ms": 1210, "dom_content_loaded_ms": 1180.4, "load_ms": 2140.9},
+  "observe_seconds": 15.0,
+  "interactions": [],
+  "cookies": [
+    {
+      "name": "_ga",
+      "value": "GA1.1.123456789.1789646400",
+      "domain": ".example.com.tr",
+      "path": "/",
+      "expires": 1824206400.5,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "PHPSESSID",
+      "value": "s3cr3t-session-id",
+      "domain": "www.example.com.tr",
+      "path": "/",
+      "expires": -1,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "IDE",
+      "value": "AHWqTUk-tracker-id",
+      "domain": ".doubleclick.net",
+      "path": "/",
+      "expires": 1821182400,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "None",
+      "partitionKey": "https://example.com.tr"
+    }
+  ],
+  "storage": {
+    "origin": "https://www.example.com.tr",
+    "local": ["_gcl_ls", "cart_v2"],
+    "session": ["_hjSession"],
+    "indexeddb": ["firebase-heartbeat-database"],
+    "error": null
+  },
+  "request_count": 5,
+  "requests": [
+    {
+      "url": "https://example.com.tr/",
+      "resource_type": "document",
+      "method": "GET",
+      "status": 301,
+      "failure": null,
+      "response_bytes": 0,
+      "frame": "main",
+      "is_navigation": true
+    },
+    {
+      "url": "https://www.example.com.tr/",
+      "resource_type": "document",
+      "method": "GET",
+      "status": 200,
+      "failure": null,
+      "response_bytes": 48211,
+      "frame": "main",
+      "is_navigation": true
+    },
+    {
+      "url": "https://www.googletagmanager.com/gtag/js?id=G-ABC123XYZ",
+      "resource_type": "script",
+      "method": "GET",
+      "status": 200,
+      "failure": null,
+      "response_bytes": 104233,
+      "frame": "main",
+      "is_navigation": false
+    },
+    {
+      "url": "https://Static.Hotjar.com:443/c/hotjar-1.js?sv=7",
+      "resource_type": "script",
+      "method": "GET",
+      "status": null,
+      "failure": "net::ERR_BLOCKED_BY_CLIENT",
+      "response_bytes": null,
+      "frame": "sub",
+      "is_navigation": false
+    }
+  ]
+}

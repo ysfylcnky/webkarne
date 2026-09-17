@@ -295,6 +295,55 @@ notu, eksik boyutları görünmez kılıp yanıltıcı bir kesinlik üretir. Ara
 Bileşik skor, dört boyut hazırken **F boyutunda (Nisan)** tasarlanır ve `scoring.toml`'a
 sürümlü olarak girer. O zamana dek `scoring.toml`'da bileşik kural yazılmaz.
 
+### K-16 · C boyutu toplayıcısı: ham kayıt biçimi ve ölçüm koşulları
+
+*(Karar: 2026-09-17, Sprint 4 · Oturum 1. K-06'nın üç onay durumunun nasıl
+kaydedileceğini ve tarayıcı ölçümünün koşullarını sabitler.)*
+
+- **Bağımlılık.** Playwright (Chromium) ayrı, varsayılan-dışı `privacy` uv grubunda
+  durur (`uv sync --group privacy`, ardından `playwright install chromium`). Sunucuya
+  kurulmaz; toplayıcı Playwright'ı tembel içe aktarır, yoksa açık hata verir. C boyutu
+  bu karar değişene dek **yalnız yerelde, tek alan adında** (`karne scan --collectors
+  privacy`) çalışır; `batch`'e ve web arayüzüne bağlanması ayrı karardır (alan adı
+  başına ~45 sn × 3 durum).
+- **Kayıt yapısı.** Bir tarama = bir `scans` satırı + bir `scan_results`
+  (`collector="web_privacy"`) satırı. Üç onay durumu payload içinde `states.untouched`,
+  `states.rejected`, `states.accepted` altında **ayrı kayıtlar** olarak durur; her biri
+  temiz (çerezsiz, service worker'ı engellenmiş) ayrı bir tarayıcı bağlamında ölçülür.
+  Henüz uygulanmamış durum `outcome="not_run"` taşır. Bu yapıda `scans.consent_state`
+  kullanılmaz (NULL); `cookies`/`requests` projeksiyon tabloları taraf tanımı
+  uygulanınca doldurulur.
+- **Ölçüm sonucu durumları (kural 6).** Her durum kaydı bir `outcome` taşır: `loaded`
+  (ölçüldü) · `http_error` (ana belge 4xx/5xx) · `blocked` (yalnız gözlenebilir bir
+  bot-engeli işareti varsa, kanıtıyla) · `timeout` · `dns_error` · `navigation_error` ·
+  `browser_error` · `not_run`. Yalnız `loaded` "ölçüldü" sayılır. Hata durumunda o ana
+  kadar görülen çerez/istekler yine saklanır ama boş liste **asla** "çerez yok" demek
+  değildir.
+- **Kaydedilen / kaydedilmeyen.** Çerezler tarayıcı protokolünden (HttpOnly dâhil) ad,
+  domain, path, expires, session, secure, httpOnly, sameSite ile; **değerleri
+  kaydedilmez**. localStorage/sessionStorage yalnız **anahtar** adlarıyla. Ağ
+  istekleri **tam URL** ile (en çok `max_url_length` karakter, kesilirse işaretlenir):
+  D boyutu sürüm parametrelerini ve etiket kimliklerini bu ham veriden türetecek, geriye
+  dönük yeniden toplanamaz. URL'lerdeki kimlikler taze, anonim ölçüm tarayıcısına aittir,
+  gerçek bir kişiye değil.
+- **Birinci/üçüncü taraf ayrımı toplayıcıda yapılmaz** (kural 1). Toplayıcı ham host'u
+  yazar; ayrım analiz katmanında, repoya tarihli ve hash'li konmuş bir Public Suffix List
+  anlık görüntüsüyle (eTLD+1) yapılır ve kullanılan liste sürümü sonuca yazılır. Yeni
+  bağımlılık eklenmez.
+- **İzleyici veri seti** (host → şirket/ülke) henüz seçilmedi — açık karar; aday
+  listesi ve lisansları seçimden önce kaynağından doğrulanıp buraya yazılır.
+- **Tarayıcı kimliği (§4 uygulaması).** User-Agent = Chromium'un kendi UA dizesi +
+  `settings.toml`'daki WebKarne kimliği eki. Saf `WebKarne/1.0` dizesi bazı onay
+  platformlarının banner'ı botlara göstermemesine ve izleyicilerin yüklenmemesine yol
+  açar; bu, sıradan ziyaretçinin gördüğünden farklı bir sayfa ölçmek demektir (K-06'yı
+  bozar). Kimlik yine açıkça bildirilir.
+- **Koşullar ve sınırlar (K-07).** Yalnız ana sayfa; bağlantı takibi, form, giriş yok.
+  `untouched` durumunda hiçbir etkileşim yapılmaz (`interactions` boş olmak zorunda);
+  sayfa yüklendikten sonra sabit bir gözlem penceresi (15 sn) beklenir. Navigasyon
+  zaman aşımı, durum başına süre bütçesi, navigasyonlar arası asgari bekleme, istek üst
+  sınırı, dil/saat dilimi/görüntü alanı `settings.toml` `[web_privacy]`'de.
+  Bot koruması aşılmaya çalışılmaz; engel "ölçülemedi" (`blocked`) olarak kaydedilir.
+
 ---
 
 ## 3. Ne ölçüyoruz
@@ -419,7 +468,7 @@ Sınırların bir kısmı yorum değil, doğrudan yazılım kısıtıdır.
 
 - Yalnızca kamuya açık veri: sıradan bir ziyaretçinin tarayıcısının gördüğü ve herkese açık DNS kayıtları
 - Alan adı başına saniyede en fazla bir istek, eşzamanlılık sınırlı, tarama gece saatlerinde
-- Tarayıcı kimliğini açıkça bildirir: kullanıcı aracısı dizesinde proje adı ve bilgi sayfası adresi (`WebKarne/1.0 (+https://webkarne.com/tr/hakkinda; …)`, bkz. K-14)
+- Tarayıcı kimliğini açıkça bildirir: kullanıcı aracısı dizesinde proje adı ve bilgi sayfası adresi (`WebKarne/1.0 (+https://webkarne.com/tr/hakkinda; …)`, bkz. K-14; gerçek tarayıcı ölçümünde Chromium UA'sına ek olarak, bkz. K-16)
 - Taranmak istemeyen kurumlar için vazgeçme kanalı; bu tezde raporlanır
 - Kurum bazında ciddi bulgular önce ilgili kuruma bildirilir, yayına sektör toplamıyla çıkılır
 - Bölüm etik kurul onayı istiyorsa **Ekim ayında** başvurulur
@@ -475,6 +524,7 @@ hiç değişmez; `scores` ve `findings` ondan türetilir, silinip yeniden
 domains        id · domain · source · sector · is_public_body · added_at
 scans          id · domain_id · started_at · finished_at · scanner_version
                · config_hash · consent_state · status · error
+               (consent_state: C boyutunda kullanılmaz, üç durum payload'da — K-16)
 scan_results   scan_id · collector · payload_json          ← ham, dokunulmaz
 cookies        scan_id · name · domain · party · http_only · secure
                · samesite · lifetime_days · consent_state

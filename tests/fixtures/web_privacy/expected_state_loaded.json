@@ -1,0 +1,120 @@
+{
+  "consent_state": "untouched",
+  "outcome": "loaded",
+  "error": null,
+  "blocked_evidence": [],
+  "started_at": "2026-09-17T10:00:00+00:00",
+  "finished_at": "2026-09-17T10:00:18+00:00",
+  "page": {
+    "requested_url": "https://example.com.tr/",
+    "final_url": "https://www.example.com.tr/",
+    "final_host": "www.example.com.tr",
+    "main_status": 200,
+    "redirects": [{"url": "https://example.com.tr/", "status": 301}],
+    "title": "Example Mağaza",
+    "goto_ms": 1210,
+    "dom_content_loaded_ms": 1180.4,
+    "load_event_fired": true,
+    "load_ms": 2140.9,
+    "observe_seconds": 15.0,
+    "interactions": []
+  },
+  "cookies": [
+    {
+      "name": "IDE",
+      "domain": ".doubleclick.net",
+      "path": "/",
+      "expires": 1821182400,
+      "session": false,
+      "http_only": true,
+      "secure": true,
+      "same_site": "None",
+      "partition_key": "https://example.com.tr"
+    },
+    {
+      "name": "_ga",
+      "domain": ".example.com.tr",
+      "path": "/",
+      "expires": 1824206400.5,
+      "session": false,
+      "http_only": false,
+      "secure": false,
+      "same_site": "Lax",
+      "partition_key": null
+    },
+    {
+      "name": "PHPSESSID",
+      "domain": "www.example.com.tr",
+      "path": "/",
+      "expires": null,
+      "session": true,
+      "http_only": true,
+      "secure": true,
+      "same_site": "None",
+      "partition_key": null
+    }
+  ],
+  "storage": {
+    "origin": "https://www.example.com.tr",
+    "local_storage_keys": ["_gcl_ls", "cart_v2"],
+    "session_storage_keys": ["_hjSession"],
+    "indexeddb_names": ["firebase-heartbeat-database"],
+    "error": null
+  },
+  "requests": [
+    {
+      "url": "https://example.com.tr/",
+      "url_truncated": false,
+      "host": "example.com.tr",
+      "scheme": "https",
+      "resource_type": "document",
+      "method": "GET",
+      "status": 301,
+      "failure": null,
+      "response_bytes": 0,
+      "frame": "main",
+      "is_navigation": true
+    },
+    {
+      "url": "https://www.example.com.tr/",
+      "url_truncated": false,
+      "host": "www.example.com.tr",
+      "scheme": "https",
+      "resource_type": "document",
+      "method": "GET",
+      "status": 200,
+      "failure": null,
+      "response_bytes": 48211,
+      "frame": "main",
+      "is_navigation": true
+    },
+    {
+      "url": "https://www.googletagmanager.com/gtag/js?id=G-ABC123XYZ",
+      "url_truncated": false,
+      "host": "www.googletagmanager.com",
+      "scheme": "https",
+      "resource_type": "script",
+      "method": "GET",
+      "status": 200,
+      "failure": null,
+      "response_bytes": 104233,
+      "frame": "main",
+      "is_navigation": false
+    },
+    {
+      "url": "https://Static.Hotjar.com:443/c/hotjar-1.js?sv=7",
+      "url_truncated": false,
+      "host": "static.hotjar.com",
+      "scheme": "https",
+      "resource_type": "script",
+      "method": "GET",
+      "status": null,
+      "failure": "net::ERR_BLOCKED_BY_CLIENT",
+      "response_bytes": null,
+      "frame": "sub",
+      "is_navigation": false
+    }
+  ],
+  "request_count": 5,
+  "requests_truncated": true
+}

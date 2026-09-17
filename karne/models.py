@@ -38,7 +38,7 @@ DIMENSION_PRIVACY = "privacy"  # C — privacy & tracking
 DIMENSION_TECH = "tech"  # D — technology & visible surface
 
 # scans.consent_state / cookies.consent_state values (dimension C, Sprint 4).
-CONSENT_NONE = "none"  # untouched — banner not interacted with
+CONSENT_UNTOUCHED = "untouched"  # banner not interacted with (K-06)
 CONSENT_REJECTED = "rejected"
 CONSENT_ACCEPTED = "accepted"
 

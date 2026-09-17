@@ -46,6 +46,39 @@ rate_per_second = 5.0        # polite throughput cap for this collector
 # "unprobeable_local" (could not measure), kept distinct from a server refusal.
 probe_tls_versions = ["TLSv1", "TLSv1.1", "TLSv1.2", "TLSv1.3"]
 
+[web_privacy]
+# Dimension C (Sprint 4, PLAN.md K-06/K-16). A real Chromium visits the homepage only,
+# once per consent state, each in a fresh browser context. No link following, no
+# forms, no login; in the "untouched" state there is no interaction at all.
+# Local-only for now: `karne scan <domain> --collectors privacy` (not batch, not web).
+navigation_timeout_seconds = 30.0  # page.goto until DOMContentLoaded
+observe_seconds = 15.0             # fixed observation window after load (PLAN §3-C)
+state_budget_seconds = 60.0        # hard cap per consent state (navigation + load wait + observe)
+min_interval_seconds = 1.0         # minimum gap between our navigations (§4: <= 1 req/s)
+max_requests = 1000                # network requests recorded per state; beyond: truncated flag
+max_url_length = 2048              # request URLs longer than this are cut and flagged
+headless = true
+locale = "tr-TR"
+timezone = "Europe/Istanbul"
+viewport_width = 1366
+viewport_height = 768
+# The browser's own User-Agent with the [http].user_agent identity appended (K-16).
+append_identity_to_user_agent = true
+
+[web_privacy.block_markers]
+# Observable bot-protection signals (outcome "blocked", rule 6). A measurement-state
+# classifier, not a judgement: "blocked" is recorded only when one of these is SEEN,
+# and the matched markers are stored as evidence. Header names are lower-case.
+headers = { "cf-mitigated" = "challenge" }
+# A challenge title counts only together with one of these main-document statuses.
+statuses = [403, 429, 503]
+titles = [
+    "Just a moment...",
+    "Attention Required! | Cloudflare",
+    "Access Denied",
+    "Pardon Our Interruption",
+]
+
 [web]
 # Abuse guard for the public "scan any domain" endpoint (PLAN.md K-14). Limits are
 # held in process memory, so the server runs ONE uvicorn worker. No IP is recorded.

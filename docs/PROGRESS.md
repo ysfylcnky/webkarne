@@ -1,9 +1,9 @@
 # WebKarne — İlerleme
 
 ## Mevcut durum
-**Son güncelleme:** 17 Eylül 2026 · **Aktif sprint:** Sprint 4 (C boyutu — gizlilik/izleme, Playwright) — **başlamadı**
-**Son oturumda:** Sprint 3 **kapandı**. Açık kararlar kapatıldı (PLAN K-14, K-15) ve araç **canlıya çıktı: https://webkarne.com**. Web sorgusu kötüye kullanım koruması (bekleme süresi + eşzamanlılık sınırı + Cloudflare hız sınırı), CSP'yi bozacak inline script `app.js`'e taşındı, UA `WebKarne/1.0 (+https://webkarne.com/tr/hakkinda; …)`. Kod açık: https://github.com/ysfylcnky/webkarne. Öz-ölçüm: webkarne.com e-posta **A 88,2**, aktarım **A 100**.
-**Sıradaki iş:** Sprint 4 · Oturum 1 — Playwright bağımlılığı için **kullanıcı onayı**, sonra `web_privacy` toplayıcısının iskeleti + beklenen çıktının elle yazılması (üç onay durumu, K-06). Bir oturum, bir modül.
+**Son güncelleme:** 17 Eylül 2026 · **Aktif sprint:** Sprint 4 (C boyutu — gizlilik/izleme, Playwright) — **Oturum 1 bitti**
+**Son oturumda:** `web_privacy` toplayıcısının iskeleti + **dokunmadan (untouched)** onay durumu. Kararlar PLAN **K-16**'da: Playwright ayrı `privacy` grubunda (sunucuya kurulmaz), tek scan içinde `states{}` (reddet/kabul şimdilik `not_run`), ayrı ölçüm-sonucu durumları (loaded/http_error/blocked/timeout/dns_error/navigation_error/browser_error), çerez/storage **değeri yok**, istekler tam URL (2048'de kesilir), taraf ayrımı ve izleyici eşleştirme analiz katmanında, UA = Chromium UA + WebKarne eki. Yalnız `karne scan --collectors privacy`; batch reddeder, web görmez. Beklenen çıktı (webkarne.com, mumifashion.com) canlıda doğrulandı; webkarne.com'da CSP'nin engellediği Cloudflare Web Analytics beacon'ı bu sayede bulundu.
+**Sıradaki iş:** Sprint 4 · Oturum 2 — onay banner'ı gözlemi + **reddet** durumu (yalnız banner'ın kendi reddet düğmesi; K-06/K-07). Bir oturum, bir modül.
 
 ## Tamamlananlar
 - **Sprint 0** — İskelet, SQLite şeması, `dns_email` toplayıcısı (A boyutu, DANE dâhil), `karne scan`.
@@ -13,6 +13,7 @@
 
 ## Çalışan komutlar
 - `karne scan <alan>` — tek alan adı tarar (A ve/veya B), ham sonucu saklar. `--collectors email,transport` · `--json` · `--no-store`.
+- `karne scan <alan> --collectors privacy` — C boyutu, gerçek Chromium, yalnız yerelde (`uv sync --group analysis --group privacy` + `uv run playwright install chromium`).
 - `karne frontier --list-id <id>` — Tranco + `.tr`'den örneklemi kurar.
 - `karne batch --run-label <YYYY-MM>` — tüm frame'i tarar; dayanıklı/resume.
 - `karne rescore --dimension email|transport` — ham veriden sürümlü puan/bulgu (ham veriye dokunmaz).
@@ -27,9 +28,14 @@
 ## Açık kararlar
 - Aylık tur **Kasım'ın ilk haftası** başlar (K-09) — betik hazır, elle çalıştırılacak.
 - STARTTLS kapsam dışı (§4); bileşik not F boyutunda (K-15).
+- İzleyici veri seti (host → şirket/ülke) seçimi ertelendi (K-16); C'nin batch/web'e bağlanması ayrı karar.
+- webkarne.com'un kendisi: Google Fonts (yurt dışı üçüncü taraf) ve CSP'nin engellediği, işlevsiz Cloudflare Web Analytics — ne yapılacağı kararı kullanıcıda.
 
 ## Bilinen eksikler
-- C (gizlilik) ve D (teknoloji) boyutları yok (Sprint 4–5); arayüzde "ölçülmedi".
+- C boyutu yalnız `untouched` durumunda, puanlaması yok; D yok (Sprint 5); arayüzde "ölçülmedi".
+- C sınırlılıkları: headless UA `HeadlessChrome` içeriyor (bot algısı olası); Chromium sistem resolver'ını kullanır (K-11 değil); storage anahtarları yalnız üst çerçeveden.
+- `web/reports.latest_scan_id` toplayıcıya bakmıyor: yerel DB'deki yalnız-C taraması sunucuya kopyalanırsa A/B'yi gizler — kopyadan/web bağlamadan önce çözülmeli.
+- Yeni `[web_privacy]` bölümü tüm taramaların `config_hash`'ini değiştirdi (Kasım turu tutarlı kalır).
 - Sunucuya uzaktan erişim: SSH anahtarı parolalı → kullanıcı anahtarı süreli ssh-agent'a yükler; `sudo` parolalı → sudo adımlarını kullanıcı çalıştırır.
 - Geçersiz sertifikaların tam alan ayrıştırması ertelendi (`cryptography` gerektirir).
 - Tasarımdaki bulgu-başına puan etkisi (`−X puan`) veri modelinde yok; terim ipucu ve canlı ilerleme çubuğu yok.
