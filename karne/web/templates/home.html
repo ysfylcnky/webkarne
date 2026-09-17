@@ -20,6 +20,8 @@
     <p class="home__slogan">{{ t('home.slogan') }}</p>
   </div>
 
+  {% if error == 'busy' %}<p class="qpanel__error home__busy" role="alert">{{ t('home.error_busy') }}</p>{% endif %}
+
   <div class="home__panels">
     <form class="qpanel" action="/{{ lang }}/git" method="get" novalidate>
       <input type="hidden" name="tur" value="alan">

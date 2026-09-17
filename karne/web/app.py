@@ -151,8 +151,8 @@ def resolve_query(request: Request, lang: str, tur: str = "alan", q: str = ""):
 
 @app.get("/{lang}/tara", include_in_schema=False)
 def run_scan(request: Request, lang: str, d: str = "", tur: str = "alan", json: int = 0):
-    # Run a FRESH scan of the domain (never a stored one — the visitor asked to
-    # scan it now) and hand back the report URL, scoped to what they asked about:
+    # Run a FRESH scan of the domain (a stored one only within the short rescan
+    # cooldown, K-14) and hand back the report URL, scoped to what they asked about:
     # an email query lands on the email dimension; a domain query on the web
     # report. Called by the scanning screen's fetch (json=1); the <noscript>
     # meta-refresh falls through to the plain 303 redirect.
@@ -160,7 +160,15 @@ def run_scan(request: Request, lang: str, d: str = "", tur: str = "alan", json: 
     domain = query.normalize_domain(d)
     if domain is None:
         return RedirectResponse(url=f"/{lang}/?hata=domain", status_code=303)
-    scan_id = query.run_live_scan(domain)
+    try:
+        scan_id = query.run_live_scan(domain)
+    except query.ScanBusy:
+        # Every live-scan slot is taken (K-14 abuse guard): back to the form with
+        # an honest "busy, try again" message rather than queueing indefinitely.
+        target = f"/{lang}/?hata=busy"
+        if json:
+            return JSONResponse({"redirect": target})
+        return RedirectResponse(url=target, status_code=303)
     if tur == "eposta":
         target = f"/{lang}/analiz/{scan_id}/eposta"
     else:

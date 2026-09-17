@@ -253,6 +253,48 @@ ve `security.txt`.
 - **1.2.0** — B boyutu (aktarım) eklendi: ağırlıklar, eşikler ve `TRANSPORT_` bulgu
   kataloğu. Salt ekleme; A modeli ve altı bilinen alan adının notu değişmez.
 
+### K-14 · Canlı araç dağıtımı ve ölçüm menşei
+
+*(Karar: 2026-09-17, Sprint 3 kapanışı. Canlı web sorgusunun DB'ye yazmasından doğan
+dağıtım sorularını kapatır.)*
+
+- **Sunucu DB'si yazılabilir bir kopyadır.** Web sorgusu her seferinde tarama yapıp
+  sonucu yeni kayıt olarak eklediği için (kural 5) salt-okunur kopya çalışmaz. Yerel
+  `data/karne.db` tutarlı bir yedekle (`sqlite3 .backup`) sunucuya kopyalanır; sektör
+  karşılaştırması böylece ilk günden gerçek dağılımla çalışır. **Tez veri kümesinin
+  kanonik kopyası yerelde kalır**; sunucu DB'si türetilmiş sayılır ve düzenli yedeklenir.
+- **Web sorguları teze girmez.** Sunucudan yapılan taramalar `run_label` boş (ad-hoc)
+  olarak yazılır; örneklemde olmayan yeni alan adları ayrıca `domains.source = "web"`
+  taşır. Tez bulguları yalnız yerelden, sabit resolver'larla
+  (K-11) yapılan **tur taramalarından** (`run_label` dolu) üretilir; böylece ölçüm tek
+  menşeli kalır. Web sorguları yalnız araç kullanım istatistiği olarak raporlanır
+  (Sprint 7 değerlendirme).
+- **Aylık tur taraması yerelde, elle tetiklenir** (K-09'un uygulaması). Tek komutluk bir
+  betik (`scripts/monthly_round`) batch → rescore (e-posta + aktarım) → DB yedeği
+  sırasını çalıştırır; her ayın ilk haftası geliştirici çalıştırır. Otomatik zamanlayıcı
+  kullanılmaz: kapalı bilgisayar ya da uyku modunun o ayı sessizce atlatması
+  boylamsal seriye zarar verir, elle çalıştırma tarih ve süreyi kayıt altında tutar.
+- **Kötüye kullanım sınırı iki katmanlıdır.** "Keyfi alan adı tarat" ucu sunucunun
+  üçüncü taraflara DNS/HTTP üretmesine yol açabileceğinden (§4 hız sınırı ilkesi):
+  (1) uygulama içinde aynı alan adının kısa bir bekleme süresi içinde yeniden
+  taranmaması — süre içinde gelen sorgu o taramanın sonucunu gösterir — ve eşzamanlı
+  canlı tarama sayısına üst sınır (değerler `config/settings.toml` `[web]`'de);
+  (2) Cloudflare hız sınırı kuralı. IP adresi kaydı **tutulmaz**. Bu, "her sorgu
+  sıfırdan taranır" kuralının tek istisnasıdır ve yalnız bekleme süresi içinde geçerlidir.
+- **Tarayıcı kimliği.** Yayınla birlikte User-Agent, proje adı ve bilgi sayfasını
+  bildirir: `WebKarne/1.0 (+https://webkarne.com/tr/hakkinda; passive measurement)`
+  (§4). Değişiklik tarihi PROGRESS'e yazılır; önceki taramalar `config_hash` ile ayrışır.
+- **Analiz bağımlılıkları ayrı gruptadır.** Tez figürleri için matplotlib/pandas
+  `analysis` bağımlılık grubunda durur; yerelde kurulur, sunucuya kurulmaz.
+
+### K-15 · Bileşik (genel) not şimdilik yok
+
+*(Karar: 2026-09-17.)* Dört boyuttan yalnız ikisi (A, B) ölçülürken tek bir genel harf
+notu, eksik boyutları görünmez kılıp yanıltıcı bir kesinlik üretir. Arayüz yalnız
+**boyut-bazlı** not gösterir; ölçülmeyen boyutlar "henüz ölçülmedi" olarak kalır.
+Bileşik skor, dört boyut hazırken **F boyutunda (Nisan)** tasarlanır ve `scoring.toml`'a
+sürümlü olarak girer. O zamana dek `scoring.toml`'da bileşik kural yazılmaz.
+
 ---
 
 ## 3. Ne ölçüyoruz
@@ -377,7 +419,7 @@ Sınırların bir kısmı yorum değil, doğrudan yazılım kısıtıdır.
 
 - Yalnızca kamuya açık veri: sıradan bir ziyaretçinin tarayıcısının gördüğü ve herkese açık DNS kayıtları
 - Alan adı başına saniyede en fazla bir istek, eşzamanlılık sınırlı, tarama gece saatlerinde
-- Tarayıcı kimliğini açıkça bildirir: kullanıcı aracısı dizesinde proje adı ve bilgi sayfası adresi
+- Tarayıcı kimliğini açıkça bildirir: kullanıcı aracısı dizesinde proje adı ve bilgi sayfası adresi (`WebKarne/1.0 (+https://webkarne.com/tr/hakkinda; …)`, bkz. K-14)
 - Taranmak istemeyen kurumlar için vazgeçme kanalı; bu tezde raporlanır
 - Kurum bazında ciddi bulgular önce ilgili kuruma bildirilir, yayına sektör toplamıyla çıkılır
 - Bölüm etik kurul onayı istiyorsa **Ekim ayında** başvurulur

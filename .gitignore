@@ -14,6 +14,10 @@ dist/
 # submission (PLAN.md K-10); the SQLite file is created at runtime.
 data/
 
+# Local design reference screenshots (large PNGs); the design itself is
+# recorded in docs/DESIGN-SYSTEM.md + karne/web/static/tokens.css.
+docs/design-refs/
+
 # OS / editor noise
 .DS_Store
 Thumbs.db

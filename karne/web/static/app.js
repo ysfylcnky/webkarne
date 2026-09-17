@@ -137,9 +137,31 @@
       control.scrollIntoView({ block: "start" });
     }
   }
+  // "Measuring…" screen (§ 8.1): run the live scan, then go to the report. Kept
+  // here rather than inline because the production CSP is script-src 'self'.
+  function initScan() {
+    var box = document.querySelector(".scanning__inner[data-scan-url]");
+    if (!box) return;
+    var fallback = box.getAttribute("data-scan-fallback");
+    function go(target) {
+      location.replace(target || fallback);
+    }
+    fetch(box.getAttribute("data-scan-url"), { headers: { Accept: "application/json" } })
+      .then(function (r) {
+        return r.ok ? r.json() : null;
+      })
+      .then(function (data) {
+        go(data && data.redirect);
+      })
+      .catch(function () {
+        go(fallback);
+      });
+  }
+
   function init() {
     openFromHash();
     initScrollSpy();
+    initScan();
   }
   if (document.readyState !== "loading") init();
   else document.addEventListener("DOMContentLoaded", init);

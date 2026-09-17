@@ -951,6 +951,7 @@ svg { display: block; }
 .qpanel__input:focus { outline: none; border-color: var(--ink); }
 .qpanel__submit { flex: none; white-space: nowrap; }
 .qpanel__error { font-size: var(--fs-small); color: var(--bad); }
+.home__busy { margin-top: var(--s-6); }
 .qpanel__example { font-size: var(--fs-small); color: var(--ink-3); }
 .qpanel__scope {
   font-size: var(--fs-small); color: var(--ink-3);

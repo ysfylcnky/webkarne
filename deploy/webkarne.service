@@ -1,0 +1,30 @@
+# WebKarne — FastAPI/uvicorn behind Caddy. Install:
+#   sudo cp deploy/webkarne.service /etc/systemd/system/webkarne.service
+#   sudo systemctl daemon-reload && sudo systemctl enable --now webkarne
+#
+# ONE worker on purpose: the live-scan abuse guard (PLAN.md K-14) keeps its limits
+# in process memory. Sync endpoints still run concurrently in the threadpool.
+[Unit]
+Description=WebKarne (FastAPI/uvicorn)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+User=webkarne
+Group=webkarne
+WorkingDirectory=/home/webkarne/webkarne
+Environment=PYTHONUNBUFFERED=1
+ExecStart=/home/webkarne/webkarne/.venv/bin/uvicorn karne.web.app:app --host 127.0.0.1 --port 8000 --no-server-header
+Restart=on-failure
+RestartSec=3
+
+# Hardening: the app only needs to write the SQLite DB directory (WAL needs the
+# directory, not just the file).
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ReadWritePaths=/home/webkarne/webkarne/data
+RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX
+
+[Install]
+WantedBy=multi-user.target

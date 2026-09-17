@@ -28,9 +28,10 @@ servfail_requeries = 1
 # Redirects are NOT followed (RFC 8461 §3.3); TLS certificates are verified.
 timeout_seconds = 5.0
 max_bytes = 65536            # cap the policy download size
-# Announces the project and an info page (PLAN.md section 4). TODO: replace the
-# URL with the real project page once published.
-user_agent = "karne/0.1 (+https://github.com/ysfylcnky/karne; passive email-hygiene measurement)"
+# Announces the project and its public info page (PLAN.md section 4, K-14).
+# Changed from the GitHub URL on 2026-09-17 at go-live; earlier scans differ by
+# config_hash.
+user_agent = "WebKarne/1.0 (+https://webkarne.com/tr/hakkinda; passive measurement)"
 
 [tls_http]
 # Dimension B (Sprint 3). Passive, browser-equivalent: homepage HTTP GET + TLS
@@ -44,6 +45,12 @@ rate_per_second = 5.0        # polite throughput cap for this collector
 # cipher). A version the local OpenSSL cannot configure is recorded as
 # "unprobeable_local" (could not measure), kept distinct from a server refusal.
 probe_tls_versions = ["TLSv1", "TLSv1.1", "TLSv1.2", "TLSv1.3"]
+
+[web]
+# Abuse guard for the public "scan any domain" endpoint (PLAN.md K-14). Limits are
+# held in process memory, so the server runs ONE uvicorn worker. No IP is recorded.
+rescan_cooldown_seconds = 600  # an ad-hoc scan this recent is shown instead of rescanning
+max_concurrent_scans = 4       # live scans running at once; beyond this the query is refused
 
 [dkim]
 # DKIM selectors CANNOT be discovered from DNS; they are guessed. This is a

@@ -3,7 +3,8 @@
 {# "Measuring…" screen (DESIGN-SYSTEM § 8.1). Shown the instant a query is
    submitted; the live scan runs behind it. Progressive enhancement: JS fetches
    the scan and redirects to the report; with JS off the <noscript> meta-refresh
-   drives the same /tara route, which then 303s to the report. No fake progress —
+   drives the same /tara route, which then 303s to the report. The fetch lives in
+   app.js (no inline script: the production CSP is script-src 'self'). No fake progress —
    the indicator is indeterminate because the synchronous scan has no per-step
    signal to report honestly. #}
 
@@ -32,29 +33,4 @@
     <p class="scanning__fallback"><a href="{{ run_url }}">{{ t('scanning.fallback') }}</a></p>
   </noscript>
 </div>
-{% endblock %}
-
-{% block scripts %}
-<script>
-  (function () {
-    "use strict";
-    var box = document.querySelector(".scanning__inner");
-    if (!box) return;
-    var url = box.getAttribute("data-scan-url");
-    var fallback = box.getAttribute("data-scan-fallback");
-    function go(target) {
-      location.replace(target || fallback);
-    }
-    fetch(url, { headers: { Accept: "application/json" } })
-      .then(function (r) {
-        return r.ok ? r.json() : null;
-      })
-      .then(function (data) {
-        go(data && data.redirect);
-      })
-      .catch(function () {
-        go(fallback);
-      });
-  })();
-</script>
 {% endblock %}

@@ -70,6 +70,7 @@
   "home.new_scan_note": "Every query scans the domain live, right then — no cached result is shown, so it can take a few seconds.",
   "home.error_invalid_domain": "Enter a valid domain.",
   "home.error_invalid_email": "Enter a valid email address.",
+  "home.error_busy": "Many scans are running right now. Please try again in a moment.",
 
   "scanning.title": "Scanning {domain}",
   "scanning.eyebrow": "LIVE SCAN",

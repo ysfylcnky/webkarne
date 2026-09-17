@@ -203,6 +203,38 @@ def test_latest_scan_for_domain(conn):
     assert latest.id == second
 
 
+def test_latest_adhoc_scan_since_ignores_rounds_and_old_scans(conn):
+    from datetime import UTC, datetime, timedelta
+
+    now = datetime(2026, 9, 17, 12, 0, 0, tzinfo=UTC)
+    domain = storage.get_or_create_domain(conn, "example.com")
+    since = now - timedelta(minutes=10)
+    # Too old (ad-hoc, 11 minutes ago).
+    storage.insert_scan(
+        conn,
+        Scan(domain_id=domain.id, scanner_version="0.1.0", started_at=now - timedelta(minutes=11)),
+    )
+    assert storage.latest_adhoc_scan_since(conn, "example.com", since) is None
+    # Recent but a round scan: never a stand-in for a web query.
+    storage.insert_scan(
+        conn,
+        Scan(
+            domain_id=domain.id,
+            scanner_version="0.1.0",
+            started_at=now - timedelta(minutes=1),
+            run_label="2026-09",
+        ),
+    )
+    assert storage.latest_adhoc_scan_since(conn, "example.com", since) is None
+    # Recent ad-hoc (whole seconds, so isoformat has no fraction) -> found.
+    adhoc = storage.insert_scan(
+        conn,
+        Scan(domain_id=domain.id, scanner_version="0.1.0", started_at=now - timedelta(minutes=5)),
+    )
+    assert storage.latest_adhoc_scan_since(conn, "example.com", since) == adhoc
+    assert storage.latest_adhoc_scan_since(conn, "other.com", since) is None
+
+
 # ---------------------------------------------------------------------------
 # Scan results (raw payload)
 # ---------------------------------------------------------------------------

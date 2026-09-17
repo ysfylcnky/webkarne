@@ -590,6 +590,21 @@ def latest_scan_for_domain(conn: sqlite3.Connection, domain: str) -> Scan | None
     return _row_to_scan(row) if row is not None else None
 
 
+def latest_adhoc_scan_since(conn: sqlite3.Connection, domain: str, since: datetime) -> int | None:
+    """Id of the newest ad-hoc (run_label NULL) scan of a domain started at/after ``since``.
+
+    Round scans are excluded: a round may carry only some dimensions (e.g. the
+    email-only 2026-09 round), so it is never a stand-in for a live web query.
+    """
+    row = conn.execute(
+        "SELECT s.id FROM scans s JOIN domains d ON d.id = s.domain_id "
+        "WHERE d.domain = ? AND s.run_label IS NULL AND s.started_at >= ? "
+        "ORDER BY s.started_at DESC, s.id DESC LIMIT 1;",
+        (domain, _iso(since)),
+    ).fetchone()
+    return row["id"] if row is not None else None
+
+
 def get_scan_results(conn: sqlite3.Connection, scan_id: int) -> list[ScanResult]:
     rows = conn.execute(
         "SELECT * FROM scan_results WHERE scan_id = ? ORDER BY id;", (scan_id,)

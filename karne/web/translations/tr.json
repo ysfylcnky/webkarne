@@ -70,6 +70,7 @@
   "home.new_scan_note": "Her sorgu, alan adını o an canlı olarak tarar; hazır sonuç gösterilmez, bu birkaç saniye sürebilir.",
   "home.error_invalid_domain": "Geçerli bir alan adı girin.",
   "home.error_invalid_email": "Geçerli bir e-posta adresi girin.",
+  "home.error_busy": "Şu anda çok sayıda tarama sürüyor. Lütfen biraz sonra yeniden deneyin.",
 
   "scanning.title": "{domain} taranıyor",
   "scanning.eyebrow": "CANLI TARAMA",
