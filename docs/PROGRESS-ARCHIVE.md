@@ -12,6 +12,79 @@ and `docs/PROGRESS.md` (current state — one page). This archive is the long ta
 
 ---
 
+## Sprint 3 · Session 4 — Open decisions closed + go-live on webkarne.com (SPRINT 3 COMPLETE)
+
+Resumed after the previous session crashed (state reconstructed from its last
+messages + PLAN/PROGRESS; repo matched: commit `3830068`). Closed every open decision
+with the user, recorded them in PLAN.md **before** code, then deployed.
+
+**Decisions (PLAN.md K-14, K-15, §4):**
+- **Server DB = writable copy** of the local DB (consistent snapshot); the thesis
+  dataset stays canonical locally.
+- **Web queries stay out of the thesis.** They are ad-hoc (`run_label` NULL; new
+  domains also `source="web"`). Thesis findings come only from local round scans.
+- **Monthly rounds run locally, by hand** (`scripts/monthly_round.ps1`: dry-run →
+  batch → rescore email+transport → snapshot, transcript in `data/logs/`). No
+  scheduler: a sleeping PC silently skipping a month would damage the time series.
+- **Abuse guard, two layers, no IP logging:** in-app (10-min rescan cooldown reusing
+  the recent ad-hoc scan, same-domain in-flight coalescing, max 4 concurrent live
+  scans → "busy" message; `[web]` in settings.toml; one uvicorn worker) + Cloudflare
+  rate limit.
+- **User-Agent:** `WebKarne/1.0 (+https://webkarne.com/tr/hakkinda; passive
+  measurement)` from 2026-09-17 (earlier scans differ by `config_hash`).
+- **No composite grade** until dimension F (April) — K-15.
+- **matplotlib/pandas** added in a non-default `analysis` uv group (user-approved);
+  never installed on the server.
+- `docs/design-refs/` gitignored (large local PNGs).
+
+**Code:**
+- `query.run_live_scan` guard (`_Guard`, `web_limits`, `ScanBusy`);
+  `storage.latest_adhoc_scan_since` (round scans never stand in for a web query).
+- **Caught a go-live blocker:** the scanning screen's fetch was an inline `<script>`,
+  which the production CSP (`script-src 'self'`) would block — the query would hang
+  on "measuring…". Moved into `app.js`; the UI now has zero inline script/style.
+- Home "busy" alert (tr/en keys, token-only CSS).
+
+**Deployment kit:** `deploy/webkarne.service` (hardened, `ReadWritePaths=data`),
+`deploy/Caddyfile` (HSTS, CSP, XFO, nosniff, Referrer/Permissions-Policy,
+RFC 9116 `security.txt`, www→apex), `deploy/deploy.sh` (ff-pull → sync → restart →
+health check → auto-rollback), `deploy/backup.sh` (daily, keep 14),
+`scripts/db_snapshot.py` (SQLite online-backup API + integrity check, never
+overwrites), `docs/DEPLOY.md`.
+
+**Go-live (2026-09-17):**
+- Code published: https://github.com/ysfylcnky/webkarne (secret scan of tree + full
+  history before push: clean).
+- VPS: Ubuntu 24.04, 4 vCPU / 6 GB, Caddy 2.11.4. uv installed for `webkarne`;
+  clone + `uv sync --frozen --no-dev` (Python 3.12.3). DB snapshot (698.5 MB,
+  SHA-256 matched after upload) placed at `data/karne.db`. Trial run: 9 pages 200,
+  unknown page 404, no errors. Backup cron 03:17. User ran the sudo steps (systemd
+  unit, Caddyfile swap with backup + validate).
+- Cloudflare (user): SSL Full (strict), rate-limit rule on `/{tr,en}/{git,tara}`
+  (verified: 5th request → 429), cache-bypass rule, Email Routing for
+  `security@webkarne.com` (verified by the user). DMARC raised `p=none` →
+  `p=reject; sp=reject` (domain sends no mail). DNSSEC and CAA were already present.
+- **Self-measurement:** live scan of webkarne.com from the server (scan 29577, 3.8 s):
+  email **A 88.2**, transport **A 100**. Remaining findings: SPF `~all` (compensated),
+  no MTA-STS / TLS-RPT, DKIM selector not in the guess list (Cloudflare's `cf2024-1`).
+
+**Also:** `2026-10` round email dimension scored (14,768 scans: A 2, B 71, C 752,
+D 2,829, F 10,523, I 591) — closes a known gap.
+
+**Mistakes caught:** overwrote `.gitattributes` without reading it (restored from git,
+no change); a PowerShell 5.1 read/write mangled UTF-8 in `DEPLOY.md` (restored from git,
+redone with the edit tool, never committed).
+
+**Known gaps / next:** SSH key is passphrase-protected, so remote work needs the user to
+load it into a time-limited agent socket; `webkarne` sudo needs a password (user runs
+sudo steps). uvicorn access log records only Cloudflare edge IPs (no visitor IP).
+Next: **Sprint 4 — dimension C (privacy/tracking, Playwright)**; adding Playwright
+needs user approval.
+
+**Verify:** `ruff check` clean, `pytest -m "not network"` 199 passed.
+
+---
+
 ## Sprint 3 · Session 3 — Live web UI: query flow, real screens, sector, print (COMPLETE)
 
 Turned the foundation into a working product: a typed domain/email runs a live

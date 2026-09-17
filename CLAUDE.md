@@ -133,23 +133,24 @@ uv run ruff format .          # format
 - Do not conflate `NXDOMAIN` with a query error (rule 6).
 - Do not add a dependency without asking.
 
-## Active sprint — Sprint 1 (October): the Türkiye sample frame
+## Active sprint — Sprint 4: dimension C (privacy & tracking)
 
-**Sprint 0 is COMPLETE** (2026-09-11): repo skeleton, SQLite schema, the
-`karne scan <domain>` command, and dimension A (DNS/email) including DANE/TLSA.
-Verified on the five target domains; 62 offline + 3 network tests pass. See
-docs/PROGRESS.md for the full record and carried-over decisions.
+**Sprints 0–3 are COMPLETE** (2026-09-17): dimensions A (DNS/email) and B
+(TLS/HTTP) with versioned scoring, the ~14.8k-domain Türkiye frame, resumable batch
+scanning, and the bilingual web UI **live at https://webkarne.com** (code:
+github.com/ysfylcnky/webkarne). See docs/PROGRESS.md and PLAN.md K-14/K-15.
 
-**In scope (Sprint 1):** `karne/frontier.py` — build the Türkiye universe from the
-Tranco list and `.tr` extensions; sector labelling (bank, university, public body,
-municipality, hospital, e-commerce, media); and a written, defensible definition of
-"a Turkish site" (a method decision for the thesis). Ethics-board application this
-month if the department requires it. Output: a ~10,000-domain, sector-labelled
-sample frame. (PLAN.md section 7.)
+**In scope (Sprint 4):** `karne/collectors/web_privacy.py` — a real browser
+(Playwright) visiting the homepage in the three consent states of K-06 (untouched,
+after reject, after accept), each recorded separately: full cookie list via the
+browser protocol (incl. HttpOnly), storage keys, third-party requests, known tags,
+fingerprinting API hooks, consent-banner observations, policy texts. Clicking the
+consent banner's own reject/accept is the only interaction allowed (K-06/K-07); no
+form submission, no login, no crawling. The collector still records only raw
+observations (rule 1). **Ask before adding Playwright** (new dependency).
 
-**Carried-over for batch scanning (Sprint 2):** the validating-resolver /
-multi-resolver choice and the SERVFAIL re-query policy (see docs/PROGRESS.md).
+**Production:** the server runs `main`; ship with `deploy/deploy.sh` (docs/DEPLOY.md).
+Monthly rounds run locally (`scripts/monthly_round.ps1`), never on the server.
 
-**Still out of scope (do not build yet):** web UI, FastAPI, Playwright/browser
-measurement (dimension C), TLS/HTTP (dimension B), the scoring engine, batch
-scanning, Docker, CI. These are later sprints (see PLAN.md section 7).
+**Still out of scope:** dimension D / graph analysis (Sprint 5), E/F (Sprint 6),
+composite grade (K-15), STARTTLS (§4), Docker, CI.

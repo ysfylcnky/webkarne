@@ -90,7 +90,7 @@ unless every subdomain will serve HTTPS permanently.
 As `webkarne` (`sudo -u webkarne crontab -e`):
 
 ```
-17 3 * * * /home/webkarne/webkarne/deploy/backup.sh >> /home/webkarne/webkarne/data/logs/backup.log 2>&1
+17 3 * * * bash /home/webkarne/webkarne/deploy/backup.sh >> /home/webkarne/webkarne/data/logs/backup.log 2>&1
 ```
 
 Keeps the newest 14 consistent snapshots in `data/backups/`. Pull one home
