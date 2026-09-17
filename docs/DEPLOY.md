@@ -22,7 +22,7 @@ All commands as `ADMIN` on the server unless stated.
 sudo -u webkarne -H bash -lc 'curl -LsSf https://astral.sh/uv/install.sh | sh'
 
 # 1b. Code
-sudo -u webkarne -H bash -lc 'git clone https://github.com/ysfylcnky/karne.git ~/webkarne'
+sudo -u webkarne -H bash -lc 'git clone https://github.com/ysfylcnky/webkarne.git ~/webkarne'
 sudo -u webkarne -H bash -lc 'cd ~/webkarne && uv sync --frozen --no-dev'
 sudo -u webkarne mkdir -p /home/webkarne/webkarne/data/logs
 ```

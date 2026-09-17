@@ -514,7 +514,7 @@ def fetch_tranco_csv(
     *,
     top: int | None = None,
     timeout: float = 30.0,
-    user_agent: str = "karne-frontier/0.1 (+https://github.com/ysfylcnky/karne)",
+    user_agent: str = "karne-frontier/0.1 (+https://github.com/ysfylcnky/webkarne)",
 ) -> Path:
     """Download a Tranco CSV to ``dest`` (raw list I/O). Returns the path.
 
